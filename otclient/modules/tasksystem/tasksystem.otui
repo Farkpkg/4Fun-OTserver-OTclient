@@ -1,0 +1,69 @@
+LinkedTasksWindow < MainWindow
+  id: linkedTasksWindow
+  size: 360 220
+  !text: tr('Linked Tasks System')
+  @onEscape: self:hide()
+
+  Label
+    id: taskName
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 12
+    margin-left: 12
+    text: Task ativa: Nenhuma
+
+  Label
+    id: taskProgress
+    anchors.top: prev.bottom
+    anchors.left: prev.left
+    margin-top: 8
+    text: Progresso: -
+
+  Label
+    id: taskReward
+    anchors.top: prev.bottom
+    anchors.left: prev.left
+    margin-top: 8
+    text: Recompensa: -
+
+  Label
+    id: taskDescription
+    anchors.top: prev.bottom
+    anchors.left: prev.left
+    anchors.right: parent.right
+    margin-right: 12
+    margin-top: 8
+    text-wrap: true
+    text: Use !task start <taskId> para iniciar uma task.
+
+  Label
+    id: taskDetails
+    anchors.top: prev.bottom
+    anchors.left: prev.left
+    anchors.right: parent.right
+    margin-right: 12
+    margin-top: 6
+    text-wrap: true
+    text: ''
+
+  Button
+    id: detailsButton
+    anchors.bottom: parent.bottom
+    anchors.right: closeButton.left
+    margin-bottom: 10
+    margin-right: 8
+    width: 110
+    text: Mostrar detalhes
+    @onClick: modules.tasksystem.toggleDetails()
+
+  Button
+    id: closeButton
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 10
+    margin-right: 12
+    width: 70
+    text: Fechar
+    @onClick: self:getParent():hide()
+
+LinkedTasksWindow
