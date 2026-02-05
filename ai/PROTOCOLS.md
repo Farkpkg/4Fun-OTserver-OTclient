@@ -80,31 +80,9 @@ Estrutura do pacote:
 - String simples com ação:
   - `sync` → solicita sincronização completa
   - `check` → força validação de task ativa (especialmente objetivo de coleta)
-  - `board` → solicita snapshot do Task Board
-  - `board_start:<taskId>` → solicita iniciar task pelo Task Board (server valida)
 
 ---
 
 Implementação:
 - Server: `data/scripts/lib/linked_tasks.lua`, `data/scripts/creaturescripts/player/linked_tasks.lua`
 - Client: `modules/tasksystem/tasksystem.lua`
-
-### Opcode 223 – Linked Task Board Snapshot
-
-Direção:
-- Server → Client
-
-Estrutura do pacote (string delimitada por linha/tab):
-- Linha 1: `BOARD	<activeTaskId>`
-- Linhas seguintes por task:
-  - `TASK	<taskId>	<boardStatus>	<progress>	<required>	<name>	<description>	<objectiveType>	<objectiveTarget>	<rewardGold>	<rewardExperience>	<rewardItems>`
-
-Status visuais do board:
-- `LOCKED`
-- `AVAILABLE`
-- `IN_PROGRESS`
-- `COMPLETED`
-
-Uso:
-- Enviado ao interagir com o NPC Task Master e também por request do client (`board`).
-- Permite renderizar a lista completa com estado por task no Task Board.

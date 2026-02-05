@@ -8,7 +8,6 @@ LinkedTasks = {
 		sync = 220,
 		update = 221,
 		request = 222,
-		board = 223,
 	},
 	storage = {
 		activeTask = 92100,
@@ -180,48 +179,6 @@ function LinkedTasks.rewardPlayer(player, task)
 	for _, rewardItem in ipairs(task.rewards.items or {}) do
 		player:addItem(rewardItem.id, rewardItem.count)
 	end
-end
-
-
-
-function LinkedTasks.getOrderedTaskIds()
-	local ids = {}
-	for taskId in pairs(LinkedTasks.tasks) do
-		table.insert(ids, taskId)
-	end
-	table.sort(ids)
-	return ids
-end
-
-function LinkedTasks.getBoardStatus(player, taskId)
-	local task = LinkedTasks.getTask(taskId)
-	if not task then
-		return "LOCKED"
-	end
-
-	local state = LinkedTasks.getTaskState(player, taskId)
-	if state.status == LinkedTasks.status.completed then
-		return "COMPLETED"
-	end
-
-	local activeTaskId = LinkedTasks.getActiveTaskId(player)
-	if activeTaskId == taskId and state.status == LinkedTasks.status.inProgress then
-		return "IN_PROGRESS"
-	end
-
-	if activeTaskId and activeTaskId ~= taskId then
-		return "LOCKED"
-	end
-
-	if task.unlock and not LinkedTasks.hasCompleted(player, task.unlock) then
-		return "LOCKED"
-	end
-
-	if state.status == LinkedTasks.status.inProgress then
-		return "IN_PROGRESS"
-	end
-
-	return "AVAILABLE"
 end
 
 function LinkedTasks.startTask(player, taskId)
@@ -425,44 +382,6 @@ function LinkedTasks.sendFullSync(player)
 	end
 
 	player:sendExtendedOpcode(LinkedTasks.opcode.sync, table.concat(lines, "\n"))
-	LinkedTasks.sendTaskBoard(player)
-	return true
-end
-
-
-
-function LinkedTasks.sendTaskBoard(player)
-	if not player:isUsingOtClient() then
-		return true
-	end
-
-	LinkedTasks.ensurePlayerRows(player)
-	local activeTaskId = LinkedTasks.getActiveTaskId(player) or 0
-	local lines = {
-		string.format("BOARD\t%d", activeTaskId),
-	}
-
-	for _, taskId in ipairs(LinkedTasks.getOrderedTaskIds()) do
-		local task = LinkedTasks.getTask(taskId)
-		local state = LinkedTasks.getTaskState(player, taskId)
-		local boardStatus = LinkedTasks.getBoardStatus(player, taskId)
-		table.insert(lines, string.format(
-			"TASK\t%d\t%s\t%d\t%d\t%s\t%s\t%s\t%s\t%d\t%d\t%s",
-			task.id,
-			boardStatus,
-			state.progress,
-			task.objective.required,
-			sanitize(task.name),
-			sanitize(task.description),
-			sanitize(task.objective.type),
-			sanitize(task.objective.targetName or task.objective.itemId or ""),
-			task.rewards.gold,
-			task.rewards.experience,
-			encodeItems(task.rewards.items)
-		))
-	end
-
-	player:sendExtendedOpcode(LinkedTasks.opcode.board, table.concat(lines, "\n"))
 	return true
 end
 

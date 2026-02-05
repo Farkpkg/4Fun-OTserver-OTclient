@@ -40,28 +40,10 @@ function linkedTaskExtendedOpcode.onExtendedOpcode(player, opcode, buffer)
 
 	if buffer == "check" then
 		LinkedTasks.checkActiveTask(player)
-		return true
+	else
+		LinkedTasks.sendFullSync(player)
 	end
 
-	if buffer == "board" then
-		LinkedTasks.sendTaskBoard(player)
-		return true
-	end
-
-	if buffer:starts("board_start:") then
-		local taskId = tonumber(buffer:split(":")[2])
-		if not taskId then
-			player:sendTextMessage(MESSAGE_FAILURE, "Task inválida.")
-			return true
-		end
-
-		local ok, message = LinkedTasks.startTask(player, taskId)
-		player:sendTextMessage(ok and MESSAGE_EVENT_ADVANCE or MESSAGE_FAILURE, message)
-		LinkedTasks.sendTaskBoard(player)
-		return true
-	end
-
-	LinkedTasks.sendFullSync(player)
 	return true
 end
 
