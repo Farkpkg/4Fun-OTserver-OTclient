@@ -264,8 +264,11 @@ From vcpkg + CMake:
 ---
 
 ## 10) Execution Readiness Plan (for future tasks)
-To ensure robust implementation of future requests (simple to advanced), use this execution checklist:
+This checklist is now operationalized in repository artifacts:
+- `docs/EXECUTION_PLAYBOOK.md`
+- `docs/templates/TASK_EXECUTION_TEMPLATE.md`
 
+Operational steps remain:
 1. **Scope lock**: define feature boundaries + protocol impact + migration plan.
 2. **Design review**: sequence diagram + failure modes + security impact.
 3. **Implementation**:
