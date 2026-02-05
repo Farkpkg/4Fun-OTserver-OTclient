@@ -1,0 +1,177 @@
+TaskBoardEntry < Panel
+  height: 28
+  margin-bottom: 2
+  focusable: true
+  image-source: /images/ui/button
+  image-clip: 0 0 22 23
+  image-border: 3
+
+  $hover:
+    image-color: #ffffff
+
+  Label
+    id: taskName
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    text: Task
+
+  Label
+    id: taskStatus
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 8
+    text: STATUS
+
+LinkedTasksWindow < MainWindow
+  id: linkedTasksWindow
+  size: 360 220
+  !text: tr('Linked Tasks System')
+  @onEscape: self:hide()
+
+  Label
+    id: taskName
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 12
+    margin-left: 12
+    text: Task ativa: Nenhuma
+
+  Label
+    id: taskProgress
+    anchors.top: prev.bottom
+    anchors.left: prev.left
+    margin-top: 8
+    text: Progresso: -
+
+  Label
+    id: taskReward
+    anchors.top: prev.bottom
+    anchors.left: prev.left
+    margin-top: 8
+    text: Recompensa: -
+
+  Label
+    id: taskDescription
+    anchors.top: prev.bottom
+    anchors.left: prev.left
+    anchors.right: parent.right
+    margin-right: 12
+    margin-top: 8
+    text-wrap: true
+    text: Use !task start <taskId> para iniciar uma task.
+
+  Label
+    id: taskDetails
+    anchors.top: prev.bottom
+    anchors.left: prev.left
+    anchors.right: parent.right
+    margin-right: 12
+    margin-top: 6
+    text-wrap: true
+    text: ''
+
+  Button
+    id: boardButton
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 10
+    margin-left: 12
+    width: 90
+    text: Task Board
+    @onClick: modules.tasksystem.toggleTaskBoard()
+
+  Button
+    id: detailsButton
+    anchors.bottom: parent.bottom
+    anchors.right: closeButton.left
+    margin-bottom: 10
+    margin-right: 8
+    width: 110
+    text: Mostrar detalhes
+    @onClick: modules.tasksystem.toggleDetails()
+
+  Button
+    id: closeButton
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 10
+    margin-right: 12
+    width: 70
+    text: Fechar
+    @onClick: self:getParent():hide()
+
+TaskBoardWindow < MainWindow
+  id: taskBoardWindow
+  size: 560 360
+  !text: tr('Task Board')
+  @onEscape: self:hide()
+
+  Label
+    id: boardTitle
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 10
+    margin-left: 12
+    text: Task Master Board
+
+  ScrollablePanel
+    id: boardList
+    anchors.top: boardTitle.bottom
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    width: 260
+    margin-left: 12
+    margin-top: 8
+    margin-bottom: 42
+    image-source: /images/ui/panel_flat
+    image-border: 1
+    padding: 4
+    vertical-scrollbar: boardScroll
+    layout:
+      type: verticalBox
+      fit-children: true
+
+  VerticalScrollBar
+    id: boardScroll
+    anchors.top: boardList.top
+    anchors.right: boardList.right
+    anchors.bottom: boardList.bottom
+    step: 28
+    pixel-scroll: true
+
+  Label
+    id: boardDetails
+    anchors.top: boardTitle.bottom
+    anchors.left: boardList.right
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-left: 10
+    margin-right: 12
+    margin-top: 8
+    margin-bottom: 42
+    text-wrap: true
+    text: Selecione uma task na lista para ver os detalhes.
+
+  Button
+    id: startButton
+    anchors.bottom: parent.bottom
+    anchors.right: closeButton.left
+    margin-bottom: 10
+    margin-right: 8
+    width: 120
+    text: Iniciar task
+    @onClick: modules.tasksystem.startSelectedTaskFromBoard()
+
+  Button
+    id: closeButton
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 10
+    margin-right: 12
+    width: 70
+    text: Fechar
+    @onClick: self:getParent():hide()
+
+LinkedTasksWindow
+TaskBoardWindow
