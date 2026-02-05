@@ -1,6 +1,10 @@
 local linkedTaskLogin = CreatureEvent("LinkedTaskLogin")
 
 function linkedTaskLogin.onLogin(player)
+	if not LinkedTasks then
+		return true
+	end
+
 	LinkedTasks.ensurePlayerRows(player)
 	player:registerEvent("LinkedTaskKill")
 	player:registerEvent("LinkedTaskExtendedOpcode")
@@ -18,6 +22,10 @@ linkedTaskLogin:register()
 local linkedTaskKill = CreatureEvent("LinkedTaskKill")
 
 function linkedTaskKill.onKill(player, target)
+	if not LinkedTasks then
+		return true
+	end
+
 	if not player or not player:isPlayer() then
 		return true
 	end
@@ -34,6 +42,10 @@ linkedTaskKill:register()
 local linkedTaskExtendedOpcode = CreatureEvent("LinkedTaskExtendedOpcode")
 
 function linkedTaskExtendedOpcode.onExtendedOpcode(player, opcode, buffer)
+	if not LinkedTasks then
+		return true
+	end
+
 	if opcode ~= LinkedTasks.opcode.request then
 		return true
 	end
