@@ -8,6 +8,11 @@ local function parseTaskParam(param)
 end
 
 function taskCommand.onSay(player, words, param)
+	if not LinkedTasks then
+		player:sendTextMessage(MESSAGE_FAILURE, "Sistema de tasks indisponível no momento.")
+		return true
+	end
+
 	LinkedTasks.ensurePlayerRows(player)
 
 	local action, value = parseTaskParam(param)

@@ -21,6 +21,11 @@ local npcConfig = {
 }
 
 local function sendBoardToPlayer(player)
+	if not LinkedTasks then
+		player:sendTextMessage(MESSAGE_FAILURE, "Sistema de tasks indisponível no momento.")
+		return
+	end
+
 	LinkedTasks.ensurePlayerRows(player)
 	LinkedTasks.sendTaskBoard(player)
 	player:sendTextMessage(MESSAGE_INFO_DESCR, "Task Board aberto. Selecione uma task AVAILABLE para iniciar.")

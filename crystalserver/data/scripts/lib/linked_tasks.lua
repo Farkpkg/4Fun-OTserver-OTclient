@@ -336,7 +336,7 @@ end
 
 local function sanitize(value)
 	local text = tostring(value or "")
-	text = text:gsub("\n", " "):gsub("\t", " "):gsub("\|", "/")
+	text = text:gsub("[\n\r\t]", " "):gsub("|", "/"):gsub("\\", "/")
 	return text
 end
 
@@ -353,7 +353,7 @@ local function encodeItems(items)
 end
 
 function LinkedTasks.sendFullSync(player)
-	if not player:isUsingOtClient() then
+	if not player or not player:isUsingOtClient() then
 		return true
 	end
 
@@ -385,8 +385,12 @@ function LinkedTasks.sendFullSync(player)
 	return true
 end
 
+function LinkedTasks.sendTaskBoard(player)
+	return LinkedTasks.sendFullSync(player)
+end
+
 function LinkedTasks.sendTaskUpdate(player, taskId, status, progress, required)
-	if not player:isUsingOtClient() then
+	if not player or not player:isUsingOtClient() then
 		return true
 	end
 
