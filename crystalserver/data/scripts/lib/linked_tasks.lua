@@ -168,12 +168,10 @@ end
 function LinkedTasks.rewardPlayer(player, task)
 	if task.rewards.gold > 0 then
 		player:setBankBalance(player:getBankBalance() + task.rewards.gold)
-		player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("+%d gold no banco.", task.rewards.gold))
 	end
 
 	if task.rewards.experience > 0 then
 		player:addExperience(task.rewards.experience, true)
-		player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("+%d experiência.", task.rewards.experience))
 	end
 
 	for _, rewardItem in ipairs(task.rewards.items or {}) do
@@ -189,7 +187,6 @@ function LinkedTasks.startTask(player, taskId)
 
 	LinkedTasks.updateTaskState(player, taskId, 0, LinkedTasks.status.inProgress)
 	LinkedTasks.setActiveTaskId(player, taskId)
-	LinkedTasks.sendFullSync(player)
 	return true, string.format("Task %d iniciada: %s.", taskId, LinkedTasks.tasks[taskId].name)
 end
 
@@ -201,7 +198,6 @@ function LinkedTasks.clearActiveTask(player)
 
 	LinkedTasks.updateTaskState(player, activeTaskId, 0, LinkedTasks.status.notStarted)
 	LinkedTasks.setActiveTaskId(player, nil)
-	LinkedTasks.sendFullSync(player)
 	return true, "Task ativa limpa com sucesso."
 end
 
@@ -233,13 +229,11 @@ function LinkedTasks.finishActiveTask(player, task)
 	LinkedTasks.setActiveTaskId(player, nil)
 	LinkedTasks.updateTaskState(player, task.id, task.objective.required, LinkedTasks.status.completed)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Task concluída: %s.", task.name))
-	LinkedTasks.sendFullSync(player)
 end
 
 function LinkedTasks.checkActiveTask(player)
 	local activeTaskId = LinkedTasks.getActiveTaskId(player)
 	if not activeTaskId then
-		LinkedTasks.sendFullSync(player)
 		return false, "Nenhuma task ativa no momento."
 	end
 
@@ -251,6 +245,24 @@ function LinkedTasks.checkActiveTask(player)
 	end
 
 	local progressText = string.format("%d/%d", state.progress, task.objective.required)
+	return true, string.format("Task ativa: [%d] %s (%s).", task.id, task.name, progressText)
+end
+
+function LinkedTasks.getActiveTaskSummary(player)
+	local activeTaskId = LinkedTasks.getActiveTaskId(player)
+	if not activeTaskId then
+		return false, "Nenhuma task ativa no momento."
+	end
+
+	local task = LinkedTasks.getTask(activeTaskId)
+	local state = LinkedTasks.getTaskState(player, activeTaskId)
+	local progress = state.progress
+	if task.objective.type == "collect" then
+		local itemCount = player:getItemCount(task.objective.itemId)
+		progress = math.min(itemCount, task.objective.required)
+	end
+
+	local progressText = string.format("%d/%d", progress, task.objective.required)
 	return true, string.format("Task ativa: [%d] %s (%s).", task.id, task.name, progressText)
 end
 
@@ -291,12 +303,35 @@ function LinkedTasks.claimBonus(player)
 	end
 
 	LinkedTasks.resetCycle(player)
-	LinkedTasks.sendFullSync(player)
 	return true, "Bônus do ciclo recebido. As tasks foram reiniciadas para um novo ciclo."
 end
 
-function LinkedTasks.onKill(player, target)
-	if not player or not target then
+local function resolveKillerPlayer(killer)
+	if not killer then
+		return nil
+	end
+	if killer:isPlayer() then
+		return killer
+	end
+	local master = killer:getMaster()
+	if master and master:isPlayer() then
+		return master
+	end
+	return nil
+end
+
+function LinkedTasks.onDeath(creature, killer, mostDamageKiller)
+	if not creature then
+		return true
+	end
+
+	local targetMonster = creature:getMonster()
+	if not targetMonster or targetMonster:getMaster() then
+		return true
+	end
+
+	local player = resolveKillerPlayer(killer) or resolveKillerPlayer(mostDamageKiller)
+	if not player then
 		return true
 	end
 
@@ -310,7 +345,7 @@ function LinkedTasks.onKill(player, target)
 		return true
 	end
 
-	if target:getName():lower() ~= task.objective.targetName:lower() then
+	if targetMonster:getName():lower() ~= task.objective.targetName:lower() then
 		return true
 	end
 
@@ -336,6 +371,7 @@ end
 
 local function sanitize(value)
 	local text = tostring(value or "")
+	-- Remove payload delimiters/control characters to keep the client parser safe.
 	text = text:gsub("[\n\r\t]", " "):gsub("|", "/"):gsub("\\", "/")
 	return text
 end

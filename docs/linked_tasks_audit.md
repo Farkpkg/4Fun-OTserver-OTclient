@@ -15,3 +15,17 @@ No usage of storage-by-name APIs was found in the Linked Tasks Lua scripts. The 
 ## Database
 
 Linked Tasks relies on the `player_tasks` table created by migration `crystalserver/data/migrations/61.lua`.
+
+## Runtime stability issues found
+
+| Issue | Risk | Fix applied |
+| --- | --- | --- |
+| ExtendedOpcode handlers parsed payloads without guarding against empty/malformed buffers. | Client crash (`NetworkMessage::getByte`/`getString` errors) when payloads are missing or invalid. | Added defensive payload normalization and early aborts for empty/malformed payloads. |
+| Kill progression relied on `onKill` CreatureEvent. | Deprecated API warning and future incompatibility with Canary/Crystal. | Migrated to `onDeath` with `killer`/`mostDamageKiller` resolution. |
+| Linked Tasks talk-action used `MESSAGE_INFO_DESCR` (not defined in this server core). | Invalid message type warning in Canary/Crystal builds. | Replaced neutral messages with `MESSAGE_EVENT_ADVANCE` to use a core-defined enum. |
+| Payload sanitization not fully documented. | Client parser could break if delimiters leaked into payloads. | Documented payload delimiter rules and ensured sanitization is explicit. |
+| TalkAction and NPC flows performed bootstrap/sync behavior. | Protocol warnings and unintended side effects (opcodes sent from non-bootstrap flows). | Removed bootstrap/sync from TalkActions/NPCs; sync now occurs only on login or explicit opcode requests. |
+
+## Remaining risks / attention points
+
+- Enum values are extracted from the current C++ core; re-validate `docs/enums.md` and `docs/ENUMS_MESSAGE_TYPES.md` after updating Canary/Crystal sources.
