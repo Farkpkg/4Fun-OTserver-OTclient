@@ -28,11 +28,12 @@
 - **Banco de dados e conta** (servidor).
 
 ## Relatório de qualidade da wiki
-- **Páginas da wiki**: 33 arquivos Markdown.
-- **Referências a arquivos/pastas do repositório**: 143.
+- **Páginas da wiki**: 34 arquivos Markdown.
+- **Referências a arquivos/pastas do repositório**: 144.
+- **Corpus de embeddings**: 265 chunks em `docs/wiki/llm/embeddings.jsonl`.
 - **Evolução da cobertura**:
   - snapshot anterior: 90 referências.
-  - snapshot atual: 143 referências.
+  - snapshot atual: 144 referências.
 
 ## Sistemas com risco documental
 - **Crítico**: `crystalserver/src/enums/`, `crystalserver/src/utils/`.

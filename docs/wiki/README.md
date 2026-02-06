@@ -28,6 +28,8 @@ Organizar a documentação técnica em alto nível, iniciando com um mapa do pro
 - [Glossário](glossary/README.md)
 - [Mapa semântico (LLM)](llm/semantic-map.md)
 - [Guia para agentes/LLMs](llm/agent-guide.md)
+- [Guia de embeddings](llm/embedding-guide.md)
+- [Corpus de embeddings](llm/embeddings.jsonl)
 - [Servidor](server/README.md)
 - [Cliente](client/README.md)
 - [Compartilhado](shared/README.md)
