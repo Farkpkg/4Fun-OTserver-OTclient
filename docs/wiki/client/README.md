@@ -30,6 +30,39 @@ O OTClient é o cliente gráfico responsável por renderização, UI, entrada do
 3. **Scripts**: carrega `otclient/init.lua` e módulos em `otclient/modules/`.
 4. **Conexão**: protocolo em `otclient/src/client/protocolgame*.cpp` comunica com o servidor.
 
+## Exemplos práticos (do código)
+- **Arquivo de log do cliente**: o logger cria o arquivo no diretório de trabalho via `g_logger.setLogFile(...)` no bootstrap.
+  - Referência: `otclient/init.lua`.
+- **Módulo de inventário**: o módulo `game_inventory` manipula slots e atualiza UI conforme o estado do jogador.
+  - Referência: `otclient/modules/game_inventory/inventory.lua`.
+- **Transição de estado no jogo**: `Game::processGameStart()` ajusta FPS e agenda eventos de ping/conexão.
+  - Referência: `otclient/src/client/game.cpp`.
+
+## Debug e troubleshooting
+- **Sintoma: módulos não carregam**
+  - **Possível causa**: falha no carregamento de scripts ou dependências.
+  - **Onde investigar**: mensagens de erro são geradas no carregamento de módulos.
+- **Sintoma: cliente sem log**
+  - **Possível causa**: falha no `setLogFile` ou diretório de trabalho inválido.
+  - **Onde investigar**: configuração do logger em `otclient/init.lua`.
+- **Breakpoints sugeridos**
+  - `Game::processLogin` / `processGameStart` em `otclient/src/client/game.cpp`.
+  - Carregamento de módulos em `otclient/src/framework/core/module.cpp`.
+
+## Performance e otimização
+- **Pontos sensíveis**
+  - **Ciclo de jogo**: atualizações de conexão e eventos são agendadas no `Game`.
+  - **FPS**: o cliente ajusta alvo de FPS ao entrar/sair do jogo.
+- **Onde investigar**
+  - `otclient/src/client/game.cpp` (eventos de ping, FPS e estados).
+
+## Pontos de extensão e customização
+- **Onde é seguro modificar**
+  - Módulos e layouts em `otclient/modules/`.
+  - Estilos e componentes em `otclient/data/styles/`.
+- **Onde exigir coordenação**
+  - Alterações no protocolo exigem alinhamento com o servidor e `protocolcodes`.
+
 ## Integrações
 - **Servidor**: protocolos de rede em `otclient/src/client/protocolgame*.cpp`.
 - **UI/OTUI**: layouts e estilos em `otclient/data/styles/` e módulos em `otclient/modules/`.

@@ -19,6 +19,17 @@ Magias e runas são implementadas principalmente via scripts Lua no servidor, co
 2. O servidor executa a magia via scripts e regras de combate.
 3. O cliente renderiza efeitos/partículas recebidos.
 
+## Exemplo prático (do código)
+- `crystalserver/data/scripts/spells/#example.lua` registra uma runa e define um `Combat()` com parâmetros de cura/efeito.
+
+## Debug e troubleshooting
+- **Sintoma: magia não executa**
+  - **Possível causa**: erro no script ou requisitos de nível/magia não atendidos.
+  - **Onde investigar**: `crystalserver/data/scripts/spells/` e logs de scripts.
+
+## Performance e otimização
+- **Ponto sensível**: magias em área e efeitos visuais podem gerar maior volume de mensagens para o cliente.
+
 ## Pontos de extensão
 - Scripts de magias e runas em `crystalserver/data/scripts/spells/` e `runes/`.
 - Eventos em `crystalserver/data/events/`.

@@ -17,6 +17,17 @@ Eventos conectam ações do jogo a scripts Lua, permitindo lógica customizada p
 1. O servidor carrega os registros de eventos.
 2. Quando o evento ocorre, o script associado é executado.
 
+## Exemplo prático (do código)
+- `crystalserver/data/XML/events.xml` lista eventos como `Player::onGainExperience` e `Player::onTradeRequest`.
+
+## Debug e troubleshooting
+- **Sintoma: evento não dispara**
+  - **Possível causa**: evento desabilitado no XML ou script ausente.
+  - **Onde investigar**: `events.xml` e scripts associados.
+
+## Performance e otimização
+- **Ponto sensível**: eventos globais frequentes podem gerar overhead se scripts tiverem lógica pesada.
+
 ## Pontos de extensão
 - `crystalserver/data/events/` e `crystalserver/data/scripts/eventcallbacks/`.
 - Scripts em `creaturescripts/`, `globalevents/`, `actions/` e `movements/`.

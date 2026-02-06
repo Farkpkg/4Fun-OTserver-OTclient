@@ -21,6 +21,17 @@ O sistema de itens define tipos, propriedades e comportamento de itens no jogo. 
 2. Ações de uso/movimento disparam scripts específicos.
 3. O cliente renderiza itens no mapa e inventário.
 
+## Exemplo prático (do código)
+- `crystalserver/data/items/items.xml` contém itens com atributos, incluindo itens com campos como `primarytype`, `weight` e `script`.
+
+## Debug e troubleshooting
+- **Sintoma: item sem propriedades**
+  - **Possível causa**: definição ausente ou atributos faltando em `items.xml`.
+  - **Onde investigar**: `crystalserver/data/items/items.xml` e scripts em `actions/` e `movements/`.
+
+## Performance e otimização
+- **Ponto sensível**: itens com eventos frequentes (stepin/stepout) podem gerar muitas chamadas de script.
+
 ## Pontos de extensão
 - Scripts em `crystalserver/data/scripts/actions/` e `movements/`.
 - Dados de item em `crystalserver/data/items/`.

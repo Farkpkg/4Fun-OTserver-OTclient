@@ -19,6 +19,17 @@ O sistema de combate processa dano, efeitos e interações de ataque entre entid
 2. O servidor processa regras e aplica efeitos.
 3. O cliente recebe atualizações e renderiza animações/efeitos.
 
+## Exemplo prático (do código)
+- `crystalserver/data/scripts/spells/#example.lua` mostra a criação de um `Combat()` com parâmetros e o registro de uma runa.
+
+## Debug e troubleshooting
+- **Sintoma: magia/runa não causa efeito**
+  - **Possível causa**: script não carregado ou erro de execução.
+  - **Onde investigar**: scripts em `crystalserver/data/scripts/spells/` e logs do carregamento de scripts.
+
+## Performance e otimização
+- **Ponto sensível**: alto volume de efeitos/combate pode aumentar carga do servidor, especialmente quando scripts executam lógica extra.
+
 ## Pontos de extensão
 - Scripts Lua em `crystalserver/data/scripts/spells/`, `runes/` e `weapons/`.
 - Eventos e callbacks em `crystalserver/data/events/`.

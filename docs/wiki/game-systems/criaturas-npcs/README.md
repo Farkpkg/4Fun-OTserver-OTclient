@@ -19,6 +19,17 @@ Este sistema define entidades vivas do jogo (jogadores, monstros e NPCs), suas p
 2. Eventos e scripts de NPCs são acionados por interações do jogador.
 3. O cliente recebe atualizações e renderiza entidades na tela.
 
+## Exemplo prático (do código)
+- `crystalserver/data/scripts/npcs/task_master.lua` define um NPC com `onSay` e registra o tipo via `npcType:register(...)`.
+
+## Debug e troubleshooting
+- **Sintoma: NPC não responde**
+  - **Possível causa**: script não carregado ou evento não acionado.
+  - **Onde investigar**: scripts em `crystalserver/data/scripts/npcs/` e bibliotecas em `crystalserver/data/npclib/`.
+
+## Performance e otimização
+- **Ponto sensível**: scripts de NPCs com lógica pesada podem aumentar carga em áreas com muitos jogadores.
+
 ## Pontos de extensão
 - Scripts de NPCs em `crystalserver/data/scripts/npcs/`.
 - Eventos de criatura em `crystalserver/data/scripts/creaturescripts/`.

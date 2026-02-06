@@ -20,5 +20,16 @@ A economia engloba sistemas como banco e market, controlando transações e pers
 2. Servidor registra e consulta ofertas via I/O.
 3. Cliente exibe informações em módulos específicos.
 
+## Exemplo prático (do código)
+- `IOMarket::getActiveOffers` consulta ofertas no banco e aplica `marketOfferDuration` conforme config.
+
+## Debug e troubleshooting
+- **Sintoma: market não retorna ofertas**
+  - **Possível causa**: query não retorna resultados ou configuração inválida.
+  - **Onde investigar**: `crystalserver/src/io/iomarket.cpp`.
+
+## Performance e otimização
+- **Ponto sensível**: consultas de market podem ser custosas sem índices adequados.
+
 ## Pontos de extensão
 - Scripts de NPCs podem expor serviços econômicos em `crystalserver/data/scripts/npcs/`.

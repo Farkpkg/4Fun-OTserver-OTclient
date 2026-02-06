@@ -11,16 +11,47 @@ A comunicação cliente ↔ servidor é feita por protocolos binários específi
 
 ## Estrutura interna (alto nível)
 - **Servidor**
-  - `protocolstatus.*` — fluxo de status/login e informações iniciais.
+  - `protocollogin.*` — fluxo de login (identificador `0x01`).
+  - `protocolstatus.*` — status (identificador `0xFF`).
   - `protocolgame.*` — mensagens do jogo (entrada e saída).
 - **Cliente**
   - `protocolgameparse.cpp` — parsing de pacotes recebidos.
   - `protocolgamesend.cpp` — envio de pacotes para o servidor.
-  - `protocolcodes.*` — códigos/identificadores de mensagens.
+  - `protocolcodes.*` — opcodes e modos de mensagem.
 
-## Fluxo de execução (alto nível)
-1. **Handshake/Login**: o cliente conecta e inicia o fluxo de status/login; o servidor responde via `protocolstatus`.
-2. **Sessão de jogo**: após autenticação, o cliente usa `protocolgame` para enviar ações e receber atualizações do mundo.
+## Sequência operacional (alto nível)
+1. **Login/Status**: cliente abre conexão de login/status e envia a primeira mensagem; o servidor responde via `ProtocolLogin`/`ProtocolStatus`.
+2. **Jogo**: após autenticação, o cliente envia ações via `ProtocolGame` e recebe atualizações do mundo.
+
+## OpCodes importantes (cliente)
+Exemplos de opcodes definidos no cliente em `Protocolcodes.h`:
+- **Sessão**: `GameServerEnterGame`, `GameServerPing`, `GameServerPingBack`, `GameServerSessionEnd`.
+- **Mapa**: `GameServerFullMap`, `GameServerUpdateTile`, `GameServerCreateOnMap`, `GameServerChangeOnMap`, `GameServerDeleteOnMap`.
+- **Chat**: `GameServerTalk`, `GameServerTextMessage`.
+- **Entidades**: `GameServerCreatureHealth`, `GameServerCreatureOutfit`, `GameServerCreatureSpeed`.
+
+## Exemplos práticos (do código)
+- **Parsing de chat**: `ProtocolGame::parseTalk` traduz o modo de mensagem e interpreta payloads com base no tipo.
+- **Tradução de modos**: `Proto::buildMessageModesMap` ajusta mapas de mensagem de acordo com a versão do cliente.
+
+## Debug e troubleshooting
+- **Sintoma: cliente não entra no jogo**
+  - **Possível causa**: incompatibilidade de opcodes ou protocolo.
+  - **Onde investigar**: sincronização entre `protocolcodes.*` no cliente e `protocolgame.*` no servidor.
+- **Sintoma: mensagens de chat inconsistentes**
+  - **Possível causa**: modo de mensagem não traduzido corretamente.
+  - **Onde investigar**: `ProtocolGame::parseTalk` e `Proto::buildMessageModesMap`.
+
+## Performance e otimização
+- **Pontos sensíveis**
+  - **Mapa e atualizações**: opcodes de mapa (`FullMap`, `UpdateTile`, `CreateOnMap`/`ChangeOnMap`/`DeleteOnMap`) afetam volume de dados.
+  - **Chat e mensagens**: parsing frequente pode aumentar uso de CPU em altas taxas de mensagem.
+
+## Pontos de extensão e customização
+- **Onde é seguro modificar**
+  - Adição de opcodes customizados deve ser feita de forma coordenada (cliente + servidor).
+- **Onde NÃO modificar sem coordenação**
+  - Alterações de opcodes existentes quebram compatibilidade e devem ser sincronizadas nos dois lados.
 
 ## Integrações
 - **Servidor**: encaminha mensagens para `crystalserver/src/game/` e sistemas de criaturas/itens/mapa.

@@ -26,3 +26,7 @@
 - **Scripts Lua e eventos** (servidor).
 - **UI e módulos** (cliente).
 - **Banco de dados e conta** (servidor).
+
+## Relatório de qualidade da wiki
+- **Referências a arquivos/pastas do repositório**: 90 (contagem de referências em backticks dentro da wiki).
+- **Principais áreas citadas**: `crystalserver/`, `otclient/`, `docs/`, `ai/`.
