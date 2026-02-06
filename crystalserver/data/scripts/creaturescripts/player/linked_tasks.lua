@@ -6,7 +6,7 @@ function linkedTaskLogin.onLogin(player)
 	end
 
 	LinkedTasks.ensurePlayerRows(player)
-	player:registerEvent("LinkedTaskKill")
+	player:registerEvent("LinkedTaskDeath")
 	player:registerEvent("LinkedTaskExtendedOpcode")
 	addEvent(function(playerId)
 		local onlinePlayer = Player(playerId)
@@ -19,25 +19,17 @@ end
 
 linkedTaskLogin:register()
 
-local linkedTaskKill = CreatureEvent("LinkedTaskKill")
+local linkedTaskDeath = CreatureEvent("LinkedTaskDeath")
 
-function linkedTaskKill.onKill(player, target)
+function linkedTaskDeath.onDeath(creature, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified)
 	if not LinkedTasks then
 		return true
 	end
 
-	if not player or not player:isPlayer() then
-		return true
-	end
-
-	if not target or not target:isMonster() then
-		return true
-	end
-
-	return LinkedTasks.onKill(player, target)
+	return LinkedTasks.onDeath(creature, killer, mostDamageKiller)
 end
 
-linkedTaskKill:register()
+linkedTaskDeath:register()
 
 local linkedTaskExtendedOpcode = CreatureEvent("LinkedTaskExtendedOpcode")
 
@@ -50,9 +42,13 @@ function linkedTaskExtendedOpcode.onExtendedOpcode(player, opcode, buffer)
 		return true
 	end
 
+	if type(buffer) ~= "string" or buffer == "" then
+		return true
+	end
+
 	if buffer == "check" then
 		LinkedTasks.checkActiveTask(player)
-	else
+	elseif buffer == "sync" then
 		LinkedTasks.sendFullSync(player)
 	end
 
