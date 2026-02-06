@@ -11,6 +11,31 @@ local OPCODE_TASK_SYNC = 220
 local OPCODE_TASK_UPDATE = 221
 local OPCODE_TASK_REQUEST = 222
 
+local function normalizePayload(payload)
+  if not payload then
+    return nil
+  end
+
+  if type(payload) == 'string' then
+    if payload == '' then
+      return nil
+    end
+    return payload
+  end
+
+  local getUnreadSize = payload.getUnreadSize
+  local getString = payload.getString
+  if type(getUnreadSize) == 'function' and type(getString) == 'function' then
+    local unread = payload:getUnreadSize()
+    if not unread or unread <= 0 then
+      return nil
+    end
+    return payload:getString()
+  end
+
+  return nil
+end
+
 local function split(input, separator)
   if not input or input == '' then
     return {}
@@ -69,6 +94,16 @@ local function refreshWindow()
 end
 
 local function parseSyncPayload(payload)
+  if not payload or payload == '' then
+    return
+  end
+  if payload == 'sync' or payload == 'check' then
+    return
+  end
+
+  -- Expected format (string payload):
+  -- ACTIVE\t<taskId>\n
+  -- TASK\t<id>\t<status>\t<progress>\t<required>\t<name>\t<description>\t<objectiveType>\t<objectiveTarget>\t<rewardGold>\t<rewardExperience>\t<rewardItems>
   local lines = split(payload, '\n')
   local parsedData = {
     activeTaskId = 0,
@@ -102,7 +137,17 @@ local function parseSyncPayload(payload)
 end
 
 local function parseUpdatePayload(payload)
+  if not payload or payload == '' then
+    return
+  end
+  if payload == 'sync' or payload == 'check' then
+    return
+  end
+
   local parts = split(payload, '\t')
+  if #parts < 5 then
+    return
+  end
   if parts[1] ~= 'UPDATE' then
     return
   end
@@ -119,10 +164,15 @@ local function parseUpdatePayload(payload)
 end
 
 local function onExtendedOpcode(protocol, opcode, payload)
+  local normalizedPayload = normalizePayload(payload)
+  if not normalizedPayload then
+    return
+  end
+
   if opcode == OPCODE_TASK_SYNC then
-    parseSyncPayload(payload)
+    parseSyncPayload(normalizedPayload)
   elseif opcode == OPCODE_TASK_UPDATE then
-    parseUpdatePayload(payload)
+    parseUpdatePayload(normalizedPayload)
   end
 end
 

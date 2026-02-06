@@ -168,12 +168,12 @@ end
 function LinkedTasks.rewardPlayer(player, task)
 	if task.rewards.gold > 0 then
 		player:setBankBalance(player:getBankBalance() + task.rewards.gold)
-		player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("+%d gold no banco.", task.rewards.gold))
+		player:sendTextMessage(MESSAGE_STATUS, string.format("+%d gold no banco.", task.rewards.gold))
 	end
 
 	if task.rewards.experience > 0 then
 		player:addExperience(task.rewards.experience, true)
-		player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("+%d experiência.", task.rewards.experience))
+		player:sendTextMessage(MESSAGE_STATUS, string.format("+%d experiência.", task.rewards.experience))
 	end
 
 	for _, rewardItem in ipairs(task.rewards.items or {}) do
@@ -295,8 +295,32 @@ function LinkedTasks.claimBonus(player)
 	return true, "Bônus do ciclo recebido. As tasks foram reiniciadas para um novo ciclo."
 end
 
-function LinkedTasks.onKill(player, target)
-	if not player or not target then
+local function resolveKillerPlayer(killer)
+	if not killer then
+		return nil
+	end
+	if killer:isPlayer() then
+		return killer
+	end
+	local master = killer:getMaster()
+	if master and master:isPlayer() then
+		return master
+	end
+	return nil
+end
+
+function LinkedTasks.onDeath(creature, killer, mostDamageKiller)
+	if not creature then
+		return true
+	end
+
+	local targetMonster = creature:getMonster()
+	if not targetMonster or targetMonster:getMaster() then
+		return true
+	end
+
+	local player = resolveKillerPlayer(killer) or resolveKillerPlayer(mostDamageKiller)
+	if not player then
 		return true
 	end
 
@@ -310,7 +334,7 @@ function LinkedTasks.onKill(player, target)
 		return true
 	end
 
-	if target:getName():lower() ~= task.objective.targetName:lower() then
+	if targetMonster:getName():lower() ~= task.objective.targetName:lower() then
 		return true
 	end
 
@@ -336,6 +360,7 @@ end
 
 local function sanitize(value)
 	local text = tostring(value or "")
+	-- Remove payload delimiters/control characters to keep the client parser safe.
 	text = text:gsub("[\n\r\t]", " "):gsub("|", "/"):gsub("\\", "/")
 	return text
 end
