@@ -189,7 +189,6 @@ function LinkedTasks.startTask(player, taskId)
 
 	LinkedTasks.updateTaskState(player, taskId, 0, LinkedTasks.status.inProgress)
 	LinkedTasks.setActiveTaskId(player, taskId)
-	LinkedTasks.sendFullSync(player)
 	return true, string.format("Task %d iniciada: %s.", taskId, LinkedTasks.tasks[taskId].name)
 end
 
@@ -201,7 +200,6 @@ function LinkedTasks.clearActiveTask(player)
 
 	LinkedTasks.updateTaskState(player, activeTaskId, 0, LinkedTasks.status.notStarted)
 	LinkedTasks.setActiveTaskId(player, nil)
-	LinkedTasks.sendFullSync(player)
 	return true, "Task ativa limpa com sucesso."
 end
 
@@ -233,13 +231,11 @@ function LinkedTasks.finishActiveTask(player, task)
 	LinkedTasks.setActiveTaskId(player, nil)
 	LinkedTasks.updateTaskState(player, task.id, task.objective.required, LinkedTasks.status.completed)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Task concluída: %s.", task.name))
-	LinkedTasks.sendFullSync(player)
 end
 
 function LinkedTasks.checkActiveTask(player)
 	local activeTaskId = LinkedTasks.getActiveTaskId(player)
 	if not activeTaskId then
-		LinkedTasks.sendFullSync(player)
 		return false, "Nenhuma task ativa no momento."
 	end
 
@@ -251,6 +247,24 @@ function LinkedTasks.checkActiveTask(player)
 	end
 
 	local progressText = string.format("%d/%d", state.progress, task.objective.required)
+	return true, string.format("Task ativa: [%d] %s (%s).", task.id, task.name, progressText)
+end
+
+function LinkedTasks.getActiveTaskSummary(player)
+	local activeTaskId = LinkedTasks.getActiveTaskId(player)
+	if not activeTaskId then
+		return false, "Nenhuma task ativa no momento."
+	end
+
+	local task = LinkedTasks.getTask(activeTaskId)
+	local state = LinkedTasks.getTaskState(player, activeTaskId)
+	local progress = state.progress
+	if task.objective.type == "collect" then
+		local itemCount = player:getItemCount(task.objective.itemId)
+		progress = math.min(itemCount, task.objective.required)
+	end
+
+	local progressText = string.format("%d/%d", progress, task.objective.required)
 	return true, string.format("Task ativa: [%d] %s (%s).", task.id, task.name, progressText)
 end
 
@@ -291,7 +305,6 @@ function LinkedTasks.claimBonus(player)
 	end
 
 	LinkedTasks.resetCycle(player)
-	LinkedTasks.sendFullSync(player)
 	return true, "Bônus do ciclo recebido. As tasks foram reiniciadas para um novo ciclo."
 end
 

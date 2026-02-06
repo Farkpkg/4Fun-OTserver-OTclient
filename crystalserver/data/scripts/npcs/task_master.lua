@@ -26,9 +26,10 @@ local function sendBoardToPlayer(player)
 		return
 	end
 
-	LinkedTasks.ensurePlayerRows(player)
-	LinkedTasks.sendTaskBoard(player)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, "Task Board aberto. Selecione uma task AVAILABLE para iniciar.")
+	player:sendTextMessage(
+		MESSAGE_EVENT_ADVANCE,
+		"Task Board disponível. Abra o painel de tasks para sincronizar e iniciar uma task."
+	)
 end
 
 function npcType.onSay(npc, creature, type, message)

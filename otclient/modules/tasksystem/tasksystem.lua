@@ -160,6 +160,9 @@ local function parseUpdatePayload(payload)
   currentData.tasks[taskId].status = tonumber(parts[3]) or currentData.tasks[taskId].status
   currentData.tasks[taskId].progress = tonumber(parts[4]) or currentData.tasks[taskId].progress
   currentData.tasks[taskId].required = tonumber(parts[5]) or currentData.tasks[taskId].required
+  if currentData.tasks[taskId].status == 2 and currentData.activeTaskId == taskId then
+    currentData.activeTaskId = 0
+  end
   refreshWindow()
 end
 

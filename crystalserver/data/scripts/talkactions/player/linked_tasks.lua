@@ -21,8 +21,6 @@ function taskCommand.onSay(player, words, param)
 		return true
 	end
 
-	LinkedTasks.ensurePlayerRows(player)
-
 	local action, value = parseTaskParam(param)
 
 	if action == "start" then
