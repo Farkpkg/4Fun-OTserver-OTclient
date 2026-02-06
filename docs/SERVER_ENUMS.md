@@ -1,15 +1,16 @@
 # Linked Tasks - Server enums
 
-This document lists the enums/constants that the Linked Tasks system relies on for protocol and runtime validation. When values are not exposed in the Lua layer, prefer the constant names and refer to the Canary/Crystal server core for the numeric values. For the full C++ enum catalog, see `docs/enums.md`.
+This document lists the enums/constants that the Linked Tasks system relies on for protocol and runtime validation. When values are not exposed in the Lua layer, prefer the constant names and refer to the Canary/Crystal server core for the numeric values.
 
 ## MessageType (sendTextMessage)
 
-These are the message types used by the Linked Tasks system when calling `player:sendTextMessage`. See `docs/ENUMS_MESSAGE_TYPES.md` for the canonical list and origins.
+These are the message types used by the Linked Tasks system when calling `player:sendTextMessage`.
 
 | Constant | Value | Description | Usage rules | Compatibility notes |
 | --- | --- | --- | --- | --- |
 | `MESSAGE_EVENT_ADVANCE` | Defined in server core | Positive feedback to the player (task start/finish, success messages). | Use for success, completion, or advancement messages. | Valid in Canary/Crystal, widely used by server scripts. |
 | `MESSAGE_FAILURE` | Defined in server core | Error feedback (invalid command, failure conditions). | Use for player-facing errors or denial messages. | Valid in Canary/Crystal, widely used by server scripts. |
+| `MESSAGE_INFO_DESCR` | Defined in server core | Neutral/Informational messages. | Use for informational output (status, instructions). | Valid in Canary/Crystal, widely used by server scripts. |
 
 ## ExtendedOpcode (Linked Tasks)
 

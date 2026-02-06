@@ -8,7 +8,7 @@ local function parseTaskParam(param)
 end
 
 local function msg(player, text, type)
-	player:sendTextMessage(type or MESSAGE_EVENT_ADVANCE, text)
+	player:sendTextMessage(type or MESSAGE_INFO_DESCR, text)
 end
 
 function taskCommand.onSay(player, words, param)
@@ -35,8 +35,8 @@ function taskCommand.onSay(player, words, param)
 	end
 
 	if action == "check" then
-		local ok, message = LinkedTasks.getActiveTaskSummary(player)
-		msg(player, message, ok and MESSAGE_EVENT_ADVANCE or MESSAGE_FAILURE)
+		local ok, message = LinkedTasks.checkActiveTask(player)
+		msg(player, message, ok and MESSAGE_EVENT_ADVANCE or MESSAGE_INFO_DESCR)
 		return true
 	end
 
@@ -48,14 +48,14 @@ function taskCommand.onSay(player, words, param)
 
 	if action == "bonus" then
 		local ok, message = LinkedTasks.claimBonus(player)
-		msg(player, message, ok and MESSAGE_EVENT_ADVANCE or MESSAGE_FAILURE)
+		msg(player, message, ok and MESSAGE_EVENT_ADVANCE or MESSAGE_INFO_DESCR)
 		return true
 	end
 
 	msg(
 		player,
 		"Comandos disponíveis:\n!task start <id>\n!task check\n!task clear\n!task bonus",
-		MESSAGE_EVENT_ADVANCE
+		MESSAGE_INFO_DESCR
 	)
 
 	return true

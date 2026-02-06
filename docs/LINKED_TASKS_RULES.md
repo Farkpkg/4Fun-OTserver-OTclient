@@ -39,14 +39,13 @@ Unknown payloads are ignored by the server.
 
 - The client **must** treat ExtendedOpcode payloads as optional and abort parsing when the payload is missing, empty, or malformed.
 - The client must handle plain string payloads (e.g., `"sync"`, `"check"`) without assuming binary data.
-- The client should not expect a full sync after TalkActions; syncs are only emitted on login or explicit `"sync"` requests.
 
 ## Kill progression flow
 
 1. A monster dies and the server receives `onDeath` with `killer` and `mostDamageKiller`.
 2. The system resolves a player from those parameters (including pet/summon masters).
 3. If the player has an active task of type `kill` and the monster name matches the target, progress is incremented.
-4. When progress reaches the required amount, the task is completed, rewards are granted, and a task update is sent.
+4. When progress reaches the required amount, the task is completed, rewards are granted, and a full sync is sent.
 
 **Fail-safe:** If the killer is not a player, if the victim is not a monster, or if the monster is a summon, the task system does nothing.
 
@@ -54,9 +53,9 @@ Unknown payloads are ignored by the server.
 
 1. The player asks to `check` the current task.
 2. If the active task is of type `collect`, the server counts items in inventory and updates progress.
-3. If progress reaches the required amount, the task is completed, rewards are granted, and a task update is sent.
+3. If progress reaches the required amount, the task is completed, rewards are granted, and a full sync is sent.
 
-**Fail-safe:** If the task is not a collect task or the player has no active task, the system only responds with an informational message.
+**Fail-safe:** If the task is not a collect task or the player has no active task, the system only responds with an informational message and sync.
 
 ## Reward flow
 
@@ -64,8 +63,7 @@ Unknown payloads are ignored by the server.
   1. Bank gold.
   2. Experience points.
   3. Item rewards.
-- The server sends a completion message (`MESSAGE_EVENT_ADVANCE`).
-- Completion updates are sent via task update opcodes; full syncs are only sent on login or explicit `"sync"` requests.
+- The server sends a completion message (`MESSAGE_EVENT_ADVANCE`) and immediately syncs the client.
 
 ## Fail-safe rules
 

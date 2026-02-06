@@ -168,10 +168,12 @@ end
 function LinkedTasks.rewardPlayer(player, task)
 	if task.rewards.gold > 0 then
 		player:setBankBalance(player:getBankBalance() + task.rewards.gold)
+		player:sendTextMessage(MESSAGE_STATUS, string.format("+%d gold no banco.", task.rewards.gold))
 	end
 
 	if task.rewards.experience > 0 then
 		player:addExperience(task.rewards.experience, true)
+		player:sendTextMessage(MESSAGE_STATUS, string.format("+%d experiência.", task.rewards.experience))
 	end
 
 	for _, rewardItem in ipairs(task.rewards.items or {}) do
