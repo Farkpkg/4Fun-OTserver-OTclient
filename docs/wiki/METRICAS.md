@@ -28,5 +28,18 @@
 - **Banco de dados e conta** (servidor).
 
 ## Relatório de qualidade da wiki
-- **Referências a arquivos/pastas do repositório**: 90 (contagem de referências em backticks dentro da wiki).
-- **Principais áreas citadas**: `crystalserver/`, `otclient/`, `docs/`, `ai/`.
+- **Páginas da wiki**: 30 arquivos Markdown.
+- **Referências a arquivos/pastas do repositório**: 133.
+- **Evolução da cobertura**:
+  - snapshot anterior: 90 referências.
+  - snapshot atual: 133 referências.
+
+## Sistemas com risco documental
+- **Crítico**: `crystalserver/src/enums/`, `crystalserver/src/utils/`.
+- **Médio**: `crystalserver/data/scripts/globalevents/`, `talkactions/`.
+- **Baixo**: `otclient/src/tools/`, assets adicionais.
+
+## Áreas sensíveis a mudanças
+- **Protocolos**: mudanças em opcodes exigem sincronização cliente ↔ servidor.
+- **Scripts**: alterações em eventos exigem revisão de callbacks e XML.
+- **Mapas/itens**: alterações em dados impactam UI e gameplay.
