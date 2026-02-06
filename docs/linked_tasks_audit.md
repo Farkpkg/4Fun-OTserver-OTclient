@@ -15,3 +15,16 @@ No usage of storage-by-name APIs was found in the Linked Tasks Lua scripts. The 
 ## Database
 
 Linked Tasks relies on the `player_tasks` table created by migration `crystalserver/data/migrations/61.lua`.
+
+## Runtime stability issues found
+
+| Issue | Risk | Fix applied |
+| --- | --- | --- |
+| ExtendedOpcode handlers parsed payloads without guarding against empty/malformed buffers. | Client crash (`NetworkMessage::getByte`/`getString` errors) when payloads are missing or invalid. | Added defensive payload normalization and early aborts for empty/malformed payloads. |
+| Kill progression relied on `onKill` CreatureEvent. | Deprecated API warning and future incompatibility with Canary/Crystal. | Migrated to `onDeath` with `killer`/`mostDamageKiller` resolution. |
+| Linked Tasks talk-action used neutral messages with `MESSAGE_STATUS`. | Invalid message type warning in some Canary/Crystal builds. | Replaced default/neutral messages with `MESSAGE_INFO_DESCR`. |
+| Payload sanitization not fully documented. | Client parser could break if delimiters leaked into payloads. | Documented payload delimiter rules and ensured sanitization is explicit. |
+
+## Remaining risks / attention points
+
+- This repository does not include server core enum values; numeric MessageType values should be confirmed against the Canary/Crystal core when upgrading server binaries.
