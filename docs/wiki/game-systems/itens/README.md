@@ -1,3 +1,13 @@
+<!-- tags: - items - server - lua priority: high -->
+
+## LLM Summary
+- **What**: Tipos e propriedades de itens.
+- **Why**: Suporta inventário, mapa e interações.
+- **Where**: crystalserver/src/items, data/items
+- **How**: Dados XML + scripts de ações/movimentos.
+- **Extends**: Adicionar itens em items.xml e scripts.
+- **Risks**: Itens inconsistentes quebram gameplay.
+
 [Wiki](../../README.md) > [Sistemas de jogo](../README.md) > Itens
 
 # Itens
@@ -35,3 +45,9 @@ O sistema de itens define tipos, propriedades e comportamento de itens no jogo. 
 ## Pontos de extensão
 - Scripts em `crystalserver/data/scripts/actions/` e `movements/`.
 - Dados de item em `crystalserver/data/items/`.
+
+## LLM Extension Points
+- **Safe to extend**: Scripts Lua e dados ligados ao sistema.
+- **Use with caution**: Interações que afetam combate/protocolo.
+- **Do not modify**: Alterações sem revisar impactos no cliente.
+

@@ -1,3 +1,13 @@
+<!-- tags: - tests priority: low -->
+
+## LLM Summary
+- **What**: Estruturas de teste do servidor e cliente.
+- **Why**: Permite validação automatizada.
+- **Where**: crystalserver/tests, otclient/tests
+- **How**: Integrados ao build do projeto.
+- **Extends**: Adicionar testes com foco em componentes críticos.
+- **Risks**: Cobertura insuficiente aumenta risco de regressão.
+
 [Wiki](../README.md) > Testes
 
 # Testes

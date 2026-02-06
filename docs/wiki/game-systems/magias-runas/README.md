@@ -1,3 +1,13 @@
+<!-- tags: - spells - runes - lua - combat priority: high -->
+
+## LLM Summary
+- **What**: Magias e runas do jogo.
+- **Why**: Define habilidades e efeitos mágicos.
+- **Where**: data/scripts/spells, data/scripts/runes
+- **How**: Scripts Lua acionados pelo combate.
+- **Extends**: Adicionar spells/runes em Lua.
+- **Risks**: Requisitos incorretos causam falhas de uso.
+
 [Wiki](../../README.md) > [Sistemas de jogo](../README.md) > Magias e runas
 
 # Magias e runas
@@ -33,3 +43,9 @@ Magias e runas são implementadas principalmente via scripts Lua no servidor, co
 ## Pontos de extensão
 - Scripts de magias e runas em `crystalserver/data/scripts/spells/` e `runes/`.
 - Eventos em `crystalserver/data/events/`.
+
+## LLM Extension Points
+- **Safe to extend**: Scripts Lua e dados ligados ao sistema.
+- **Use with caution**: Interações que afetam combate/protocolo.
+- **Do not modify**: Alterações sem revisar impactos no cliente.
+

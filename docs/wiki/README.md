@@ -1,3 +1,13 @@
+<!-- tags: - wiki - overview - docs priority: high -->
+
+## LLM Summary
+- **What**: Hub central com o índice e links para toda a wiki.
+- **Why**: Oferece navegação única e visão geral da documentação.
+- **Where**: docs/wiki/README.md
+- **How**: Agrupa links por domínio e aponta métricas, índices e governança.
+- **Extends**: Adicionar novos links de seções e sistemas.
+- **Risks**: Links quebrados se novas páginas não forem indexadas.
+
 # Wiki do 4Fun OTServer + OTClient
 
 ## Visão geral
@@ -15,6 +25,9 @@ Organizar a documentação técnica em alto nível, iniciando com um mapa do pro
 - [Índices avançados](INDICES.md)
 - [Roadmap da documentação](roadmap.md)
 - [Governança](governance/README.md)
+- [Glossário](glossary/README.md)
+- [Mapa semântico (LLM)](llm/semantic-map.md)
+- [Guia para agentes/LLMs](llm/agent-guide.md)
 - [Servidor](server/README.md)
 - [Cliente](client/README.md)
 - [Compartilhado](shared/README.md)

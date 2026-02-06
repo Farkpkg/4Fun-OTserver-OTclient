@@ -1,3 +1,13 @@
+<!-- tags: - server - c++ - lua priority: critical -->
+
+## LLM Summary
+- **What**: Visão geral do CrystalServer e seus subsistemas.
+- **Why**: Centraliza contexto do backend e suas integrações.
+- **Where**: crystalserver/src, crystalserver/data
+- **How**: Descreve estrutura, fluxo de execução, debug e performance.
+- **Extends**: Scripts Lua e dados em crystalserver/data; ajustes em config.lua.
+- **Risks**: Mudanças em protocolo ou núcleo do jogo impactam cliente e gameplay.
+
 [Wiki](../README.md) > Servidor
 
 # Servidor (CrystalServer)
@@ -76,3 +86,9 @@ O CrystalServer é o backend responsável por simular o mundo do jogo, manter es
 - **Banco de dados**: leitura/gravação em `crystalserver/src/database/` e `crystalserver/src/io/`.
 - **Scripts Lua**: carga e execução a partir de `crystalserver/data/scripts/` e `crystalserver/data/events/`.
 - **Configuração/XML**: parâmetros em `crystalserver/config.lua.dist` e definições em `crystalserver/data/XML/`.
+
+## LLM Extension Points
+- **Safe to extend**: Scripts Lua em data/scripts e configurações em config.lua.dist.
+- **Use with caution**: Camada de protocolo e ciclo principal do jogo.
+- **Do not modify**: Alterar opcodes ou fluxo de login sem coordenar com o cliente.
+

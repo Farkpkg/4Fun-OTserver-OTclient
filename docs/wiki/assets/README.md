@@ -1,3 +1,13 @@
+<!-- tags: - assets - client priority: medium -->
+
+## LLM Summary
+- **What**: Assets usados pelo OTClient (imagens, sons, estilos).
+- **Why**: Suporta renderização e UI.
+- **Where**: otclient/data
+- **How**: Carregados pelo framework durante o bootstrap.
+- **Extends**: Adicionar assets e referenciar em módulos/UI.
+- **Risks**: Assets ausentes quebram UI/render.
+
 [Wiki](../README.md) > Assets
 
 # Assets

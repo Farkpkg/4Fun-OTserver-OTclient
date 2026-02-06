@@ -1,3 +1,13 @@
+<!-- tags: - governance - docs priority: high -->
+
+## LLM Summary
+- **What**: Regras e padrões da wiki.
+- **Why**: Garante consistência e sustentabilidade.
+- **Where**: docs/wiki/governance
+- **How**: Define padrões, links, e processo de atualização.
+- **Extends**: Adicionar regras e processos.
+- **Risks**: Quebra de padrão gera documentação inconsistente.
+
 [Wiki](../README.md) > Governança
 
 # Governança da Wiki

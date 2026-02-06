@@ -1,3 +1,13 @@
+<!-- tags: - events - lua - server priority: high -->
+
+## LLM Summary
+- **What**: Eventos e callbacks do jogo.
+- **Why**: Permite lógica reativa via scripts.
+- **Where**: data/events, data/scripts
+- **How**: Eventos registram handlers e disparam scripts.
+- **Extends**: Adicionar callbacks em scripts.
+- **Risks**: Eventos globais pesados degradam performance.
+
 [Wiki](../../README.md) > [Sistemas de jogo](../README.md) > Eventos
 
 # Eventos
@@ -31,3 +41,9 @@ Eventos conectam ações do jogo a scripts Lua, permitindo lógica customizada p
 ## Pontos de extensão
 - `crystalserver/data/events/` e `crystalserver/data/scripts/eventcallbacks/`.
 - Scripts em `creaturescripts/`, `globalevents/`, `actions/` e `movements/`.
+
+## LLM Extension Points
+- **Safe to extend**: Scripts Lua e dados ligados ao sistema.
+- **Use with caution**: Interações que afetam combate/protocolo.
+- **Do not modify**: Alterações sem revisar impactos no cliente.
+

@@ -28,11 +28,11 @@
 - **Banco de dados e conta** (servidor).
 
 ## Relatório de qualidade da wiki
-- **Páginas da wiki**: 30 arquivos Markdown.
-- **Referências a arquivos/pastas do repositório**: 133.
+- **Páginas da wiki**: 33 arquivos Markdown.
+- **Referências a arquivos/pastas do repositório**: 143.
 - **Evolução da cobertura**:
   - snapshot anterior: 90 referências.
-  - snapshot atual: 133 referências.
+  - snapshot atual: 143 referências.
 
 ## Sistemas com risco documental
 - **Crítico**: `crystalserver/src/enums/`, `crystalserver/src/utils/`.

@@ -1,3 +1,13 @@
+<!-- tags: - maps - server - client priority: high -->
+
+## LLM Summary
+- **What**: Carregamento e atualização de mapa.
+- **Why**: Mantém mundo persistente e renderização.
+- **Where**: crystalserver/src/map, otclient/src/client/map*
+- **How**: Servidor carrega mapa e envia updates.
+- **Extends**: Scripts de movimento e eventos de mapa.
+- **Risks**: Mapas inválidos afetam spawn e render.
+
 [Wiki](../../README.md) > [Sistemas de jogo](../README.md) > Mapas
 
 # Mapas
@@ -32,3 +42,9 @@ O sistema de mapas gerencia o carregamento, armazenamento e consulta do mundo. O
 ## Pontos de extensão
 - Scripts de movimentos em `crystalserver/data/scripts/movements/` interagem com tiles.
 - Eventos de mapa podem ser registrados via `crystalserver/data/events/`.
+
+## LLM Extension Points
+- **Safe to extend**: Scripts Lua e dados ligados ao sistema.
+- **Use with caution**: Interações que afetam combate/protocolo.
+- **Do not modify**: Alterações sem revisar impactos no cliente.
+

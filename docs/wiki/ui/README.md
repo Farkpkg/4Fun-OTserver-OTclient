@@ -1,3 +1,13 @@
+<!-- tags: - ui - client - lua priority: high -->
+
+## LLM Summary
+- **What**: Arquitetura de UI/OTUI do cliente.
+- **Why**: Define layout e interação do usuário.
+- **Where**: otclient/data/styles, otclient/modules, otclient/src/framework/ui
+- **How**: Layouts e módulos carregam widgets e estilos.
+- **Extends**: Criar módulos UI e estilos OTUI/OTML.
+- **Risks**: Mudanças em widgets base afetam toda a interface.
+
 [Wiki](../README.md) > UI
 
 # UI e OTUI

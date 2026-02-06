@@ -1,3 +1,13 @@
+<!-- tags: - protocol - network - c++ priority: critical -->
+
+## LLM Summary
+- **What**: Documenta os protocolos login/status/game.
+- **Why**: Garantir compatibilidade cliente ↔ servidor.
+- **Where**: crystalserver/src/server/network/protocol, otclient/src/client
+- **How**: Lista fluxos, opcodes e pontos de integração.
+- **Extends**: Adicionar opcodes sincronizados em ambos os lados.
+- **Risks**: Incompatibilidades de opcode e versão bloqueiam sessão.
+
 [Wiki](../README.md) > Protocolos
 
 # Protocolos de rede
@@ -56,3 +66,9 @@ Exemplos de opcodes definidos no cliente em `Protocolcodes.h`:
 ## Integrações
 - **Servidor**: encaminha mensagens para `crystalserver/src/game/` e sistemas de criaturas/itens/mapa.
 - **Cliente**: integra com o núcleo em `otclient/src/client/` e dispara atualizações de UI e estado.
+
+## LLM Extension Points
+- **Safe to extend**: OpCodes customizados adicionados em ambos os lados.
+- **Use with caution**: Mapeamento de mensagens por versão.
+- **Do not modify**: Reaproveitar opcodes existentes sem migração.
+

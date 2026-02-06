@@ -1,3 +1,13 @@
+<!-- tags: - scripts - lua - server - client priority: high -->
+
+## LLM Summary
+- **What**: Extensões Lua do servidor e módulos do cliente.
+- **Why**: Permite evolução sem recompilar C++.
+- **Where**: crystalserver/data/scripts, otclient/modules
+- **How**: Scripts são carregados no boot e acionados por eventos.
+- **Extends**: Criar scripts em actions/spells/npcs e módulos client/game.
+- **Risks**: Erros de script podem bloquear eventos críticos.
+
 [Wiki](../README.md) > Scripts
 
 # Scripts e extensões
@@ -55,3 +65,9 @@ Scripts fornecem extensibilidade para o servidor (Lua) e comportamento/UI no cli
 ## Integrações
 - **Servidor**: scripts são chamados pelo núcleo em `crystalserver/src/game/` e entidades em `crystalserver/src/creatures/`.
 - **Cliente**: módulos recebem eventos do framework e do protocolo para atualizar UI e estado.
+
+## LLM Extension Points
+- **Safe to extend**: Scripts em actions/spells/npcs e módulos game_*.
+- **Use with caution**: Eventos globais com alto volume.
+- **Do not modify**: Remover callbacks usados por eventos registrados.
+

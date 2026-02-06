@@ -1,3 +1,13 @@
+<!-- tags: - config - server - client priority: high -->
+
+## LLM Summary
+- **What**: Configurações de servidor e cliente.
+- **Why**: Parametriza runtime e comportamento.
+- **Where**: crystalserver/config.lua.dist, otclient/config.ini
+- **How**: Arquivos de config são lidos no bootstrap.
+- **Extends**: Adicionar chaves com suporte em código.
+- **Risks**: Config inválida causa falhas de inicialização.
+
 [Wiki](../README.md) > Configuração
 
 # Configuração

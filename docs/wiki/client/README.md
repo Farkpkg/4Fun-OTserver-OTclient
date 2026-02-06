@@ -1,3 +1,13 @@
+<!-- tags: - client - c++ - lua - ui priority: critical -->
+
+## LLM Summary
+- **What**: Visão geral do OTClient, framework e módulos.
+- **Why**: Orienta renderização, UI e comunicação com servidor.
+- **Where**: otclient/src, otclient/modules, otclient/data
+- **How**: Explica bootstrap, módulos e integração via protocolo.
+- **Extends**: Módulos em otclient/modules e layouts em otclient/data/styles.
+- **Risks**: Mudanças em protocolo ou módulos críticos quebram login/jogo.
+
 [Wiki](../README.md) > Cliente
 
 # Cliente (OTClient)
@@ -67,3 +77,9 @@ O OTClient é o cliente gráfico responsável por renderização, UI, entrada do
 - **Servidor**: protocolos de rede em `otclient/src/client/protocolgame*.cpp`.
 - **UI/OTUI**: layouts e estilos em `otclient/data/styles/` e módulos em `otclient/modules/`.
 - **Assets**: sprites, fontes e sons em `otclient/data/`.
+
+## LLM Extension Points
+- **Safe to extend**: Módulos em otclient/modules e estilos em otclient/data/styles.
+- **Use with caution**: Carregamento de módulos e integração com g_game.
+- **Do not modify**: Protocolos/opcodes sem sincronização com o servidor.
+

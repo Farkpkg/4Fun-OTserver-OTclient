@@ -1,3 +1,13 @@
+<!-- tags: - creatures - npcs - server - lua priority: high -->
+
+## LLM Summary
+- **What**: Entidades vivas (players, monsters, NPCs).
+- **Why**: Define comportamento e interação.
+- **Where**: crystalserver/src/creatures, data/scripts/npcs
+- **How**: Servidor gerencia estado e cliente renderiza.
+- **Extends**: Scripts de NPCs e creaturescripts.
+- **Risks**: Lógica de NPCs pode impactar desempenho.
+
 [Wiki](../../README.md) > [Sistemas de jogo](../README.md) > Criaturas e NPCs
 
 # Criaturas e NPCs
@@ -33,3 +43,9 @@ Este sistema define entidades vivas do jogo (jogadores, monstros e NPCs), suas p
 ## Pontos de extensão
 - Scripts de NPCs em `crystalserver/data/scripts/npcs/`.
 - Eventos de criatura em `crystalserver/data/scripts/creaturescripts/`.
+
+## LLM Extension Points
+- **Safe to extend**: Scripts Lua e dados ligados ao sistema.
+- **Use with caution**: Interações que afetam combate/protocolo.
+- **Do not modify**: Alterações sem revisar impactos no cliente.
+

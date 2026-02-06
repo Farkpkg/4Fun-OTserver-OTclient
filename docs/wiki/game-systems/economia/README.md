@@ -1,3 +1,13 @@
+<!-- tags: - economy - server - client priority: high -->
+
+## LLM Summary
+- **What**: Banco e market do jogo.
+- **Why**: Suporta transações e economia.
+- **Where**: crystalserver/src/game/bank, src/io/iomarket.*
+- **How**: Servidor consulta e grava ofertas.
+- **Extends**: NPCs e scripts de economia.
+- **Risks**: Queries custosas e inconsistência de dados.
+
 [Wiki](../../README.md) > [Sistemas de jogo](../README.md) > Economia
 
 # Economia
@@ -33,3 +43,9 @@ A economia engloba sistemas como banco e market, controlando transações e pers
 
 ## Pontos de extensão
 - Scripts de NPCs podem expor serviços econômicos em `crystalserver/data/scripts/npcs/`.
+
+## LLM Extension Points
+- **Safe to extend**: Scripts Lua e dados ligados ao sistema.
+- **Use with caution**: Interações que afetam combate/protocolo.
+- **Do not modify**: Alterações sem revisar impactos no cliente.
+

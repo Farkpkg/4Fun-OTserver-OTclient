@@ -1,3 +1,13 @@
+<!-- tags: - skills - server - client priority: high -->
+
+## LLM Summary
+- **What**: Skills e progressão do jogador.
+- **Why**: Define atributos persistentes.
+- **Where**: crystalserver/src/creatures/players, schema.sql
+- **How**: Servidor atualiza e cliente exibe.
+- **Extends**: Hooks de creaturescripts para progressão.
+- **Risks**: Persistência incorreta afeta progressão.
+
 [Wiki](../../README.md) > [Sistemas de jogo](../README.md) > Skills
 
 # Skills
@@ -32,3 +42,9 @@ Skills representam atributos e progressão do personagem. Elas são persistidas 
 
 ## Pontos de extensão
 - Scripts podem reagir a eventos de criaturas em `crystalserver/data/scripts/creaturescripts/`.
+
+## LLM Extension Points
+- **Safe to extend**: Scripts Lua e dados ligados ao sistema.
+- **Use with caution**: Interações que afetam combate/protocolo.
+- **Do not modify**: Alterações sem revisar impactos no cliente.
+

@@ -1,3 +1,13 @@
+<!-- tags: - combat - server - lua priority: high -->
+
+## LLM Summary
+- **What**: Sistema de combate e efeitos.
+- **Why**: Centraliza dano e interações de ataque.
+- **Where**: crystalserver/src/creatures/combat, data/scripts/spells
+- **How**: Combina núcleo C++ e scripts Lua.
+- **Extends**: Spells/runes/weapons em Lua.
+- **Risks**: Scripts incorretos geram dano/efeitos inválidos.
+
 [Wiki](../../README.md) > [Sistemas de jogo](../README.md) > Combate
 
 # Combate
@@ -33,3 +43,9 @@ O sistema de combate processa dano, efeitos e interações de ataque entre entid
 ## Pontos de extensão
 - Scripts Lua em `crystalserver/data/scripts/spells/`, `runes/` e `weapons/`.
 - Eventos e callbacks em `crystalserver/data/events/`.
+
+## LLM Extension Points
+- **Safe to extend**: Scripts Lua e dados ligados ao sistema.
+- **Use with caution**: Interações que afetam combate/protocolo.
+- **Do not modify**: Alterações sem revisar impactos no cliente.
+

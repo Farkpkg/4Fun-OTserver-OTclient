@@ -1,3 +1,13 @@
+<!-- tags: - tools - build priority: low -->
+
+## LLM Summary
+- **What**: Ferramentas e scripts auxiliares.
+- **Why**: Automatiza build e execução.
+- **Where**: crystalserver/*.sh, otclient/tools
+- **How**: Scripts chamam CMake/execução.
+- **Extends**: Adicionar scripts com documentação mínima.
+- **Risks**: Scripts inconsistentes podem quebrar build.
+
 [Wiki](../README.md) > Ferramentas
 
 # Ferramentas

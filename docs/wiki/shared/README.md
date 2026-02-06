@@ -1,3 +1,13 @@
+<!-- tags: - shared - docs priority: low -->
+
+## LLM Summary
+- **What**: Materiais de apoio e documentação interna.
+- **Why**: Centraliza referências e contexto.
+- **Where**: docs, ai, codex-client-readmes
+- **How**: Arquivos de documentação consultivos.
+- **Extends**: Adicionar referências e guias de processo.
+- **Risks**: Desatualização gera inconsistência de contexto.
+
 [Wiki](../README.md) > Compartilhado
 
 # Compartilhado / apoio
