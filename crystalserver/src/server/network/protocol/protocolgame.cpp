@@ -9115,6 +9115,18 @@ void ProtocolGame::parseExtendedOpcode(NetworkMessage &msg) {
 	g_game().parsePlayerExtendedOpcode(player->getID(), opcode, buffer);
 }
 
+void ProtocolGame::sendExtendedOpcode(uint8_t opcode, const std::string &buffer) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x32);
+	msg.addByte(opcode);
+	msg.addString(buffer);
+	writeToOutputBuffer(msg);
+}
+
 // OTCv8
 void ProtocolGame::sendFeatures() {
 	if (otclientV8 == 0) {

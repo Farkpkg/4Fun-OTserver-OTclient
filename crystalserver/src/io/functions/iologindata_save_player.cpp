@@ -227,6 +227,7 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 	query << "`prey_wildcard` = " << player->getPreyCards() << ",";
 	query << "`task_points` = " << player->getTaskHuntingPoints() << ",";
+	query << "`hunting_task_points` = " << player->getHuntingTaskSystem().getResourcePoints() << ",";
 	query << "`boss_points` = " << player->getBossPoints() << ",";
 	query << "`loyalty_points` = " << player->getLoyaltyPoints() << ",";
 	query << "`forge_dusts` = " << player->getForgeDusts() << ",";
@@ -725,6 +726,50 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 			}
 		}
 	}
+	return true;
+}
+
+bool IOLoginDataSave::savePlayerHuntingTaskClass(const std::shared_ptr<Player> &player) {
+	if (!player) {
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
+	Database &db = Database::getInstance();
+	for (const auto &slot : player->getHuntingTaskSystem().getSlots()) {
+		std::ostringstream query;
+		query << "INSERT INTO `player_hunting_tasks` (`player_id`, `slot`, `state`, `race_id`, `current_kills`, `required_kills`, `stars`, `reward_points`, `bestiary_unlocked`, `reroll_time`) VALUES (";
+		query << player->getGUID() << ", ";
+		query << static_cast<uint16_t>(slot.slotId) << ", ";
+		query << static_cast<uint16_t>(slot.state) << ", ";
+		if (slot.task) {
+			query << slot.task->raceId << ", ";
+			query << slot.task->currentKills << ", ";
+			query << slot.task->requiredKills << ", ";
+			query << static_cast<uint16_t>(slot.task->stars) << ", ";
+			query << slot.task->rewardPoints << ", ";
+			query << (slot.task->bestiaryUnlocked ? 1 : 0) << ", ";
+		} else {
+			query << "0, 0, 0, 0, 0, 0, ";
+		}
+		query << slot.rerollTimeStamp << ")";
+
+		query << " ON DUPLICATE KEY UPDATE "
+			  << "`state` = VALUES(`state`), "
+			  << "`race_id` = VALUES(`race_id`), "
+			  << "`current_kills` = VALUES(`current_kills`), "
+			  << "`required_kills` = VALUES(`required_kills`), "
+			  << "`stars` = VALUES(`stars`), "
+			  << "`reward_points` = VALUES(`reward_points`), "
+			  << "`bestiary_unlocked` = VALUES(`bestiary_unlocked`), "
+			  << "`reroll_time` = VALUES(`reroll_time`)";
+
+		if (!db.executeQuery(query.str())) {
+			g_logger().warn("[IOLoginData::savePlayer] - Error saving hunting task slot data from player: {}", player->getName());
+			return false;
+		}
+	}
+
 	return true;
 }
 

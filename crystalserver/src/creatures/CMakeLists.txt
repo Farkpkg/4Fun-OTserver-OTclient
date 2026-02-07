@@ -18,6 +18,7 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     players/grouping/groups.cpp
     players/grouping/guild.cpp
     players/grouping/party.cpp
+    players/hunting_task/hunting_task.cpp
     players/imbuements/imbuements.cpp
     players/management/ban.cpp
     players/management/waitlist.cpp
