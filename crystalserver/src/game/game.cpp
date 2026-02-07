@@ -83,8 +83,26 @@
 #include "enums/object_category.hpp"
 
 #include <appearances.pb.h>
+#include <string_view>
 
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
+
+namespace {
+std::vector<std::string_view> splitTab(std::string_view value) {
+	std::vector<std::string_view> parts;
+	size_t start = 0;
+	while (start <= value.size()) {
+		const auto end = value.find('\t', start);
+		if (end == std::string_view::npos) {
+			parts.emplace_back(value.substr(start));
+			break;
+		}
+		parts.emplace_back(value.substr(start, end - start));
+		start = end + 1;
+	}
+	return parts;
+}
+} // namespace
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
@@ -10052,6 +10070,17 @@ void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const st
 	const auto &player = getPlayerByID(playerId);
 	if (!player) {
 		return;
+	}
+
+	if (opcode == HuntingTaskSystem::kExtendedOpcodeAction) {
+		const auto parts = splitTab(buffer);
+		if (parts.size() >= 4) {
+			const auto slotId = static_cast<uint8_t>(std::stoi(std::string(parts[0])));
+			const auto action = static_cast<HuntingTaskAction>(std::stoi(std::string(parts[1])));
+			const bool bestiaryUnlocked = parts[2] == "1";
+			const auto raceId = static_cast<uint16_t>(std::stoi(std::string(parts[3])));
+			player->getHuntingTaskSystem().handleAction(slotId, action, bestiaryUnlocked, raceId);
+		}
 	}
 
 	for (const auto &creatureEvent : player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE)) {

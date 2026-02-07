@@ -388,6 +388,7 @@ private:
 	void sendResourceBalance(Resource_t resourceType, uint64_t value);
 	void sendCharmResourcesBalance(uint32_t charm = 0, uint32_t minorCharm = 0, uint32_t maxCharm = 0, uint32_t maxMinorCharm = 0);
 	void sendCharmResourceBalance(CharmResource_t resourceType, uint32_t value);
+	void sendExtendedOpcode(uint8_t opcode, const std::string &buffer);
 	void sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap);
 	void sendMarketEnter(uint32_t depotId);
 	void updateCoinBalance();

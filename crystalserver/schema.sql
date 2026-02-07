@@ -135,6 +135,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `bonus_rerolls` bigint(21) NOT NULL DEFAULT '0',
     `prey_wildcard` bigint(21) NOT NULL DEFAULT '0',
     `task_points` bigint(21) NOT NULL DEFAULT '0',
+    `hunting_task_points` bigint(21) NOT NULL DEFAULT '0',
     `quickloot_fallback` tinyint(1) DEFAULT '0',
     `lookmountbody` tinyint(3) unsigned NOT NULL DEFAULT '0',
     `lookmountfeet` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -756,6 +757,24 @@ CREATE TABLE IF NOT EXISTS `player_taskhunt` (
     `monster_list` BLOB NULL,
     CONSTRAINT `player_taskhunt_pk` PRIMARY KEY (`player_id`, `slot`),
     CONSTRAINT `player_taskhunt_players_fk`
+        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Table structure `player_hunting_tasks`
+CREATE TABLE IF NOT EXISTS `player_hunting_tasks` (
+    `player_id` int(11) NOT NULL,
+    `slot` tinyint(1) NOT NULL,
+    `state` smallint(5) unsigned NOT NULL DEFAULT '0',
+    `race_id` smallint(5) unsigned NOT NULL DEFAULT '0',
+    `current_kills` smallint(5) unsigned NOT NULL DEFAULT '0',
+    `required_kills` smallint(5) unsigned NOT NULL DEFAULT '0',
+    `stars` tinyint(3) unsigned NOT NULL DEFAULT '1',
+    `reward_points` int(10) unsigned NOT NULL DEFAULT '0',
+    `bestiary_unlocked` tinyint(1) NOT NULL DEFAULT '0',
+    `reroll_time` bigint(20) NOT NULL DEFAULT '0',
+    CONSTRAINT `player_hunting_tasks_pk` PRIMARY KEY (`player_id`, `slot`),
+    CONSTRAINT `player_hunting_tasks_players_fk`
         FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

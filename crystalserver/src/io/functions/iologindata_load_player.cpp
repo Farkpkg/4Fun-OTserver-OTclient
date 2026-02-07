@@ -180,6 +180,7 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	player->loginPosition.z = static_cast<uint8_t>(result->getNumber<uint16_t>("posz"));
 	player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
 	player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
+	player->getHuntingTaskSystem().setResourcePoints(result->getNumber<uint64_t>("hunting_task_points"));
 	player->addForgeDusts(result->getNumber<uint64_t>("forge_dusts"));
 	player->addForgeDustLevel(result->getNumber<uint64_t>("forge_dust_level"));
 	player->setRandomMount(static_cast<uint8_t>(result->getNumber<uint16_t>("randomize_mount")));
@@ -903,6 +904,40 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &
 				player->setTaskHuntingSlotClass(slot);
 			} while (result->next());
 		}
+	}
+}
+
+void IOLoginDataLoad::loadPlayerHuntingTaskClass(const std::shared_ptr<Player> &player, DBResult_ptr result) {
+	if (!result || !player) {
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
+		return;
+	}
+
+	Database &db = Database::getInstance();
+	std::ostringstream query;
+	query << "SELECT * FROM `player_hunting_tasks` WHERE `player_id` = " << player->getGUID();
+	if ((result = db.storeQuery(query.str()))) {
+		do {
+			HuntingTaskSlot slot;
+			slot.slotId = static_cast<uint8_t>(result->getNumber<uint16_t>("slot"));
+			slot.state = static_cast<HuntingTaskState>(result->getNumber<uint16_t>("state"));
+			slot.rerollTimeStamp = result->getNumber<int64_t>("reroll_time");
+
+			const auto raceId = result->getNumber<uint16_t>("race_id");
+			if (raceId != 0) {
+				HuntingTaskData task;
+				task.state = slot.state;
+				task.raceId = raceId;
+				task.currentKills = result->getNumber<uint16_t>("current_kills");
+				task.requiredKills = result->getNumber<uint16_t>("required_kills");
+				task.stars = static_cast<uint8_t>(result->getNumber<uint16_t>("stars"));
+				task.rewardPoints = result->getNumber<uint32_t>("reward_points");
+				task.bestiaryUnlocked = result->getNumber<bool>("bestiary_unlocked");
+				slot.task = task;
+			}
+
+			player->getHuntingTaskSystem().loadSlot(slot);
+		} while (result->next());
 	}
 }
 

@@ -88,7 +88,8 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
 	client(std::move(p)),
 	m_animusMastery(*this),
-	m_playerAttachedEffects(*this) {
+	m_playerAttachedEffects(*this),
+	huntingTaskSystem(*this) {
 	m_playerVIP = std::make_unique<PlayerVIP>(*this);
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
@@ -6612,10 +6613,17 @@ void Player::addHuntingTaskKill(const std::shared_ptr<MonsterType> &mType) {
 	if (!taskSlot) {
 		return;
 	}
+	if (taskSlot->state != PreyTaskDataState_Active) {
+		return;
+	}
 
 	if (const auto &option = g_ioprey().getTaskRewardOption(taskSlot)) {
-		taskSlot->currentKills += 1;
-		if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) || (!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
+		const auto requiredKills = taskSlot->upgrade ? option->secondKills : option->firstKills;
+		if (taskSlot->currentKills >= requiredKills) {
+			return;
+		}
+		taskSlot->currentKills = std::min<uint16_t>(static_cast<uint16_t>(taskSlot->currentKills + 1), requiredKills);
+		if (taskSlot->currentKills >= requiredKills) {
 			taskSlot->state = PreyTaskDataState_Completed;
 			const std::string message = "You succesfully finished your hunting task. Your reward is ready to be claimed!";
 			sendTextMessage(MESSAGE_STATUS, message);
@@ -6662,7 +6670,7 @@ bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster) {
 	}
 
 	if (!monster->getSoulPit()) {
-		addHuntingTaskKill(mType);
+		huntingTaskSystem.onKill(mType->info.raceid);
 		addBestiaryKill(mType);
 		addBosstiaryKill(mType);
 		addWeaponProficiencyExperience(mType, monster->getMonsterForgeClassification(), false);
@@ -9627,6 +9635,30 @@ void Player::initializeTaskHunting() {
 		auto buffer = g_ioprey().getTaskHuntingBaseDate();
 		client->writeToOutputBuffer(buffer);
 	}
+}
+
+void Player::initializeHuntingTasks() {
+	huntingTaskSystem.initialize();
+	huntingTaskSystem.sendBaseData();
+	huntingTaskSystem.sendPrices();
+	huntingTaskSystem.sendResourceBalance();
+	for (const auto &slot : huntingTaskSystem.getSlots()) {
+		huntingTaskSystem.sendSlotState(slot);
+		const auto timeLeft = (slot.rerollTimeStamp > 0) ? ((slot.rerollTimeStamp - OTSYS_TIME()) / 1000) : 0;
+		huntingTaskSystem.sendRerollTime(slot.slotId, timeLeft);
+	}
+}
+
+HuntingTaskSystem &Player::getHuntingTaskSystem() {
+	return huntingTaskSystem;
+}
+
+const HuntingTaskSystem &Player::getHuntingTaskSystem() const {
+	return huntingTaskSystem;
+}
+
+ProtocolGame *Player::getProtocol() const {
+	return client.get();
 }
 
 bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> &mtype) const {
