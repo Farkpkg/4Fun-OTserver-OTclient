@@ -24,6 +24,7 @@ Esta seção descreve os sistemas de gameplay do servidor e as contrapartes rele
 - [Eventos](eventos/README.md)
 - [Skills](skills/README.md)
 - [Economia](economia/README.md)
+- [Hunting Tasks](hunting-tasks/README.md)
 
 ## LLM Extension Points
 - **Safe to extend**: Adicionar novos sistemas com README dedicado.

@@ -66,6 +66,10 @@ O OTClient é o cliente gráfico responsável por renderização, UI, entrada do
 - **Onde investigar**
   - `otclient/src/client/game.cpp` (eventos de ping, FPS e estados).
 
+## Sistemas de hunt tasks (coexistentes)
+- No cliente também existem dois fluxos distintos: o fluxo nativo de **Task Hunting/Prey** e o fluxo **custom por extended opcode**.
+- Mapeamento completo (server + client): `docs/wiki/game-systems/hunting-tasks/README.md`.
+
 ## Pontos de extensão e customização
 - **Onde é seguro modificar**
   - Módulos e layouts em `otclient/modules/`.

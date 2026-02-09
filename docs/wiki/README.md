@@ -42,6 +42,7 @@ Organizar a documentação técnica em alto nível, iniciando com um mapa do pro
   - [Eventos](game-systems/eventos/README.md)
   - [Skills](game-systems/skills/README.md)
   - [Economia](game-systems/economia/README.md)
+  - [Hunting Tasks](game-systems/hunting-tasks/README.md)
 - [UI](ui/README.md)
 - [Protocolos](protocol/README.md)
 - [Scripts](scripts/README.md)
