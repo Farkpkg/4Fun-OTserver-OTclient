@@ -7,7 +7,6 @@
 
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "server/network/protocol/protocolgame.hpp"
 #include "server/server_definitions.hpp"
 
 namespace {
@@ -209,9 +208,7 @@ void HuntingTaskSystem::sendPrices() const {
 }
 
 void HuntingTaskSystem::sendResourceBalance() const {
-	if (const auto *protocol = player.getProtocol()) {
-		const_cast<ProtocolGame *>(protocol)->sendResourceBalance(RESOURCE_TASK_HUNTING, resourcePoints);
-	}
+	player.sendResourceBalance(RESOURCE_TASK_HUNTING, resourcePoints);
 }
 
 void HuntingTaskSystem::sendRerollTime(uint8_t slotId, int64_t timeLeftSeconds) const {
@@ -266,7 +263,5 @@ void HuntingTaskSystem::sendSlotState(const HuntingTaskSlot &slot) const {
 }
 
 void HuntingTaskSystem::sendExtendedEvent(const std::string &payload) const {
-	if (const auto *protocol = player.getProtocol()) {
-		const_cast<ProtocolGame *>(protocol)->sendExtendedOpcode(kExtendedOpcodeEvent, payload);
-	}
+	player.sendHuntingTaskEvent(payload);
 }

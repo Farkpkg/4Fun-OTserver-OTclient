@@ -1046,6 +1046,7 @@ public:
 	AcceptTransferErrorMessage canAcceptTransferHouse(uint32_t houseId);
 	void sendCyclopediaHouseList(const HouseMap &houses) const;
 	void sendResourceBalance(Resource_t resourceType, uint64_t value) const;
+	void sendHuntingTaskEvent(const std::string &payload) const;
 	void sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess = false) const;
 
 	// Imbuements
