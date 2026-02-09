@@ -263,5 +263,5 @@ void HuntingTaskSystem::sendSlotState(const HuntingTaskSlot &slot) const {
 }
 
 void HuntingTaskSystem::sendExtendedEvent(const std::string &payload) const {
-	player.sendExtendedOpcode(kExtendedOpcodeEvent, payload);
+	player.sendHuntingTaskEvent(payload);
 }

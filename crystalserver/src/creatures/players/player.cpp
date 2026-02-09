@@ -2495,9 +2495,9 @@ void Player::sendResourceBalance(Resource_t resourceType, uint64_t value) const 
 	}
 }
 
-void Player::sendExtendedOpcode(uint8_t opcode, const std::string &buffer) const {
+void Player::sendHuntingTaskEvent(const std::string &payload) const {
 	if (client) {
-		client->sendExtendedOpcode(opcode, buffer);
+		client->sendExtendedOpcode(HuntingTaskSystem::kExtendedOpcodeEvent, payload);
 	}
 }
 
