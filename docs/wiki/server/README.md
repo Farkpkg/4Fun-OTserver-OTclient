@@ -73,6 +73,10 @@ O CrystalServer é o backend responsável por simular o mundo do jogo, manter es
   - `crystalserver/src/game/scheduling/dispatcher.hpp` (agendamento e execução de tarefas).
   - `crystalserver/src/game/game.cpp` (nó central de lógica do jogo).
 
+## Sistemas de hunt tasks (coexistentes)
+- Há dois fluxos distintos em paralelo: **Task Hunting Global-like (Prey)** e **Hunting Task customizado**.
+- Mapeamento completo (server + client): `docs/wiki/game-systems/hunting-tasks/README.md`.
+
 ## Pontos de extensão e customização
 - **Onde é seguro modificar**
   - Scripts Lua em `crystalserver/data/scripts/` (ações, movimentos, spells, runes, weapons).

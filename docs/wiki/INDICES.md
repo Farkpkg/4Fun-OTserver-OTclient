@@ -8,6 +8,7 @@
 - [Configuração](config/README.md)
 - [Economia](game-systems/economia/README.md)
 - [Eventos](game-systems/eventos/README.md)
+- [Hunting Tasks](game-systems/hunting-tasks/README.md)
 - [Game Systems (geral)](game-systems/README.md)
 - [Itens](game-systems/itens/README.md)
 - [Magias e runas](game-systems/magias-runas/README.md)
@@ -24,7 +25,7 @@
 - **Shared/Processo**: [Protocolos](protocol/README.md), [Ferramentas](tools/README.md), [Testes](tests/README.md), [Governança](governance/README.md).
 
 ## Índice por prioridade
-- **Crítico**: [Servidor](server/README.md), [Protocolos](protocol/README.md), [Scripts](scripts/README.md), [Sistemas de jogo](game-systems/README.md).
+- **Crítico**: [Servidor](server/README.md), [Protocolos](protocol/README.md), [Scripts](scripts/README.md), [Sistemas de jogo](game-systems/README.md), [Hunting Tasks](game-systems/hunting-tasks/README.md).
 - **Médio**: [Cliente](client/README.md), [UI](ui/README.md), [Configuração](config/README.md).
 - **Baixo**: [Assets](assets/README.md), [Ferramentas](tools/README.md), [Testes](tests/README.md), [Compartilhado](shared/README.md).
 
