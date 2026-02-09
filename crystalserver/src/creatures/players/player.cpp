@@ -2494,6 +2494,13 @@ void Player::sendResourceBalance(Resource_t resourceType, uint64_t value) const 
 		client->sendResourceBalance(resourceType, value);
 	}
 }
+
+void Player::sendExtendedOpcode(uint8_t opcode, const std::string &buffer) const {
+	if (client) {
+		client->sendExtendedOpcode(opcode, buffer);
+	}
+}
+
 void Player::sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess /* = false*/) const {
 	if (client) {
 		client->sendHouseAuctionMessage(houseId, type, index, bidSuccess);
