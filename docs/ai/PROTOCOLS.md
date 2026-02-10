@@ -84,5 +84,5 @@ Estrutura do pacote:
 ---
 
 Implementação:
-- Server: `data/scripts/lib/linked_tasks.lua`, `data/scripts/creaturescripts/player/linked_tasks.lua`
-- Client: `modules/tasksystem/tasksystem.lua`
+- Server: `crystalserver/data/scripts/lib/linked_tasks.lua`, `crystalserver/data/scripts/creaturescripts/player/linked_tasks.lua`, `crystalserver/data/scripts/talkactions/player/task.lua`
+- Client: `otclient/modules/tasksystem/tasksystem.lua`
