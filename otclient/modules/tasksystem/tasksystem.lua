@@ -210,7 +210,9 @@ function init()
   linkedTasksWindow = g_ui.displayUI('tasksystem')
   linkedTasksWindow:setVisible(false)
 
-  linkedTasksButton = modules.client_topmenu.addLeftGameButton('linkedTasksButton', tr('Linked Tasks'), '/images/topbuttons/help', toggleWindow)
+  if modules.client_topmenu and modules.client_topmenu.addLeftGameButton then
+    linkedTasksButton = modules.client_topmenu.addLeftGameButton('linkedTasksButton', tr('Linked Tasks'), '/images/topbuttons/help', toggleWindow)
+  end
 
   ProtocolGame.registerExtendedOpcode(OPCODE_TASK_SYNC, onExtendedOpcode)
   ProtocolGame.registerExtendedOpcode(OPCODE_TASK_UPDATE, onExtendedOpcode)
