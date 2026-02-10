@@ -63,21 +63,20 @@ Esse erro ocorre quando algum script chama `player:sendTextMessage(...)` com um 
 
 ### Causa mais comum no Linked Tasks
 
-Uso de MessageType não suportado pelo client/fork ou inválido no ambiente de execução.
+Uso de constante **não registrada no Lua** (por exemplo `MESSAGE_INFO_DESCR`, que não está na lista de enums exportados).
 
 ### Tipos seguros para usar
 
 - `MESSAGE_EVENT_ADVANCE` (sucesso/progresso)
-- `MESSAGE_STATUS_CONSOLE_ORANGE` (erro)
-- `MESSAGE_STATUS_CONSOLE_BLUE` (informativo neutro)
-- `MESSAGE_INFO_DESCR` (informativo descritivo)
+- `MESSAGE_FAILURE` (erro)
+- `MESSAGE_STATUS` (informativo neutro)
 
 ---
 
 ## 5) Checklist de correção do `!task`
 
 1. Abra seu script do comando `!task`.
-2. Substitua qualquer uso de tipo inválido por `MESSAGE_STATUS_CONSOLE_BLUE`, `MESSAGE_EVENT_ADVANCE`, `MESSAGE_INFO_DESCR` ou `MESSAGE_STATUS_CONSOLE_ORANGE`.
+2. Substitua qualquer uso de tipo inválido por `MESSAGE_STATUS`, `MESSAGE_EVENT_ADVANCE` ou `MESSAGE_FAILURE`.
 3. Garanta que o comando **não** dispara bootstrap completo/opcode sem validação.
 4. Garanta que o comando só faz:
    - parse do parâmetro,
@@ -89,7 +88,7 @@ Exemplo seguro:
 
 ```lua
 if not param or param == '' then
-  player:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, 'Uso: !task list | !task start <id> | !task check')
+  player:sendTextMessage(MESSAGE_STATUS, 'Uso: !task list | !task start <id> | !task check')
   return false
 end
 ```

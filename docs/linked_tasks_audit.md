@@ -22,7 +22,7 @@ Linked Tasks relies on the `player_tasks` table created by migration `crystalser
 | --- | --- | --- |
 | ExtendedOpcode handlers parsed payloads without guarding against empty/malformed buffers. | Client crash (`NetworkMessage::getByte`/`getString` errors) when payloads are missing or invalid. | Added defensive payload normalization and early aborts for empty/malformed payloads. |
 | Kill progression relied on `onKill` CreatureEvent. | Deprecated API warning and future incompatibility with Canary/Crystal. | Migrated to `onDeath` with `killer`/`mostDamageKiller` resolution. |
-| Linked Tasks talk-action used MessageTypes not accepted by some Canary/OTServBR client combinations. | Invalid message type warning in some Canary/Crystal builds. | Replaced default/neutral messages with `MESSAGE_STATUS_CONSOLE_BLUE` / `MESSAGE_INFO_DESCR` and used `MESSAGE_STATUS_CONSOLE_ORANGE` for errors (`MESSAGE_EVENT_ADVANCE` kept for success). |
+| Linked Tasks talk-action used an invalid/undefined neutral MessageType (`MESSAGE_INFO_DESCR`) in Lua scripts. | Invalid message type warning in some Canary/Crystal builds. | Replaced default/neutral messages with `MESSAGE_STATUS` (or `MESSAGE_EVENT_ADVANCE` for success and `MESSAGE_FAILURE` for errors). |
 | Payload sanitization not fully documented. | Client parser could break if delimiters leaked into payloads. | Documented payload delimiter rules and ensured sanitization is explicit. |
 
 ## Remaining risks / attention points

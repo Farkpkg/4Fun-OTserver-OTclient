@@ -8,10 +8,9 @@ These are the message types used by the Linked Tasks system when calling `player
 
 | Constant | Value | Description | Usage rules | Compatibility notes |
 | --- | --- | --- | --- | --- |
-| `MESSAGE_EVENT_ADVANCE` | Defined in server core | Positive feedback to the player (task start/finish, success messages). | Use for success, completion, or advancement messages. | Safe for Canary/OTServBR clients. |
-| `MESSAGE_INFO_DESCR` | Defined in server core | Informational text channel. | Use for descriptive/informative messages where appropriate. | Safe for Canary/OTServBR clients. |
-| `MESSAGE_STATUS_CONSOLE_ORANGE` | Defined in server core | Error/warning feedback in console channel. | Use for player-facing errors or denial messages. | Safe for Canary/OTServBR clients. |
-| `MESSAGE_STATUS_CONSOLE_BLUE` | Defined in server core | Neutral/informational feedback in console channel. | Use for status and instructions. | Safe for Canary/OTServBR clients. |
+| `MESSAGE_EVENT_ADVANCE` | Defined in server core | Positive feedback to the player (task start/finish, success messages). | Use for success, completion, or advancement messages. | Valid in Canary/Crystal, widely used by server scripts. |
+| `MESSAGE_FAILURE` | Defined in server core | Error feedback (invalid command, failure conditions). | Use for player-facing errors or denial messages. | Valid in Canary/Crystal, widely used by server scripts. |
+| `MESSAGE_STATUS` | Defined in server core | Neutral/Informational messages in status channel. | Use for informational output (status, instructions). | Valid in Canary/Crystal and registered in Lua enums. |
 
 ## ExtendedOpcode (Linked Tasks)
 

@@ -229,13 +229,13 @@ end
 function LinkedTasks.startTask(player, taskId)
 	local cfg = LinkedTasks.config[taskId]
 	if not cfg then
-		player:sendTextMessage(MESSAGE_STATUS_CONSOLE_ORANGE, "Task inválida. Use !task list para ver os IDs.")
+		player:sendTextMessage(MESSAGE_FAILURE, "Task inválida. Use !task list para ver os IDs.")
 		return false
 	end
 
 	local activeTaskId = LinkedTasks.getActiveTaskId(player)
 	if activeTaskId > 0 and activeTaskId ~= taskId then
-		player:sendTextMessage(MESSAGE_STATUS_CONSOLE_ORANGE, "Você já possui uma task ativa. Use !task status.")
+		player:sendTextMessage(MESSAGE_FAILURE, "Você já possui uma task ativa. Use !task status.")
 		return false
 	end
 
@@ -274,19 +274,19 @@ end
 function LinkedTasks.checkCollectTask(player)
 	local activeTaskId = LinkedTasks.getActiveTaskId(player)
 	if activeTaskId == 0 then
-		player:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "Você não possui task ativa.")
+		player:sendTextMessage(MESSAGE_STATUS, "Você não possui task ativa.")
 		return false
 	end
 
 	local cfg = LinkedTasks.config[activeTaskId]
 	if cfg.objectiveType ~= "collect" then
-		player:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "A task ativa não é de coleta.")
+		player:sendTextMessage(MESSAGE_STATUS, "A task ativa não é de coleta.")
 		return false
 	end
 
 	local itemId = tonumber(cfg.objectiveTarget)
 	if not itemId then
-		player:sendTextMessage(MESSAGE_STATUS_CONSOLE_ORANGE, "Configuração da task inválida (collect sem itemId).")
+		player:sendTextMessage(MESSAGE_FAILURE, "Configuração da task inválida (collect sem itemId).")
 		return false
 	end
 
@@ -299,7 +299,7 @@ function LinkedTasks.checkCollectTask(player)
 		return LinkedTasks.finishTask(player, activeTaskId, progress)
 	end
 
-	player:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, string.format("Progresso atualizado: %d/%d", progress, cfg.required))
+	player:sendTextMessage(MESSAGE_STATUS, string.format("Progresso atualizado: %d/%d", progress, cfg.required))
 	return true
 end
 
