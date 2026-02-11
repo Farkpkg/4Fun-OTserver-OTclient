@@ -45,7 +45,7 @@ MainWindow
   !text: tr('Weekly Tasks')
   size: 900 580
 
-  @onEscape: hide()
+  @onEscape: modules.game_weeklytasks.toggle()
 
   TabBar
     id: tabBar
@@ -54,7 +54,7 @@ MainWindow
     anchors.right: parent.right
     margin: 8
 
-  Panel
+  StackPanel
     id: pages
     anchors.top: tabBar.bottom
     anchors.left: parent.left
