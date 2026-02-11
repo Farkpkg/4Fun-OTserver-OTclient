@@ -85,11 +85,15 @@ function refreshActivePage()
   page.killPanel.killList:destroyChildren()
   page.deliveryPanel.deliveryList:destroyChildren()
 
+  local killCount = 0
+  local deliveryCount = 0
   for _, task in ipairs(state.tasks or {}) do
     if task.taskType == 'kill' then
       createTaskTile(page.killPanel.killList, task)
+      killCount = killCount + 1
     else
       createTaskTile(page.deliveryPanel.deliveryList, task)
+      deliveryCount = deliveryCount + 1
     end
   end
 
@@ -107,94 +111,52 @@ function refreshActivePage()
 end
 
 function refresh()
-  if not window then
-    return
-  end
-
+  if not window then return end
   refreshDifficultyPage()
   refreshActivePage()
 end
 
-function show()
-  if not window then
-    return
-  end
-
-  window:show()
-  window:raise()
-  window:focus()
-
-  if button then
-    button:setOn(true)
-  end
-
-  sendAction({ action = 'sync' })
-end
-
-function hide()
-  if not window then
-    return
-  end
-
-  window:hide()
-
-  if button then
-    button:setOn(false)
-  end
-end
-
-function toggle()
-  if not window then
-    return
-  end
-
-  if window:isVisible() then
-    hide()
-  else
-    show()
-  end
-end
-
-local function online()
-  if not button and modules.game_mainpanel and modules.game_mainpanel.addToggleButton then
-    button = modules.game_mainpanel.addToggleButton('weeklyTasksButton', tr('Weekly Tasks'), '/images/options/button_weeklytasks', toggle, false, 18)
-    button:setOn(false)
-  end
-end
-
 local function onGameStart()
-  online()
   sendAction({ action = 'sync' })
 end
 
 local function onGameEnd()
-  hide()
+  if window then window:setVisible(false) end
   state = {}
+end
+
+function toggle()
+  if not window then return end
+  window:setVisible(not window:isVisible())
+  if window:isVisible() then
+    sendAction({ action = 'sync' })
+    window:raise()
+    window:focus()
+  end
 end
 
 function init()
   window = g_ui.displayUI('game_weeklytasks')
-  window:hide()
+  window:setVisible(false)
 
-  window.close.onClick = hide
+  window.close.onClick = toggle
   window.difficultyPage.btnBeginner.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Beginner' }) end
   window.difficultyPage.btnAdept.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Adept' }) end
   window.difficultyPage.btnExpert.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Expert' }) end
   window.difficultyPage.btnMaster.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Master' }) end
   window.activePage.shopPanel.buyOffer.onClick = function()
-    local option = window.activePage.shopPanel.shopOffers:getCurrentOption()
-    local id = option and option.data
+    local id = window.activePage.shopPanel.shopOffers:getCurrentOption().data
     if id then
       sendAction({ action = 'shopPurchase', offerId = id })
     end
   end
 
+  if modules.client_topmenu and modules.client_topmenu.addLeftGameButton then
+    button = modules.client_topmenu.addLeftGameButton('weeklyTasksButton', tr('Weekly Tasks'), '/images/topbuttons/questlog', toggle)
+  end
+
   connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
   ProtocolGame.registerExtendedOpcode(OPCODE_EVENT, parseOpcode)
-
-  if g_game.isOnline() then
-    online()
-  end
 end
 
 function terminate()

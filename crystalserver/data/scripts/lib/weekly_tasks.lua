@@ -20,48 +20,14 @@ WeeklyTasks.difficulty = {
 WeeklyTasks.countWithoutExpansion = 6
 WeeklyTasks.countWithExpansion = 9
 
-local function fileExists(path)
-    local file = io.open(path, "r")
-    if not file then
-        return false
-    end
-
-    file:close()
-    return true
+local function loadConfig(path)
+    local fullPath = string.format("%s/%s", configManager.getString(configKeys.DATA_DIRECTORY), path)
+    dofile(fullPath)
 end
 
-local function resolveConfigPath(fileName)
-    local dataDirectory = configManager.getString(configKeys.DATA_DIRECTORY)
-    local candidates = {
-        string.format("data/weeklytasks/%s", fileName),
-        string.format("%s/weeklytasks/%s", dataDirectory, fileName),
-    }
-
-    for _, candidate in ipairs(candidates) do
-        if fileExists(candidate) then
-            return candidate
-        end
-    end
-
-    return nil
-end
-
-local function loadConfig(fileName)
-    local resolvedPath = resolveConfigPath(fileName)
-    if not resolvedPath then
-        print(string.format("[weekly_tasks] Missing config file: %s (checked data/weeklytasks and %s/weeklytasks)", fileName, configManager.getString(configKeys.DATA_DIRECTORY)))
-        return false
-    end
-
-    dofile(resolvedPath)
-    return true
-end
-
-if not loadConfig("monsters.lua") then
-    print("[weekly_tasks] Config folder missing: data/weeklytasks/")
-end
-loadConfig("delivery_items.lua")
-loadConfig("rewards.lua")
+loadConfig("weeklytasks/monsters.lua")
+loadConfig("weeklytasks/delivery_items.lua")
+loadConfig("weeklytasks/rewards.lua")
 
 local function nowWeekKey()
     return os.date("%Y-%W")
@@ -99,14 +65,14 @@ end
 
 function WeeklyTasks.ensureTables()
     db.query([[CREATE TABLE IF NOT EXISTS `player_weekly_tasks` (
-        `player_id` INT(11) NOT NULL,
+        `player_id` INT UNSIGNED NOT NULL,
         `week_key` VARCHAR(16) NOT NULL,
-        `state` TINYINT(3) NOT NULL DEFAULT 0,
+        `state` TINYINT UNSIGNED NOT NULL DEFAULT 0,
         `difficulty` VARCHAR(16) NOT NULL DEFAULT '',
-        `completed_kill_tasks` SMALLINT(5) NOT NULL DEFAULT 0,
-        `completed_delivery_tasks` SMALLINT(5) NOT NULL DEFAULT 0,
-        `earned_task_points` INT(11) NOT NULL DEFAULT 0,
-        `earned_soul_seals` INT(11) NOT NULL DEFAULT 0,
+        `completed_kill_tasks` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+        `completed_delivery_tasks` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+        `earned_task_points` INT UNSIGNED NOT NULL DEFAULT 0,
+        `earned_soul_seals` INT UNSIGNED NOT NULL DEFAULT 0,
         `reward_multiplier` FLOAT NOT NULL DEFAULT 1,
         `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (`player_id`),
@@ -114,26 +80,24 @@ function WeeklyTasks.ensureTables()
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;]])
 
     db.query([[CREATE TABLE IF NOT EXISTS `player_weekly_task_entries` (
-        `id` INT(10) NOT NULL AUTO_INCREMENT,
-        `player_id` INT(11) NOT NULL,
+        `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        `player_id` INT UNSIGNED NOT NULL,
         `week_key` VARCHAR(16) NOT NULL,
         `task_type` VARCHAR(16) NOT NULL,
         `target_name` VARCHAR(64) NOT NULL DEFAULT '',
-        `item_id` INT(11) NOT NULL DEFAULT 0,
-        `required_count` SMALLINT(5) NOT NULL DEFAULT 0,
-        `progress_count` SMALLINT(5) NOT NULL DEFAULT 0,
+        `item_id` INT UNSIGNED NOT NULL DEFAULT 0,
+        `required_amount` INT UNSIGNED NOT NULL DEFAULT 0,
+        `current_amount` INT UNSIGNED NOT NULL DEFAULT 0,
         `difficulty_tier` VARCHAR(16) NOT NULL DEFAULT '',
-        `completed` TINYINT(1) NOT NULL DEFAULT 0,
+        `is_completed` TINYINT(1) NOT NULL DEFAULT 0,
         PRIMARY KEY (`id`),
         KEY `idx_player_week` (`player_id`, `week_key`),
-        KEY `idx_week_key` (`week_key`),
         CONSTRAINT `fk_player_weekly_task_entries_player` FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;]])
 
     db.query([[CREATE TABLE IF NOT EXISTS `player_weekly_unlocks` (
-        `player_id` INT(11) NOT NULL,
+        `player_id` INT UNSIGNED NOT NULL,
         `expansion_unlocked` TINYINT(1) NOT NULL DEFAULT 0,
-        KEY `idx_weekly_unlocks_player_id` (`player_id`),
         PRIMARY KEY (`player_id`),
         CONSTRAINT `fk_player_weekly_unlocks_player` FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;]])
@@ -225,7 +189,7 @@ function WeeklyTasks.generateTasks(player, difficulty)
 
     for _, monster in ipairs(selectedMonsters) do
         db.query(string.format(
-            "INSERT INTO `player_weekly_task_entries` (`player_id`,`week_key`,`task_type`,`target_name`,`required_count`,`progress_count`,`difficulty_tier`,`completed`) VALUES (%d,%s,'kill',%s,%d,0,%s,0)",
+            "INSERT INTO `player_weekly_task_entries` (`player_id`,`week_key`,`task_type`,`target_name`,`required_amount`,`current_amount`,`difficulty_tier`,`is_completed`) VALUES (%d,%s,'kill',%s,%d,0,%s,0)",
             playerId,
             db.escapeString(weekKey),
             db.escapeString(monster.name),
@@ -236,7 +200,7 @@ function WeeklyTasks.generateTasks(player, difficulty)
 
     for _, itemTask in ipairs(selectedItems) do
         db.query(string.format(
-            "INSERT INTO `player_weekly_task_entries` (`player_id`,`week_key`,`task_type`,`item_id`,`required_count`,`progress_count`,`difficulty_tier`,`completed`) VALUES (%d,%s,'delivery',%d,%d,0,%s,0)",
+            "INSERT INTO `player_weekly_task_entries` (`player_id`,`week_key`,`task_type`,`item_id`,`required_amount`,`current_amount`,`difficulty_tier`,`is_completed`) VALUES (%d,%s,'delivery',%d,%d,0,%s,0)",
             playerId,
             db.escapeString(weekKey),
             itemTask.itemId,
@@ -270,10 +234,10 @@ function WeeklyTasks.getTaskRows(player)
             taskType = Result.getString(resultId, "task_type"),
             targetName = Result.getString(resultId, "target_name"),
             itemId = Result.getNumber(resultId, "item_id"),
-            requiredAmount = Result.getNumber(resultId, "required_count"),
-            currentAmount = Result.getNumber(resultId, "progress_count"),
+            requiredAmount = Result.getNumber(resultId, "required_amount"),
+            currentAmount = Result.getNumber(resultId, "current_amount"),
             difficultyTier = Result.getString(resultId, "difficulty_tier"),
-            isCompleted = Result.getNumber(resultId, "completed") == 1,
+            isCompleted = Result.getNumber(resultId, "is_completed") == 1,
         })
     until not Result.next(resultId)
 
@@ -445,7 +409,7 @@ function WeeklyTasks.onMonsterDeath(creature, killer, mostDamageKiller)
             local nextCurrent = math.min(task.currentAmount + 1, task.requiredAmount)
             local completed = nextCurrent >= task.requiredAmount and 1 or 0
             db.query(string.format(
-                "UPDATE `player_weekly_task_entries` SET `progress_count` = %d, `completed` = %d WHERE `id` = %d",
+                "UPDATE `player_weekly_task_entries` SET `current_amount` = %d, `is_completed` = %d WHERE `id` = %d",
                 nextCurrent, completed, task.id
             ))
             if completed == 1 then
@@ -534,9 +498,9 @@ function WeeklyTasks.tryDeliver(player, taskEntryId)
     local task = {
         id = Result.getNumber(resultId, "id"),
         itemId = Result.getNumber(resultId, "item_id"),
-        required = Result.getNumber(resultId, "required_count"),
-        current = Result.getNumber(resultId, "progress_count"),
-        completed = Result.getNumber(resultId, "completed") == 1,
+        required = Result.getNumber(resultId, "required_amount"),
+        current = Result.getNumber(resultId, "current_amount"),
+        completed = Result.getNumber(resultId, "is_completed") == 1,
     }
     Result.free(resultId)
 
@@ -585,7 +549,7 @@ function WeeklyTasks.tryDeliver(player, taskEntryId)
     end
 
     local nextCurrent = task.required
-    db.query(string.format("UPDATE `player_weekly_task_entries` SET `progress_count`=%d, `completed`=1 WHERE `id`=%d", nextCurrent, task.id))
+    db.query(string.format("UPDATE `player_weekly_task_entries` SET `current_amount`=%d, `is_completed`=1 WHERE `id`=%d", nextCurrent, task.id))
 
     WeeklyTasks.applyTaskReward(player)
     WeeklyTasks.updateCompletionAndRewards(player)
