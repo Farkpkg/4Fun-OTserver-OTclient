@@ -1,7 +1,23 @@
 local taskCommand = TalkAction("!task")
 
+local TASK_MESSAGE_STATUS = MESSAGE_STATUS or MESSAGE_EVENT_ADVANCE or MESSAGE_LOGIN
+local TASK_MESSAGE_INFO = MESSAGE_EVENT_ADVANCE or MESSAGE_STATUS or MESSAGE_LOGIN
+local TASK_MESSAGE_ERROR = MESSAGE_FAILURE or MESSAGE_STATUS or MESSAGE_EVENT_ADVANCE
+
+local function sendTaskMessage(player, messageType, text)
+	if not player then
+		return
+	end
+
+	if messageType then
+		player:sendTextMessage(messageType, text)
+	else
+		player:sendCancelMessage(text)
+	end
+end
+
 local function sendUsage(player)
-	player:sendTextMessage(MESSAGE_STATUS, "Uso: !task list | !task start <id> | !task status | !task check | !task sync")
+	sendTaskMessage(player, TASK_MESSAGE_STATUS, "Uso: !task list | !task start <id> | !task status | !task check | !task sync")
 end
 
 function taskCommand.onSay(player, words, param)
@@ -27,7 +43,7 @@ function taskCommand.onSay(player, words, param)
 	if action == "start" then
 		local taskId = tonumber(args[2])
 		if not taskId then
-			player:sendTextMessage(MESSAGE_FAILURE, "Informe o ID. Ex: !task start 1")
+			sendTaskMessage(player, TASK_MESSAGE_ERROR, "Informe o ID. Ex: !task start 1")
 			return false
 		end
 
@@ -38,14 +54,14 @@ function taskCommand.onSay(player, words, param)
 	if action == "status" then
 		local activeTaskId = LinkedTasks.getActiveTaskId(player)
 		if activeTaskId == 0 then
-			player:sendTextMessage(MESSAGE_STATUS, "Nenhuma task ativa.")
+			sendTaskMessage(player, TASK_MESSAGE_STATUS, "Nenhuma task ativa.")
 			return false
 		end
 
 		local cfg = LinkedTasks.config[activeTaskId]
 		local states = LinkedTasks.getPlayerTasks(player)
 		local state = states[activeTaskId] or { progress = 0 }
-		player:sendTextMessage(MESSAGE_STATUS, string.format("Task ativa [%d] %s: %d/%d", activeTaskId, cfg.name, state.progress, cfg.required))
+		sendTaskMessage(player, TASK_MESSAGE_STATUS, string.format("Task ativa [%d] %s: %d/%d", activeTaskId, cfg.name, state.progress, cfg.required))
 		return false
 	end
 
@@ -56,7 +72,7 @@ function taskCommand.onSay(player, words, param)
 
 	if action == "sync" then
 		LinkedTasks.sendFullSync(player)
-		player:sendTextMessage(MESSAGE_STATUS, "Sincronização enviada ao client.")
+		sendTaskMessage(player, TASK_MESSAGE_INFO, "Sincronização enviada ao client.")
 		return false
 	end
 
