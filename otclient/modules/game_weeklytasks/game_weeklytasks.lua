@@ -5,20 +5,11 @@ local window
 local button
 local state = {}
 
-local function sendAction(actionType, writePayload)
+local function sendAction(payload)
   local protocol = g_game.getProtocolGame()
-  if not protocol then
-    return
+  if protocol then
+    protocol:sendExtendedOpcode(OPCODE_ACTION, json.encode(payload))
   end
-
-  local msg = OutputMessage.create()
-  msg:addU8(actionType)
-
-  if writePayload then
-    writePayload(msg)
-  end
-
-  protocol:sendExtendedOpcode(OPCODE_ACTION, msg:getBuffer())
 end
 
 local function parseOpcode(protocol, opcode, buffer)
@@ -26,83 +17,12 @@ local function parseOpcode(protocol, opcode, buffer)
     return
   end
 
-  local ok, parsedOrError = pcall(function()
-    local msg = InputMessage.create()
-    msg:setBuffer(buffer)
-
-    local parsed = {
-      state = msg:getU8(),
-      difficulty = msg:getString(),
-      multiplier = msg:getU16() / 100,
-      completedKillTasks = msg:getU16(),
-      completedDeliveryTasks = msg:getU16(),
-      points = msg:getU32(),
-      soulSeals = msg:getU32(),
-      expansionUnlocked = msg:getU8() == 1,
-      difficulties = {},
-      tasks = {},
-      shop = {},
-    }
-
-    local diffCount = msg:getU8()
-    for i = 1, diffCount do
-      local name = msg:getString()
-      parsed.difficulties[name] = msg:getU16()
-    end
-
-    local killCount = msg:getU8()
-    for i = 1, killCount do
-      parsed.tasks[#parsed.tasks + 1] = {
-        id = msg:getU32(),
-        taskType = 'kill',
-        targetName = msg:getString(),
-        currentAmount = msg:getU16(),
-        requiredAmount = msg:getU16(),
-        isCompleted = msg:getU8() == 1,
-      }
-    end
-
-    local deliveryCount = msg:getU8()
-    for i = 1, deliveryCount do
-      parsed.tasks[#parsed.tasks + 1] = {
-        id = msg:getU32(),
-        taskType = 'delivery',
-        itemId = msg:getU16(),
-        currentAmount = msg:getU16(),
-        requiredAmount = msg:getU16(),
-        isCompleted = msg:getU8() == 1,
-      }
-    end
-
-    local function decodeOfferType(typeCode)
-      if typeCode == 1 then return 'expansion' end
-      if typeCode == 2 then return 'experience' end
-      if typeCode == 3 then return 'seals' end
-      if typeCode == 4 then return 'item' end
-      return 'unknown'
-    end
-
-    local shopCount = msg:getU8()
-    for i = 1, shopCount do
-      parsed.shop[#parsed.shop + 1] = {
-        id = msg:getString(),
-        name = msg:getString(),
-        price = msg:getU16(),
-        type = decodeOfferType(msg:getU8()),
-        amount = msg:getU16(),
-        itemId = msg:getU16(),
-      }
-    end
-
-    return parsed
-  end)
-
-  if not ok then
-    perror('[game_weeklytasks] Failed to parse weekly sync packet: ' .. tostring(parsedOrError))
+  local data = json.decode(buffer)
+  if not data then
     return
   end
 
-  state = parsedOrError
+  state = data
   modules.game_weeklytasks.refresh()
 end
 
@@ -143,7 +63,7 @@ local function createTaskTile(parent, task)
     tile.item:setItemId(task.itemId)
     tile.title:setText(string.format('Item #%d', task.itemId))
     tile.deliver.onClick = function()
-      sendAction(3, function(msg) msg:addU32(task.id) end)
+      sendAction({ action = 'deliver', entryId = task.id })
     end
   end
 
@@ -165,11 +85,15 @@ function refreshActivePage()
   page.killPanel.killList:destroyChildren()
   page.deliveryPanel.deliveryList:destroyChildren()
 
+  local killCount = 0
+  local deliveryCount = 0
   for _, task in ipairs(state.tasks or {}) do
     if task.taskType == 'kill' then
       createTaskTile(page.killPanel.killList, task)
+      killCount = killCount + 1
     else
       createTaskTile(page.deliveryPanel.deliveryList, task)
+      deliveryCount = deliveryCount + 1
     end
   end
 
@@ -187,94 +111,52 @@ function refreshActivePage()
 end
 
 function refresh()
-  if not window then
-    return
-  end
-
+  if not window then return end
   refreshDifficultyPage()
   refreshActivePage()
 end
 
-function show()
-  if not window then
-    return
-  end
-
-  window:show()
-  window:raise()
-  window:focus()
-
-  if button then
-    button:setOn(true)
-  end
-
-  sendAction(1)
-end
-
-function hide()
-  if not window then
-    return
-  end
-
-  window:hide()
-
-  if button then
-    button:setOn(false)
-  end
-end
-
-function toggle()
-  if not window then
-    return
-  end
-
-  if window:isVisible() then
-    hide()
-  else
-    show()
-  end
-end
-
-local function online()
-  if not button and modules.game_mainpanel and modules.game_mainpanel.addToggleButton then
-    button = modules.game_mainpanel.addToggleButton('weeklyTasksButton', tr('Weekly Tasks'), '/images/options/button_weeklytasks', toggle, false, 18)
-    button:setOn(false)
-  end
-end
-
 local function onGameStart()
-  online()
-  sendAction(1)
+  sendAction({ action = 'sync' })
 end
 
 local function onGameEnd()
-  hide()
+  if window then window:setVisible(false) end
   state = {}
+end
+
+function toggle()
+  if not window then return end
+  window:setVisible(not window:isVisible())
+  if window:isVisible() then
+    sendAction({ action = 'sync' })
+    window:raise()
+    window:focus()
+  end
 end
 
 function init()
   window = g_ui.displayUI('game_weeklytasks')
-  window:hide()
+  window:setVisible(false)
 
-  window.close.onClick = hide
-  window.difficultyPage.btnBeginner.onClick = function() sendAction(2, function(msg) msg:addString('Beginner') end) end
-  window.difficultyPage.btnAdept.onClick = function() sendAction(2, function(msg) msg:addString('Adept') end) end
-  window.difficultyPage.btnExpert.onClick = function() sendAction(2, function(msg) msg:addString('Expert') end) end
-  window.difficultyPage.btnMaster.onClick = function() sendAction(2, function(msg) msg:addString('Master') end) end
+  window.close.onClick = toggle
+  window.difficultyPage.btnBeginner.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Beginner' }) end
+  window.difficultyPage.btnAdept.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Adept' }) end
+  window.difficultyPage.btnExpert.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Expert' }) end
+  window.difficultyPage.btnMaster.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Master' }) end
   window.activePage.shopPanel.buyOffer.onClick = function()
-    local option = window.activePage.shopPanel.shopOffers:getCurrentOption()
-    local id = option and option.data
+    local id = window.activePage.shopPanel.shopOffers:getCurrentOption().data
     if id then
-      sendAction(4, function(msg) msg:addString(id) end)
+      sendAction({ action = 'shopPurchase', offerId = id })
     end
+  end
+
+  if modules.client_topmenu and modules.client_topmenu.addLeftGameButton then
+    button = modules.client_topmenu.addLeftGameButton('weeklyTasksButton', tr('Weekly Tasks'), '/images/topbuttons/questlog', toggle)
   end
 
   connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
   ProtocolGame.registerExtendedOpcode(OPCODE_EVENT, parseOpcode)
-
-  if g_game.isOnline() then
-    online()
-  end
 end
 
 function terminate()
