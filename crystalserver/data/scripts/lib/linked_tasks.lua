@@ -14,6 +14,23 @@ LinkedTasks.status = {
 
 LinkedTasks.activeStorage = 985200
 
+
+local TASK_MESSAGE_STATUS = MESSAGE_STATUS or MESSAGE_EVENT_ADVANCE or MESSAGE_LOGIN
+local TASK_MESSAGE_INFO = MESSAGE_EVENT_ADVANCE or MESSAGE_STATUS or MESSAGE_LOGIN
+local TASK_MESSAGE_ERROR = MESSAGE_FAILURE or MESSAGE_STATUS or MESSAGE_EVENT_ADVANCE
+
+local function sendTaskMessage(player, messageType, text)
+	if not player then
+		return
+	end
+
+	if messageType then
+		player:sendTextMessage(messageType, text)
+	else
+		player:sendCancelMessage(text)
+	end
+end
+
 LinkedTasks.config = {
 	[1] = {
 		name = "Rat Hunter",
@@ -229,13 +246,13 @@ end
 function LinkedTasks.startTask(player, taskId)
 	local cfg = LinkedTasks.config[taskId]
 	if not cfg then
-		player:sendTextMessage(MESSAGE_FAILURE, "Task inválida. Use !task list para ver os IDs.")
+		sendTaskMessage(player, TASK_MESSAGE_ERROR, "Task inválida. Use !task list para ver os IDs.")
 		return false
 	end
 
 	local activeTaskId = LinkedTasks.getActiveTaskId(player)
 	if activeTaskId > 0 and activeTaskId ~= taskId then
-		player:sendTextMessage(MESSAGE_FAILURE, "Você já possui uma task ativa. Use !task status.")
+		sendTaskMessage(player, TASK_MESSAGE_ERROR, "Você já possui uma task ativa. Use !task status.")
 		return false
 	end
 
@@ -243,7 +260,7 @@ function LinkedTasks.startTask(player, taskId)
 	LinkedTasks.saveTaskState(player, taskId, LinkedTasks.status.inProgress, 0)
 	LinkedTasks.setActiveTaskId(player, taskId)
 	LinkedTasks.sendTaskUpdate(player, taskId, LinkedTasks.status.inProgress, 0)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Task iniciada: [%d] %s", taskId, cfg.name))
+	sendTaskMessage(player, TASK_MESSAGE_INFO, string.format("Task iniciada: [%d] %s", taskId, cfg.name))
 	return true
 end
 
@@ -266,7 +283,7 @@ function LinkedTasks.finishTask(player, taskId, progress)
 		player:addItem(reward.itemId, reward.count)
 	end
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Task concluída: %s", cfg.name))
+	sendTaskMessage(player, TASK_MESSAGE_INFO, string.format("Task concluída: %s", cfg.name))
 	LinkedTasks.sendFullSync(player)
 	return true
 end
@@ -274,19 +291,19 @@ end
 function LinkedTasks.checkCollectTask(player)
 	local activeTaskId = LinkedTasks.getActiveTaskId(player)
 	if activeTaskId == 0 then
-		player:sendTextMessage(MESSAGE_STATUS, "Você não possui task ativa.")
+		sendTaskMessage(player, TASK_MESSAGE_STATUS, "Você não possui task ativa.")
 		return false
 	end
 
 	local cfg = LinkedTasks.config[activeTaskId]
 	if cfg.objectiveType ~= "collect" then
-		player:sendTextMessage(MESSAGE_STATUS, "A task ativa não é de coleta.")
+		sendTaskMessage(player, TASK_MESSAGE_STATUS, "A task ativa não é de coleta.")
 		return false
 	end
 
 	local itemId = tonumber(cfg.objectiveTarget)
 	if not itemId then
-		player:sendTextMessage(MESSAGE_FAILURE, "Configuração da task inválida (collect sem itemId).")
+		sendTaskMessage(player, TASK_MESSAGE_ERROR, "Configuração da task inválida (collect sem itemId).")
 		return false
 	end
 
@@ -299,7 +316,7 @@ function LinkedTasks.checkCollectTask(player)
 		return LinkedTasks.finishTask(player, activeTaskId, progress)
 	end
 
-	player:sendTextMessage(MESSAGE_STATUS, string.format("Progresso atualizado: %d/%d", progress, cfg.required))
+	sendTaskMessage(player, TASK_MESSAGE_STATUS, string.format("Progresso atualizado: %d/%d", progress, cfg.required))
 	return true
 end
 
