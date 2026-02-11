@@ -20,51 +20,25 @@ WeeklyTasks.difficulty = {
 WeeklyTasks.countWithoutExpansion = 6
 WeeklyTasks.countWithExpansion = 9
 
-local function fileExists(path)
-    local file = io.open(path, "r")
-    if not file then
-        return false
-    end
-
-    file:close()
-    return true
+local function loadConfig(path)
+    local fullPath = string.format("%s/%s", configManager.getString(configKeys.DATA_DIRECTORY), path)
+    dofile(fullPath)
 end
 
-local function resolveConfigPath(fileName)
-    local dataDirectory = configManager.getString(configKeys.DATA_DIRECTORY)
-    local candidates = {
-        string.format("data/weeklytasks/%s", fileName),
-        string.format("%s/weeklytasks/%s", dataDirectory, fileName),
-    }
-
-    for _, candidate in ipairs(candidates) do
-        if fileExists(candidate) then
-            return candidate
-        end
-    end
-
-    return nil
-end
-
-local function loadConfig(fileName)
-    local resolvedPath = resolveConfigPath(fileName)
-    if not resolvedPath then
-        print(string.format("[weekly_tasks] Missing config file: %s (checked data/weeklytasks and %s/weeklytasks)", fileName, configManager.getString(configKeys.DATA_DIRECTORY)))
-        return false
-    end
-
-    dofile(resolvedPath)
-    return true
-end
-
-if not loadConfig("monsters.lua") then
-    print("[weekly_tasks] Config folder missing: data/weeklytasks/")
-end
-loadConfig("delivery_items.lua")
-loadConfig("rewards.lua")
+loadConfig("weeklytasks/monsters.lua")
+loadConfig("weeklytasks/delivery_items.lua")
+loadConfig("weeklytasks/rewards.lua")
 
 local function nowWeekKey()
     return os.date("%Y-%W")
+end
+
+local function toNumber(v, fallback)
+    local n = tonumber(v)
+    if n == nil then
+        return fallback
+    end
+    return n
 end
 
 local function fetchSingleRow(query)
@@ -91,14 +65,14 @@ end
 
 function WeeklyTasks.ensureTables()
     db.query([[CREATE TABLE IF NOT EXISTS `player_weekly_tasks` (
-        `player_id` INT(11) NOT NULL,
+        `player_id` INT UNSIGNED NOT NULL,
         `week_key` VARCHAR(16) NOT NULL,
-        `state` TINYINT(3) NOT NULL DEFAULT 0,
+        `state` TINYINT UNSIGNED NOT NULL DEFAULT 0,
         `difficulty` VARCHAR(16) NOT NULL DEFAULT '',
-        `completed_kill_tasks` SMALLINT(5) NOT NULL DEFAULT 0,
-        `completed_delivery_tasks` SMALLINT(5) NOT NULL DEFAULT 0,
-        `earned_task_points` INT(11) NOT NULL DEFAULT 0,
-        `earned_soul_seals` INT(11) NOT NULL DEFAULT 0,
+        `completed_kill_tasks` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+        `completed_delivery_tasks` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+        `earned_task_points` INT UNSIGNED NOT NULL DEFAULT 0,
+        `earned_soul_seals` INT UNSIGNED NOT NULL DEFAULT 0,
         `reward_multiplier` FLOAT NOT NULL DEFAULT 1,
         `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (`player_id`),
@@ -106,26 +80,24 @@ function WeeklyTasks.ensureTables()
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;]])
 
     db.query([[CREATE TABLE IF NOT EXISTS `player_weekly_task_entries` (
-        `id` INT(10) NOT NULL AUTO_INCREMENT,
-        `player_id` INT(11) NOT NULL,
+        `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        `player_id` INT UNSIGNED NOT NULL,
         `week_key` VARCHAR(16) NOT NULL,
         `task_type` VARCHAR(16) NOT NULL,
         `target_name` VARCHAR(64) NOT NULL DEFAULT '',
-        `item_id` INT(11) NOT NULL DEFAULT 0,
-        `required_count` SMALLINT(5) NOT NULL DEFAULT 0,
-        `progress_count` SMALLINT(5) NOT NULL DEFAULT 0,
+        `item_id` INT UNSIGNED NOT NULL DEFAULT 0,
+        `required_amount` INT UNSIGNED NOT NULL DEFAULT 0,
+        `current_amount` INT UNSIGNED NOT NULL DEFAULT 0,
         `difficulty_tier` VARCHAR(16) NOT NULL DEFAULT '',
-        `completed` TINYINT(1) NOT NULL DEFAULT 0,
+        `is_completed` TINYINT(1) NOT NULL DEFAULT 0,
         PRIMARY KEY (`id`),
         KEY `idx_player_week` (`player_id`, `week_key`),
-        KEY `idx_week_key` (`week_key`),
         CONSTRAINT `fk_player_weekly_task_entries_player` FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;]])
 
     db.query([[CREATE TABLE IF NOT EXISTS `player_weekly_unlocks` (
-        `player_id` INT(11) NOT NULL,
+        `player_id` INT UNSIGNED NOT NULL,
         `expansion_unlocked` TINYINT(1) NOT NULL DEFAULT 0,
-        KEY `idx_weekly_unlocks_player_id` (`player_id`),
         PRIMARY KEY (`player_id`),
         CONSTRAINT `fk_player_weekly_unlocks_player` FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;]])
@@ -217,7 +189,7 @@ function WeeklyTasks.generateTasks(player, difficulty)
 
     for _, monster in ipairs(selectedMonsters) do
         db.query(string.format(
-            "INSERT INTO `player_weekly_task_entries` (`player_id`,`week_key`,`task_type`,`target_name`,`required_count`,`progress_count`,`difficulty_tier`,`completed`) VALUES (%d,%s,'kill',%s,%d,0,%s,0)",
+            "INSERT INTO `player_weekly_task_entries` (`player_id`,`week_key`,`task_type`,`target_name`,`required_amount`,`current_amount`,`difficulty_tier`,`is_completed`) VALUES (%d,%s,'kill',%s,%d,0,%s,0)",
             playerId,
             db.escapeString(weekKey),
             db.escapeString(monster.name),
@@ -228,7 +200,7 @@ function WeeklyTasks.generateTasks(player, difficulty)
 
     for _, itemTask in ipairs(selectedItems) do
         db.query(string.format(
-            "INSERT INTO `player_weekly_task_entries` (`player_id`,`week_key`,`task_type`,`item_id`,`required_count`,`progress_count`,`difficulty_tier`,`completed`) VALUES (%d,%s,'delivery',%d,%d,0,%s,0)",
+            "INSERT INTO `player_weekly_task_entries` (`player_id`,`week_key`,`task_type`,`item_id`,`required_amount`,`current_amount`,`difficulty_tier`,`is_completed`) VALUES (%d,%s,'delivery',%d,%d,0,%s,0)",
             playerId,
             db.escapeString(weekKey),
             itemTask.itemId,
@@ -262,10 +234,10 @@ function WeeklyTasks.getTaskRows(player)
             taskType = Result.getString(resultId, "task_type"),
             targetName = Result.getString(resultId, "target_name"),
             itemId = Result.getNumber(resultId, "item_id"),
-            requiredAmount = Result.getNumber(resultId, "required_count"),
-            currentAmount = Result.getNumber(resultId, "progress_count"),
+            requiredAmount = Result.getNumber(resultId, "required_amount"),
+            currentAmount = Result.getNumber(resultId, "current_amount"),
             difficultyTier = Result.getString(resultId, "difficulty_tier"),
-            isCompleted = Result.getNumber(resultId, "completed") == 1,
+            isCompleted = Result.getNumber(resultId, "is_completed") == 1,
         })
     until not Result.next(resultId)
 
@@ -298,110 +270,35 @@ function WeeklyTasks.getHeader(player)
     }
 end
 
-local function appendU8(parts, value)
-    local v = math.max(0, math.min(255, math.floor(value or 0)))
-    parts[#parts + 1] = string.char(v)
-end
-
-local function appendU16(parts, value)
-    local v = math.max(0, math.min(65535, math.floor(value or 0)))
-    parts[#parts + 1] = string.char(v % 256, math.floor(v / 256) % 256)
-end
-
-local function appendU32(parts, value)
-    local v = math.max(0, math.floor(value or 0))
-    parts[#parts + 1] = string.char(
-        v % 256,
-        math.floor(v / 256) % 256,
-        math.floor(v / 65536) % 256,
-        math.floor(v / 16777216) % 256
-    )
-end
-
-local function appendString(parts, value)
-    local text = tostring(value or "")
-    appendU16(parts, #text)
-    parts[#parts + 1] = text
-end
-
-local function difficultyTypeToCode(typeName)
-    if typeName == "expansion" then
-        return 1
-    elseif typeName == "experience" then
-        return 2
-    elseif typeName == "seals" then
-        return 3
-    elseif typeName == "item" then
-        return 4
-    end
-
-    return 0
-end
-
-function WeeklyTasks.sendSync(player)
+function WeeklyTasks.buildSyncPayload(player)
     local header = WeeklyTasks.getHeader(player)
     local tasks = WeeklyTasks.getTaskRows(player)
 
-    local killTasks = {}
-    local deliveryTasks = {}
-    for _, task in ipairs(tasks) do
-        if task.taskType == "kill" then
-            killTasks[#killTasks + 1] = task
-        else
-            deliveryTasks[#deliveryTasks + 1] = task
-        end
-    end
+    local response = {
+        action = "sync",
+        state = header.state,
+        difficulty = header.difficulty,
+        completedKillTasks = header.completedKillTasks,
+        completedDeliveryTasks = header.completedDeliveryTasks,
+        points = header.points,
+        soulSeals = header.soulSeals,
+        multiplier = header.multiplier,
+        expansionUnlocked = WeeklyTasks.isExpansionUnlocked(player),
+        difficulties = {
+            Beginner = WeeklyTasks.difficulty.Beginner.level,
+            Adept = WeeklyTasks.difficulty.Adept.level,
+            Expert = WeeklyTasks.difficulty.Expert.level,
+            Master = WeeklyTasks.difficulty.Master.level,
+        },
+        tasks = tasks,
+        shop = WeeklyTaskRewards.shop,
+    }
 
-    local parts = {}
-    appendU8(parts, header.state)
-    appendString(parts, header.difficulty)
-    appendU16(parts, math.floor((header.multiplier or 1) * 100))
-    appendU16(parts, header.completedKillTasks)
-    appendU16(parts, header.completedDeliveryTasks)
-    appendU32(parts, header.points)
-    appendU32(parts, header.soulSeals)
-    appendU8(parts, WeeklyTasks.isExpansionUnlocked(player) and 1 or 0)
+    return json.encode(response)
+end
 
-    appendU8(parts, 4)
-    appendString(parts, "Beginner")
-    appendU16(parts, WeeklyTasks.difficulty.Beginner.level)
-    appendString(parts, "Adept")
-    appendU16(parts, WeeklyTasks.difficulty.Adept.level)
-    appendString(parts, "Expert")
-    appendU16(parts, WeeklyTasks.difficulty.Expert.level)
-    appendString(parts, "Master")
-    appendU16(parts, WeeklyTasks.difficulty.Master.level)
-
-    appendU8(parts, #killTasks)
-    for _, task in ipairs(killTasks) do
-        appendU32(parts, task.id)
-        appendString(parts, task.targetName)
-        appendU16(parts, task.currentAmount)
-        appendU16(parts, task.requiredAmount)
-        appendU8(parts, task.isCompleted and 1 or 0)
-    end
-
-    appendU8(parts, #deliveryTasks)
-    for _, task in ipairs(deliveryTasks) do
-        appendU32(parts, task.id)
-        appendU16(parts, task.itemId)
-        appendU16(parts, task.currentAmount)
-        appendU16(parts, task.requiredAmount)
-        appendU8(parts, task.isCompleted and 1 or 0)
-    end
-
-    local shop = WeeklyTaskRewards.shop or {}
-    appendU8(parts, #shop)
-    for _, offer in ipairs(shop) do
-        appendString(parts, offer.id)
-        appendString(parts, offer.name)
-        appendU16(parts, offer.price or 0)
-        appendU8(parts, difficultyTypeToCode(offer.type))
-        appendU16(parts, offer.amount or 0)
-        appendU16(parts, offer.itemId or 0)
-    end
-
-    player:sendExtendedOpcode(WeeklyTasks.opcode.event, table.concat(parts))
+function WeeklyTasks.sendSync(player)
+    player:sendExtendedOpcode(WeeklyTasks.opcode.event, WeeklyTasks.buildSyncPayload(player))
 end
 
 function WeeklyTasks.updateCompletionAndRewards(player)
@@ -512,7 +409,7 @@ function WeeklyTasks.onMonsterDeath(creature, killer, mostDamageKiller)
             local nextCurrent = math.min(task.currentAmount + 1, task.requiredAmount)
             local completed = nextCurrent >= task.requiredAmount and 1 or 0
             db.query(string.format(
-                "UPDATE `player_weekly_task_entries` SET `progress_count` = %d, `completed` = %d WHERE `id` = %d",
+                "UPDATE `player_weekly_task_entries` SET `current_amount` = %d, `is_completed` = %d WHERE `id` = %d",
                 nextCurrent, completed, task.id
             ))
             if completed == 1 then
@@ -601,9 +498,9 @@ function WeeklyTasks.tryDeliver(player, taskEntryId)
     local task = {
         id = Result.getNumber(resultId, "id"),
         itemId = Result.getNumber(resultId, "item_id"),
-        required = Result.getNumber(resultId, "required_count"),
-        current = Result.getNumber(resultId, "progress_count"),
-        completed = Result.getNumber(resultId, "completed") == 1,
+        required = Result.getNumber(resultId, "required_amount"),
+        current = Result.getNumber(resultId, "current_amount"),
+        completed = Result.getNumber(resultId, "is_completed") == 1,
     }
     Result.free(resultId)
 
@@ -652,7 +549,7 @@ function WeeklyTasks.tryDeliver(player, taskEntryId)
     end
 
     local nextCurrent = task.required
-    db.query(string.format("UPDATE `player_weekly_task_entries` SET `progress_count`=%d, `completed`=1 WHERE `id`=%d", nextCurrent, task.id))
+    db.query(string.format("UPDATE `player_weekly_task_entries` SET `current_amount`=%d, `is_completed`=1 WHERE `id`=%d", nextCurrent, task.id))
 
     WeeklyTasks.applyTaskReward(player)
     WeeklyTasks.updateCompletionAndRewards(player)
@@ -694,102 +591,36 @@ function WeeklyTasks.purchaseShop(player, offerId)
     return true, "Purchase completed."
 end
 
-local function readU8(buffer, offset)
-    if offset > #buffer then
-        return nil, offset
-    end
-
-    return string.byte(buffer, offset), offset + 1
-end
-
-local function readU16(buffer, offset)
-    if offset + 1 > #buffer then
-        return nil, offset
-    end
-
-    local b1 = string.byte(buffer, offset)
-    local b2 = string.byte(buffer, offset + 1)
-    return (b2 * 256) + b1, offset + 2
-end
-
-local function readU32(buffer, offset)
-    if offset + 3 > #buffer then
-        return nil, offset
-    end
-
-    local b1 = string.byte(buffer, offset)
-    local b2 = string.byte(buffer, offset + 1)
-    local b3 = string.byte(buffer, offset + 2)
-    local b4 = string.byte(buffer, offset + 3)
-    return (((b4 * 256 + b3) * 256 + b2) * 256) + b1, offset + 4
-end
-
-local function readString(buffer, offset)
-    local length
-    length, offset = readU16(buffer, offset)
-    if not length then
-        return nil, offset
-    end
-
-    local endPos = offset + length - 1
-    if endPos > #buffer then
-        return nil, offset
-    end
-
-    local value = buffer:sub(offset, endPos)
-    return value, endPos + 1
-end
-
 function WeeklyTasks.handleClientAction(player, payload)
-    local offset = 1
-    local action
-    action, offset = readU8(payload, offset)
-    if action == nil then
+    local data = json.decode(payload)
+    if type(data) ~= "table" then
         return false
     end
 
-    if action == 1 then -- sync
+    if data.action == "sync" then
         WeeklyTasks.ensureCurrentWeek(player)
         WeeklyTasks.sendSync(player)
         return true
     end
 
-    if action == 2 then -- selectDifficulty
-        local difficulty
-        difficulty, offset = readString(payload, offset)
-        if not difficulty then
-            return false
-        end
-
-        local ok, message = WeeklyTasks.trySelectDifficulty(player, difficulty)
+    if data.action == "selectDifficulty" then
+        local ok, message = WeeklyTasks.trySelectDifficulty(player, data.difficulty)
         if not ok then
             player:sendCancelMessage(message)
         end
         return ok
     end
 
-    if action == 3 then -- deliver
-        local entryId
-        entryId, offset = readU32(payload, offset)
-        if not entryId then
-            return false
-        end
-
-        local ok, message = WeeklyTasks.tryDeliver(player, entryId)
+    if data.action == "deliver" then
+        local ok, message = WeeklyTasks.tryDeliver(player, toNumber(data.entryId, 0))
         if not ok then
             player:sendCancelMessage(message)
         end
         return ok
     end
 
-    if action == 4 then -- shopPurchase
-        local offerId
-        offerId, offset = readString(payload, offset)
-        if not offerId then
-            return false
-        end
-
-        local ok, message = WeeklyTasks.purchaseShop(player, offerId)
+    if data.action == "shopPurchase" then
+        local ok, message = WeeklyTasks.purchaseShop(player, tostring(data.offerId or ""))
         if not ok then
             player:sendCancelMessage(message)
         end

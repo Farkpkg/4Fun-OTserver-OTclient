@@ -54,7 +54,7 @@ MainWindow
     anchors.right: parent.right
     margin: 8
 
-  Panel
+  StackPanel
     id: pages
     anchors.top: tabBar.bottom
     anchors.left: parent.left

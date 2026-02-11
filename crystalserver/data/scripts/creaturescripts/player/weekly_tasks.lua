@@ -4,6 +4,12 @@ function weeklyTasksLogin.onLogin(player)
     WeeklyTasks.ensureTables()
     WeeklyTasks.ensureCurrentWeek(player)
     player:registerEvent("WeeklyTasksExtendedOpcode")
+    addEvent(function(playerId)
+        local onlinePlayer = Player(playerId)
+        if onlinePlayer then
+            WeeklyTasks.sendSync(onlinePlayer)
+        end
+    end, 1000, player:getId())
     return true
 end
 
