@@ -1,0 +1,238 @@
+WeeklyTaskTile < Panel
+  height: 56
+  margin-bottom: 3
+  image-source: /images/ui/panel_flat
+  image-border: 1
+
+  Item
+    id: item
+    size: 32 32
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 5
+
+  UICreature
+    id: creature
+    size: 32 32
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 5
+
+  Label
+    id: title
+    anchors.top: parent.top
+    anchors.left: item.right
+    anchors.right: parent.right
+    margin-left: 6
+    margin-top: 6
+
+  Label
+    id: progress
+    anchors.left: title.left
+    anchors.bottom: parent.bottom
+    margin-bottom: 6
+
+  Button
+    id: deliver
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 5
+    width: 55
+    text: Deliver
+
+MainWindow
+  id: weeklyTasksWindow
+  !text: tr('Weekly Tasks')
+  size: 900 580
+
+  @onEscape: modules.game_weeklytasks.toggle()
+
+  TabBar
+    id: tabBar
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin: 8
+
+  StackPanel
+    id: pages
+    anchors.top: tabBar.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-left: 8
+    margin-right: 8
+    margin-bottom: 8
+
+  Panel
+    id: difficultyPage
+    anchors.fill: pages
+
+    Label
+      id: difficultySummary
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 20
+      text: Select difficulty to start this week.
+
+    Button
+      id: btnBeginner
+      anchors.top: difficultySummary.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 20
+      width: 180
+      text: Beginner
+
+    Button
+      id: btnAdept
+      anchors.top: btnBeginner.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 8
+      width: 180
+      text: Adept
+
+    Button
+      id: btnExpert
+      anchors.top: btnAdept.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 8
+      width: 180
+      text: Expert
+
+    Button
+      id: btnMaster
+      anchors.top: btnExpert.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 8
+      width: 180
+      text: Master
+
+  Panel
+    id: activePage
+    anchors.fill: pages
+
+    Label
+      id: weeklyStats
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 2
+
+    Panel
+      id: killPanel
+      anchors.top: weeklyStats.bottom
+      anchors.left: parent.left
+      width: 435
+      anchors.bottom: multiplierPanel.top
+      margin-top: 8
+      margin-bottom: 8
+      image-source: /images/ui/panel_flat
+      image-border: 1
+
+      Label
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 5
+        text: Bounty Tasks
+
+      ScrollablePanel
+        id: killList
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-top: 22
+        margin-left: 5
+        margin-right: 5
+        margin-bottom: 5
+        layout:
+          type: grid
+          cell-size: 140 60
+          flow: true
+
+    Panel
+      id: deliveryPanel
+      anchors.top: killPanel.top
+      anchors.right: parent.right
+      width: 435
+      anchors.bottom: killPanel.bottom
+      image-source: /images/ui/panel_flat
+      image-border: 1
+
+      Label
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 5
+        text: Weekly Deliveries
+
+      ScrollablePanel
+        id: deliveryList
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-top: 22
+        margin-left: 5
+        margin-right: 5
+        margin-bottom: 5
+        layout:
+          type: grid
+          cell-size: 140 60
+          flow: true
+
+    Panel
+      id: multiplierPanel
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: shopPanel.top
+      height: 46
+      margin-bottom: 6
+      image-source: /images/ui/panel_flat
+      image-border: 1
+
+      Label
+        id: multiplierInfo
+        anchors.centerIn: parent
+        text: Multiplier: x1
+
+    Panel
+      id: shopPanel
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      height: 78
+      image-source: /images/ui/panel_flat
+      image-border: 1
+
+      Label
+        anchors.top: parent.top
+        anchors.left: parent.left
+        margin-left: 8
+        margin-top: 4
+        text: Hunting Task Shop
+
+      ComboBox
+        id: shopOffers
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: buyOffer.left
+        margin-top: 24
+        margin-left: 8
+        margin-right: 8
+
+      Button
+        id: buyOffer
+        anchors.top: shopOffers.top
+        anchors.right: parent.right
+        margin-right: 8
+        width: 90
+        text: Buy
+
+  Button
+    id: close
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 10
+    margin-bottom: 10
+    text: Close
+    width: 80
