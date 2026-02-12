@@ -1,0 +1,170 @@
+ModernTaskWidget < UIWidget
+  height: 85
+  background-color: alpha
+  border-width: 1
+  border-color: #404040
+  margin-top: 5
+  margin-left: 5
+  margin-right: 5
+  padding: 5
+  
+  $hover:
+    background-color: #ffffff11
+
+  UIWidget
+    id: mobList
+    size: 100 48
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-left: 5
+    margin-top: 5
+    layout:
+      type: horizontalBox
+      spacing: 2
+
+  Label
+    id: title
+    text: Task Name
+    font: verdana-11px-rounded
+    anchors.left: mobList.right
+    anchors.right: actionButton.left
+    anchors.top: parent.top
+    margin-left: 10
+    margin-right: 10
+    margin-top: 2
+    color: #ffd000
+
+  Label
+    id: desc
+    text: Description...
+    font: verdana-11px-rounded
+    anchors.left: mobList.right
+    anchors.right: actionButton.left
+    anchors.top: title.bottom
+    margin-left: 10
+    margin-right: 10
+    margin-top: 2
+    color: #a0a0a0
+    text-wrap: true
+
+  Label
+    id: rewards
+    text: Rewards: ...
+    font: verdana-9px-italic
+    anchors.left: mobList.right
+    anchors.right: actionButton.left
+    anchors.top: desc.bottom
+    margin-left: 10
+    margin-right: 10
+    margin-top: 2
+    color: #00ff00
+    text-wrap: true
+
+  ProgressBar
+    id: progress
+    height: 14
+    anchors.left: mobList.right
+    anchors.right: actionButton.left
+    anchors.bottom: parent.bottom
+    margin-left: 10
+    margin-right: 10
+    margin-bottom: 5
+    background-color: #444444
+    image-source: /images/ui/panel_flat
+    image-border: 1
+    
+    Label
+      id: status
+      text: 0 / 100
+      font: verdana-9px-bold
+      anchors.centerIn: parent
+      color: #ffffff
+
+  Button
+    id: actionButton
+    text: Start
+    width: 60
+    height: 22
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 5
+
+ModernTaskWindow < MainWindow
+  id: taskWindow
+  !text: tr('Modern Tasks')
+  size: 500 400
+  @onEscape: self:hide()
+
+  Panel
+    id: filterBar
+    height: 24
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 5
+    layout:
+      type: horizontalBox
+      spacing: 5
+
+    Button
+      id: tabAll
+      text: All
+      width: 60
+      @onClick: modules.game_modern_tasks.selectCategory('All')
+
+    Button
+      id: tabDaily
+      text: Daily
+      width: 60
+      @onClick: modules.game_modern_tasks.selectCategory('Daily')
+
+    Button
+      id: tabStory
+      text: Story
+      width: 60
+      @onClick: modules.game_modern_tasks.selectCategory('Story')
+
+    Button
+      id: tabHardcore
+      text: Hardcore
+      width: 70
+      @onClick: modules.game_modern_tasks.selectCategory('Hardcore')
+
+  Label
+    id: pointsLabel
+    text: Points: 0
+    anchors.top: filterBar.bottom
+    anchors.left: parent.left
+    margin-top: 10
+    font: verdana-11px-rounded
+    color: #ebdbb2
+
+  ScrollablePanel
+    id: taskList
+    anchors.top: pointsLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: closeButton.top
+    margin-top: 10
+    margin-bottom: 10
+    vertical-scrollbar: taskScroll
+    layout: verticalBox
+    padding: 1
+    border-width: 1
+    border-color: #000000
+
+  VerticalScrollBar
+    id: taskScroll
+    anchors.top: taskList.top
+    anchors.bottom: taskList.bottom
+    anchors.right: taskList.right
+    step: 14
+    pixels-scroll: true
+
+  Button
+    id: closeButton
+    text: Close
+    width: 64
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    @onClick: modules.game_modern_tasks.hide()

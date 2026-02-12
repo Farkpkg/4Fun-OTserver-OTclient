@@ -1,0 +1,11 @@
+Module
+  name: game_modern_tasks
+  description: Tasks window
+  author: JulianBernal
+  version: 1.0.0
+
+  autoload: true
+  sandboxed: true
+  scripts: [ modern_tasks ]
+  @onLoad: init()
+  @onUnload: terminate()
