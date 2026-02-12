@@ -3,7 +3,7 @@ TaskBoardProgressTrack < Panel
   image-source: /images/ui/panel_flat
   image-border: 1
 
-  ProgressBar
+  RectangleProgressBar
     id: weeklyProgressBar
     anchors.left: parent.left
     anchors.right: parent.right

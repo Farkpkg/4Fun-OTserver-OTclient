@@ -1,5 +1,5 @@
 TaskBoardShopCard < Panel
-  height: 146
+  height: 120
   image-source: /images/ui/panel_flat
   image-border: 1
 
@@ -33,30 +33,9 @@ TaskBoardShopCard < Panel
   Label
     id: cost
     anchors.left: name.left
-    anchors.bottom: limit.top
-    margin-bottom: 4
-    text: Cost: 0
-
-  Label
-    id: limit
-    anchors.left: name.left
-    anchors.bottom: purchased.top
-    margin-bottom: 3
-    text: Weekly limit: 0
-
-  Label
-    id: purchased
-    anchors.left: name.left
     anchors.bottom: parent.bottom
     margin-bottom: 8
-    text: Purchased: 0
-
-  Label
-    id: state
-    anchors.right: buy.left
-    anchors.verticalCenter: buy.verticalCenter
-    margin-right: 6
-    text: Ready
+    text: Cost: 0
 
   Button
     id: buy

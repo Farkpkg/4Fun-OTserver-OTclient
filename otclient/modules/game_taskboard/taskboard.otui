@@ -206,32 +206,12 @@ MainWindow
     id: shopPage
     anchors.fill: tabContent
 
-    Panel
-      id: shopHeader
-      anchors.top: parent.top
-      anchors.left: parent.left
-      anchors.right: parent.right
-      height: 28
-      image-source: /images/ui/panel_flat
-      image-border: 1
-
-      Label
-        id: shopPointsLabel
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 8
-        text: Task Points: 0
-
     ScrollablePanel
       id: shopGrid
-      anchors.top: shopHeader.bottom
-      anchors.left: parent.left
-      anchors.right: parent.right
-      anchors.bottom: parent.bottom
-      margin-top: 6
+      anchors.fill: parent
       layout:
         type: grid
-        cell-size: 310 150
+        cell-size: 310 124
         flow: true
 
   Button

@@ -19,7 +19,7 @@ TaskBoardWeeklySlot < Panel
     margin-top: 6
     text: Weekly Task
 
-  ProgressBar
+  RectangleProgressBar
     id: progressBar
     anchors.left: title.left
     anchors.right: parent.right
@@ -35,18 +35,4 @@ TaskBoardWeeklySlot < Panel
     anchors.left: title.left
     anchors.bottom: parent.bottom
     margin-bottom: 5
-    text: 0 / 0
-
-  Label
-    id: completedOverlay
-    anchors.centerIn: parent
-    text-align: center
-    text: Completed
-    visible: false
-
-  Label
-    id: blockedOverlay
-    anchors.centerIn: parent
-    text-align: center
-    text: Select difficulty
-    visible: false
+    text: 0/0

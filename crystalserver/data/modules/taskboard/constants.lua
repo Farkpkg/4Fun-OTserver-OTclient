@@ -9,7 +9,6 @@ TaskBoardConstants.ACTION = {
     REROLL = "reroll",
     DELIVER = "deliver",
     BUY = "buy",
-    CLAIM_BOUNTY = "claimBounty",
 }
 
 TaskBoardConstants.DELTA_EVENT = {
