@@ -32,6 +32,11 @@ function init()
   g_ui.importStyle('components/talisman_panel.otui')
 
   window = g_ui.displayUI('taskboard')
+  if not window then
+    g_logger.error('[game_taskboard] Failed to load UI: taskboard.otui')
+    return
+  end
+
   window:setVisible(false)
 
   TaskBoardController.setup(window)
