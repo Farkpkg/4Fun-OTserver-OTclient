@@ -168,7 +168,15 @@ function TaskBoardRepository.saveTask(playerId, task)
     end
 
     local scope = task.monsterName and "bounty" or "weekly"
-    local weekKey = tostring(task.id:match("^[^:]+:[^:]*:([^:]+):") or "")
+    local idType, firstSegment, secondSegment = task.id:match("^([^:]+):([^:]+):([^:]+):")
+    local weekKey = ""
+
+    if idType == "bounty" then
+        weekKey = tostring(firstSegment or "")
+    else
+        weekKey = tostring(secondSegment or "")
+    end
+
     if weekKey == "" then
         weekKey = tostring(task.weekKey or "")
     end
@@ -188,12 +196,17 @@ function TaskBoardRepository.saveSnapshot(playerId, snapshot)
     local data = snapshot or {}
     TaskBoardRepository.savePlayerState(playerId, data.state or {})
 
+    local rerollStateJson = "null"
+    if data.rerollState ~= nil then
+        rerollStateJson = encodeJson(data.rerollState)
+    end
+
     db.query(string.format(
         "UPDATE `%s` SET `weekly_progress` = %s, `multiplier` = %s, `reroll_state` = %s, `shop_purchases` = %s WHERE `player_id` = %d",
         TABLE_PLAYERS,
         db.escapeString(encodeJson(data.weeklyProgress or {})),
         db.escapeString(encodeJson(data.multiplier or {})),
-        db.escapeString(encodeJson(data.rerollState or {})),
+        db.escapeString(rerollStateJson),
         db.escapeString(encodeJson(data.shopPurchases or {})),
         tonumber(playerId) or 0
     ))
