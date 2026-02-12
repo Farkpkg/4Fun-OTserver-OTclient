@@ -4,9 +4,6 @@ local ui
 local refs = {}
 local activeMenu = 'challengesMenu'
 
-local dailyMissionWidgets = {}
-local rewardSlotWidgets = { free = {}, premium = {} }
-
 local SHOP_ICON_BY_OFFER = {
   expansion_unlock = 18544,
   xp_boost_small = 3725,
@@ -28,15 +25,6 @@ local function safePercent(current, required)
   return math.max(0, math.min(100, math.floor(((current or 0) * 100) / required)))
 end
 
-
-local function dailyWidgetId(missionId)
-  return string.format('dailyMission_%s', tostring(missionId))
-end
-
-local function rewardWidgetId(stepId, lane)
-  return string.format('rewardSlot_%s_%s', tostring(stepId), tostring(lane))
-end
-
 local function switchMenu(menuId)
   activeMenu = menuId
   if refs.missionPanel then refs.missionPanel:setVisible(menuId == 'challengesMenu') end
@@ -45,56 +33,19 @@ local function switchMenu(menuId)
   if refs.rewardsMenu then refs.rewardsMenu:setOn(menuId == 'rewardsMenu') end
 end
 
-local function applyDailyMissionToWidget(widget, mission)
-  if not widget or not mission then return end
-  widget.missionName:setText(mission.name or mission.monsterName or 'Daily Mission')
-  widget.missionProgress:setValue(safePercent(mission.current, mission.required))
-  local status = mission.claimed and 'Claimed' or string.format('%d/%d', mission.current or 0, mission.required or 0)
-  widget.missionProgressText:setText(status)
-end
-
 local function renderDailyMissions()
   if not refs.dailyMissionsBg then return end
+  refs.dailyMissionsBg:destroyChildren()
 
   local board = TaskBoardStore.getState().board
-  local keep = {}
-  for _, mission in ipairs(board.dailyMissions or {}) do
-    local id = dailyWidgetId(mission.id)
-    keep[id] = true
-    local widget = dailyMissionWidgets[id]
-    if not widget then
-      widget = g_ui.createWidget('TaskBoardMissionWidget', refs.dailyMissionsBg)
-      widget:setId(id)
-      dailyMissionWidgets[id] = widget
-    end
-    applyDailyMissionToWidget(widget, mission)
+  local list = board.dailyMissions or {}
+  for _, mission in ipairs(list) do
+    local widget = g_ui.createWidget('TaskBoardMissionWidget', refs.dailyMissionsBg)
+    widget.missionName:setText(mission.name or 'Daily Mission')
+    widget.missionProgress:setValue(safePercent(mission.current, mission.required))
+    local status = mission.claimed and 'Claimed' or string.format('%d/%d', mission.current or 0, mission.required or 0)
+    widget.missionProgressText:setText(status)
   end
-
-  for id, widget in pairs(dailyMissionWidgets) do
-    if not keep[id] and widget then
-      widget:destroy()
-      dailyMissionWidgets[id] = nil
-    end
-  end
-end
-
-local function renderDailyMissionIncremental(missionId)
-  if not refs.dailyMissionsBg then return end
-  local board = TaskBoardStore.getState().board
-  local index = board.dailyById and board.dailyById[tostring(missionId)]
-  if not index then return end
-
-  local mission = board.dailyMissions[index]
-  if not mission then return end
-
-  local id = dailyWidgetId(mission.id)
-  local widget = dailyMissionWidgets[id]
-  if not widget then
-    widget = g_ui.createWidget('TaskBoardMissionWidget', refs.dailyMissionsBg)
-    widget:setId(id)
-    dailyMissionWidgets[id] = widget
-  end
-  applyDailyMissionToWidget(widget, mission)
 end
 
 local function renderBounties()
@@ -141,8 +92,8 @@ local function renderWeekly()
   end
 end
 
-local function applyRewardStepToSlot(slot, step, lane)
-  if not slot or not step then return end
+local function createTrackSlot(parent, step, lane)
+  local slot = g_ui.createWidget('TaskBoardTrackRewardSlot', parent)
   slot.levelLabel:setText(string.format('Lv.%d', step.stepId or 0))
   local laneData = lane == 'premium' and step.premium or step.free
   slot.rewardName:setText(laneData and laneData.title or '-')
@@ -165,43 +116,18 @@ local function applyRewardStepToSlot(slot, step, lane)
   end
 end
 
-local function createTrackSlot(parent, step, lane)
-  local id = rewardWidgetId(step.stepId, lane)
-  local laneCache = rewardSlotWidgets[lane]
-  local slot = laneCache[id]
-  if not slot then
-    slot = g_ui.createWidget('TaskBoardTrackRewardSlot', parent)
-    slot:setId(id)
-    laneCache[id] = slot
-  end
-  applyRewardStepToSlot(slot, step, lane)
-end
+local function renderRewardTrack()
+  if not refs.freeTrack or not refs.premiumTrack then return end
 
-local function renderRewardSlotIncremental(stepId, lane)
   local board = TaskBoardStore.getState().board
-  local parent = lane == 'premium' and refs.premiumTrack or refs.freeTrack
-  if not parent then return end
+  refs.freeTrack:destroyChildren()
+  refs.premiumTrack:destroyChildren()
 
-  local laneName = lane == 'premium' and 'premium' or 'free'
-  local index = board.rewardByKey and board.rewardByKey[string.format('%s:%s', tostring(stepId or ''), laneName)]
-  if not index then return end
-
-  local step = board.rewardTrack[index]
-  if not step then return end
-
-  local laneCache = rewardSlotWidgets[laneName]
-  local id = rewardWidgetId(step.stepId, laneName)
-  local slot = laneCache[id]
-  if not slot then
-    slot = g_ui.createWidget('TaskBoardTrackRewardSlot', parent)
-    slot:setId(id)
-    laneCache[id] = slot
+  for _, step in ipairs(board.rewardTrack or {}) do
+    createTrackSlot(refs.freeTrack, step, 'free')
+    createTrackSlot(refs.premiumTrack, step, 'premium')
   end
-  applyRewardStepToSlot(slot, step, laneName)
-end
 
-local function updateProgressWidgets()
-  local board = TaskBoardStore.getState().board
   if refs.playerLevel then
     refs.playerLevel:setText(string.format('Level %d', board.playerLevel or 0))
   end
@@ -211,45 +137,14 @@ local function updateProgressWidgets()
   if refs.levelProgress then
     refs.levelProgress:setValue(safePercent(board.currentPoints or 0, board.nextStepPoints or 1))
   end
+
   if refs.weeklyProgressBar then
     refs.weeklyProgressBar:setValue((board.weeklyProgress and board.weeklyProgress.totalCompleted) or 0)
   end
   if refs.multiplierState then
     refs.multiplierState:setText(string.format('x%.1f', (board.multiplier and board.multiplier.value) or 1.0))
   end
-end
-
-local function renderRewardTrack()
-  if not refs.freeTrack or not refs.premiumTrack then return end
-
-  local board = TaskBoardStore.getState().board
-  local keepFree = {}
-  local keepPremium = {}
-
-  for _, step in ipairs(board.rewardTrack or {}) do
-    local freeId = rewardWidgetId(step.stepId, 'free')
-    local premiumId = rewardWidgetId(step.stepId, 'premium')
-    keepFree[freeId] = true
-    keepPremium[premiumId] = true
-    createTrackSlot(refs.freeTrack, step, 'free')
-    createTrackSlot(refs.premiumTrack, step, 'premium')
-  end
-
-  for id, widget in pairs(rewardSlotWidgets.free) do
-    if not keepFree[id] and widget then
-      widget:destroy()
-      rewardSlotWidgets.free[id] = nil
-    end
-  end
-
-  for id, widget in pairs(rewardSlotWidgets.premium) do
-    if not keepPremium[id] and widget then
-      widget:destroy()
-      rewardSlotWidgets.premium[id] = nil
-    end
-  end
-
-  updateProgressWidgets()
+  applyRewardStepToSlot(slot, step, laneName)
 end
 
 local function renderShop()
@@ -347,70 +242,5 @@ end
 
 function TaskBoardController.onDelta(delta)
   TaskBoardStore.reduceDelta(delta)
-
-  if type(delta) ~= 'table' then
-    refreshAll()
-    return
-  end
-
-  local data = delta.data or {}
-  if delta.type == 'taskUpdated' and data.scope == 'bounty' then
-    if type(data.task) == 'table' and data.task.id then
-      renderDailyMissionIncremental(data.task.id)
-    else
-      renderDailyMissions()
-    end
-    renderBounties()
-    return
-  end
-
-  if delta.type == 'taskUpdated' and data.scope == 'daily' then
-    if data.missionId then
-      renderDailyMissionIncremental(data.missionId)
-    else
-      renderDailyMissions()
-    end
-    renderBounties()
-    return
-  end
-
-  if delta.type == 'taskUpdated' and data.scope == 'rewardTrack' then
-    renderRewardSlotIncremental(data.slot, data.lane)
-    return
-  end
-
-  if delta.type == 'progressUpdated' or delta.type == 'multiplierUpdated' then
-    updateProgressWidgets()
-    return
-  end
-
   refreshAll()
-end
-
-
-function TaskBoardController.reset()
-  dailyMissionWidgets = {}
-  rewardSlotWidgets = { free = {}, premium = {} }
-
-  if refs.dailyMissionsBg then
-    refs.dailyMissionsBg:destroyChildren()
-  end
-  if refs.freeTrack then
-    refs.freeTrack:destroyChildren()
-  end
-  if refs.premiumTrack then
-    refs.premiumTrack:destroyChildren()
-  end
-  if refs.bountyCardsContainer then
-    refs.bountyCardsContainer:destroyChildren()
-  end
-  if refs.weeklyKillGrid then
-    refs.weeklyKillGrid:destroyChildren()
-  end
-  if refs.weeklyDeliveryGrid then
-    refs.weeklyDeliveryGrid:destroyChildren()
-  end
-  if refs.shopGrid then
-    refs.shopGrid:destroyChildren()
-  end
 end

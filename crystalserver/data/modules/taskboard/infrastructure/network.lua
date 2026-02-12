@@ -16,13 +16,6 @@ if not TaskBoardDomainValidator then
 end
 
 local MAX_PAYLOAD_SIZE = 32 * 1024
-local ACTION_MIN_INTERVAL_MS = 90
-local OBS_DEBUG = false
-local ACTION_TRACK_TTL_MS = 60 * 1000
-local ActionLock = {}
-local LastActionAt = {}
-local ActionTrackSize = 0
-local traceDebug
 
 function TaskBoardNetwork.sendSync(player, payload)
     local encoded = TaskBoardSerializer.encode({
@@ -97,32 +90,6 @@ local function canProcessAction(playerId, action)
     return true
 end
 
-traceDebug = function(message)
-    if OBS_DEBUG and logger and logger.debug then
-        logger.debug(message)
-    end
-end
-
-local function cleanupActionState(playerId, now)
-    local currentNow = now or nowMs()
-    local last = tonumber(LastActionAt[playerId]) or 0
-    if last > 0 and (currentNow - last) > ACTION_TRACK_TTL_MS then
-        LastActionAt[playerId] = nil
-        ActionLock[playerId] = nil
-        ActionTrackSize = math.max(0, ActionTrackSize - 1)
-    end
-
-    if ActionTrackSize > 2048 then
-        for trackedId, trackedLast in pairs(LastActionAt) do
-            if (currentNow - (tonumber(trackedLast) or 0)) > ACTION_TRACK_TTL_MS then
-                LastActionAt[trackedId] = nil
-                ActionLock[trackedId] = nil
-                ActionTrackSize = math.max(0, ActionTrackSize - 1)
-            end
-        end
-    end
-end
-
 local function reject(errorCode)
     return {
         sync = nil,
@@ -192,16 +159,6 @@ function TaskBoardNetwork.onExtendedOpcode(player, opcode, buffer)
         return false
     end
 
-    if not isPlayerActive(player) then
-        local playerId = playerActionKey(player)
-        ActionLock[playerId] = nil
-        if LastActionAt[playerId] ~= nil then
-            ActionTrackSize = math.max(0, ActionTrackSize - 1)
-        end
-        LastActionAt[playerId] = nil
-        return false
-    end
-
     if type(buffer) ~= "string" or buffer == "" then
         player:sendCancelMessage("TaskBoard: EMPTY_PAYLOAD")
         return false
@@ -224,25 +181,8 @@ function TaskBoardNetwork.onExtendedOpcode(player, opcode, buffer)
         return false
     end
 
-    local playerId = playerActionKey(player)
-    cleanupActionState(playerId, nowMs())
-    if ActionLock[playerId] then
-        player:sendCancelMessage("TaskBoard: ACTION_IN_PROGRESS")
-        traceDebug(string.format("[taskboard] reject action=%s player=%d reason=ACTION_IN_PROGRESS", tostring(action), playerId))
-        return false
-    end
-
-    if not canProcessAction(playerId, action) then
-        player:sendCancelMessage("TaskBoard: RATE_LIMITED")
-        traceDebug(string.format("[taskboard] reject action=%s player=%d reason=RATE_LIMITED", tostring(action), playerId))
-        return false
-    end
-
-    ActionLock[playerId] = true
-    local ok, result = pcall(dispatchAction, player, action, payload)
-    ActionLock[playerId] = nil
-
-    if not ok or type(result) ~= "table" then
+    local result = dispatchAction(player, action, payload)
+    if type(result) ~= "table" then
         player:sendCancelMessage("TaskBoard: INTERNAL_DISPATCH_ERROR")
         return false
     end

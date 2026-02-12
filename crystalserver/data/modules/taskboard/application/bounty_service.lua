@@ -214,49 +214,35 @@ end
 function TaskBoardBountyService.claimDaily(playerId)
     local cache = getCache(playerId)
     local bounties = toTaskInstances(cache.bounties)
-    local claimedMissions = {}
+    local changed = false
 
     for _, bounty in ipairs(bounties) do
         if bounty:isComplete() and not bounty.claimed then
             bounty:markClaimed()
-            claimedMissions[#claimedMissions + 1] = {
-                missionId = bounty.id,
-                claimed = true,
-                progress = {
-                    current = bounty.current,
-                    required = bounty.required,
-                },
-            }
+            changed = true
         end
     end
 
-    if #claimedMissions == 0 then
+    if not changed then
         return {
             events = {},
             error = "NO_DAILY_CLAIMS_AVAILABLE",
-            claimedCount = 0,
         }
     end
 
     cache.bounties = toTaskDtos(bounties)
     saveState(playerId, cache)
 
-    local events = {}
-    for _, mission in ipairs(claimedMissions) do
-        events[#events + 1] = {
-            type = TaskBoardConstants.DELTA_EVENT.TASK_UPDATED,
-            data = {
-                scope = "daily",
-                missionId = mission.missionId,
-                claimed = mission.claimed,
-                progress = mission.progress,
-            },
-        }
-    end
-
     return {
-        events = events,
-        claimedCount = #claimedMissions,
+        events = {
+            {
+                type = TaskBoardConstants.DELTA_EVENT.TASK_UPDATED,
+                data = {
+                    scope = "bounty",
+                    tasks = cache.bounties,
+                },
+            },
+        },
     }
 end
 

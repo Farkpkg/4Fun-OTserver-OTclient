@@ -63,7 +63,6 @@ local function fetchSingleRow(query)
         multiplier = Result.getString(resultId, "multiplier"),
         rerollState = Result.getString(resultId, "reroll_state"),
         shopPurchases = Result.getString(resultId, "shop_purchases"),
-        stateVersion = Result.getNumber(resultId, "state_version"),
     }
 
     Result.free(resultId)
@@ -80,7 +79,6 @@ function TaskBoardRepository.ensureTables()
         `multiplier` TEXT NULL,
         `reroll_state` TEXT NULL,
         `shop_purchases` TEXT NULL,
-        `state_version` INT UNSIGNED NOT NULL DEFAULT 0,
         `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (`player_id`),
         CONSTRAINT `fk_player_taskboard_state_player` FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE CASCADE
@@ -98,14 +96,12 @@ function TaskBoardRepository.ensureTables()
         CONSTRAINT `fk_player_taskboard_tasks_player` FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;]], TABLE_TASKS))
 
-
-    db.query(string.format("ALTER TABLE `%s` ADD COLUMN `state_version` INT UNSIGNED NOT NULL DEFAULT 0", TABLE_PLAYERS))
     return true
 end
 
 function TaskBoardRepository.loadPlayerState(playerId)
     local row = fetchSingleRow(string.format(
-        "SELECT `player_id`, `week_key`, `board_state`, `difficulty`, `weekly_progress`, `multiplier`, `reroll_state`, `shop_purchases`, `state_version` FROM `%s` WHERE `player_id` = %d",
+        "SELECT `player_id`, `week_key`, `board_state`, `difficulty`, `weekly_progress`, `multiplier`, `reroll_state`, `shop_purchases` FROM `%s` WHERE `player_id` = %d",
         TABLE_PLAYERS,
         tonumber(playerId) or 0
     ))
@@ -188,91 +184,17 @@ function TaskBoardRepository.saveTask(playerId, task)
     ))
 end
 
-
-local function sanitizeProgress(progress)
-    local source = type(progress) == "table" and progress or {}
-    local completedKills = math.max(0, tonumber(source.completedKills) or 0)
-    local completedDeliveries = math.max(0, tonumber(source.completedDeliveries) or 0)
-    local totalCompleted = math.max(0, tonumber(source.totalCompleted) or (completedKills + completedDeliveries))
-    return {
-        completedKills = completedKills,
-        completedDeliveries = completedDeliveries,
-        totalCompleted = totalCompleted,
-        taskPoints = math.max(0, tonumber(source.taskPoints) or 0),
-        soulSeals = math.max(0, tonumber(source.soulSeals) or 0),
-    }
-end
-
-local function sanitizeTaskList(list, scope)
-    local out = {}
-    for _, task in ipairs(type(list) == "table" and list or {}) do
-        if type(task) == "table" and type(task.id) == "string" and task.id ~= "" then
-            local required = math.max(0, tonumber(task.required) or 0)
-            local current = math.max(0, tonumber(task.current) or 0)
-            if current > required and required > 0 then
-                current = required
-            end
-            local dto = {
-                id = task.id,
-                required = required,
-                current = current,
-                completed = task.completed == true or (required > 0 and current >= required),
-            }
-            if scope == "bounty" then
-                dto.monsterName = tostring(task.monsterName or "")
-                dto.claimed = task.claimed == true
-            else
-                dto.subtype = tostring(task.subtype or "kill")
-                dto.targetName = tostring(task.targetName or "")
-                dto.targetId = tonumber(task.targetId) or 0
-            end
-            out[#out + 1] = dto
-        end
-    end
-    return out
-end
-
-local function sanitizeSnapshot(playerId, snapshot)
-    local source = type(snapshot) == "table" and snapshot or {}
-    local state = type(source.state) == "table" and source.state or {}
-    local boardState = tostring(state.boardState or "WAITING_DIFFICULTY")
-    if boardState ~= "WAITING_DIFFICULTY" and boardState ~= "ACTIVE" then
-        boardState = "WAITING_DIFFICULTY"
-    end
-
-    local loaded = {
-        state = {
-            playerId = tonumber(playerId) or tonumber(state.playerId) or 0,
-            weekKey = tostring(source.weekKey or state.weekKey or ""),
-            boardState = boardState,
-            difficulty = tostring(state.difficulty or ""),
-        },
-        weekKey = tostring(source.weekKey or state.weekKey or ""),
-        bounties = sanitizeTaskList(source.bounties, "bounty"),
-        weeklyTasks = sanitizeTaskList(source.weeklyTasks, "weekly"),
-        weeklyProgress = sanitizeProgress(source.weeklyProgress),
-        multiplier = type(source.multiplier) == "table" and source.multiplier or { value = 1.0, nextThreshold = 4 },
-        rerollState = type(source.rerollState) == "table" and source.rerollState or nil,
-        shopPurchases = type(source.shopPurchases) == "table" and source.shopPurchases or {},
-        premiumEnabled = source.premiumEnabled == true,
-        stateVersion = math.max(0, tonumber(source.stateVersion) or 0),
-    }
-
-    return loaded
-end
-
 function TaskBoardRepository.saveSnapshot(playerId, snapshot)
-    local data = sanitizeSnapshot(playerId, snapshot)
+    local data = snapshot or {}
     TaskBoardRepository.savePlayerState(playerId, data.state or {})
 
     db.query(string.format(
-        "UPDATE `%s` SET `weekly_progress` = %s, `multiplier` = %s, `reroll_state` = %s, `shop_purchases` = %s, `state_version` = %d WHERE `player_id` = %d",
+        "UPDATE `%s` SET `weekly_progress` = %s, `multiplier` = %s, `reroll_state` = %s, `shop_purchases` = %s WHERE `player_id` = %d",
         TABLE_PLAYERS,
         db.escapeString(encodeJson(data.weeklyProgress or {})),
         db.escapeString(encodeJson(data.multiplier or {})),
         db.escapeString(encodeJson(data.rerollState or {})),
         db.escapeString(encodeJson(data.shopPurchases or {})),
-        math.max(0, tonumber(data.stateVersion) or 0),
         tonumber(playerId) or 0
     ))
 
@@ -289,7 +211,7 @@ end
 
 function TaskBoardRepository.loadSnapshot(playerId)
     local row = fetchSingleRow(string.format(
-        "SELECT `player_id`, `week_key`, `board_state`, `difficulty`, `weekly_progress`, `multiplier`, `reroll_state`, `shop_purchases`, `state_version` FROM `%s` WHERE `player_id` = %d",
+        "SELECT `player_id`, `week_key`, `board_state`, `difficulty`, `weekly_progress`, `multiplier`, `reroll_state`, `shop_purchases` FROM `%s` WHERE `player_id` = %d",
         TABLE_PLAYERS,
         tonumber(playerId) or 0
     ))
@@ -310,7 +232,7 @@ function TaskBoardRepository.loadSnapshot(playerId)
         end
     end
 
-    local loaded = {
+    return {
         state = {
             playerId = row.playerId,
             weekKey = row.weekKey,
@@ -324,20 +246,7 @@ function TaskBoardRepository.loadSnapshot(playerId)
         multiplier = decodeJson(row.multiplier) or { value = 1.0, nextThreshold = 4 },
         rerollState = decodeJson(row.rerollState) or nil,
         shopPurchases = decodeJson(row.shopPurchases) or {},
-        stateVersion = math.max(0, tonumber(row.stateVersion) or 0),
     }
-
-    return sanitizeSnapshot(playerId, loaded)
-end
-
-
-function TaskBoardRepository.setStateVersion(playerId, stateVersion)
-    return db.query(string.format(
-        "UPDATE `%s` SET `state_version` = %d WHERE `player_id` = %d",
-        TABLE_PLAYERS,
-        math.max(0, tonumber(stateVersion) or 0),
-        tonumber(playerId) or 0
-    ))
 end
 
 function TaskBoardRepository.clearWeek(playerId, oldWeekKey)
