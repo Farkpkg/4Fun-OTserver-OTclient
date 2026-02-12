@@ -41,6 +41,103 @@ local function toNumber(v, fallback)
     return n
 end
 
+
+local function isArrayTable(t)
+    local max = 0
+    local count = 0
+    for k, _ in pairs(t) do
+        if type(k) ~= "number" or k < 1 or k % 1 ~= 0 then
+            return false
+        end
+        if k > max then
+            max = k
+        end
+        count = count + 1
+    end
+
+    return max == count
+end
+
+local function jsonEscape(str)
+    return str:gsub("\\", "\\\\")
+              :gsub("\"", "\\\"")
+              :gsub("\n", "\\n")
+              :gsub("\r", "\\r")
+              :gsub("\t", "\\t")
+end
+
+local function encodeJson(value)
+    local valueType = type(value)
+    if valueType == "nil" then
+        return "null"
+    end
+
+    if valueType == "boolean" then
+        return value and "true" or "false"
+    end
+
+    if valueType == "number" then
+        if value ~= value or value == math.huge or value == -math.huge then
+            return "null"
+        end
+        return tostring(value)
+    end
+
+    if valueType == "string" then
+        return string.format('"%s"', jsonEscape(value))
+    end
+
+    if valueType ~= "table" then
+        return "null"
+    end
+
+    if isArrayTable(value) then
+        local items = {}
+        for i = 1, #value do
+            items[#items + 1] = encodeJson(value[i])
+        end
+        return string.format('[%s]', table.concat(items, ','))
+    end
+
+    local items = {}
+    for k, v in pairs(value) do
+        items[#items + 1] = string.format('"%s":%s', jsonEscape(tostring(k)), encodeJson(v))
+    end
+    return string.format('{%s}', table.concat(items, ','))
+end
+
+local function decodeActionPayload(payload)
+    if type(payload) ~= "string" or payload == "" then
+        return nil
+    end
+
+    local action = payload:match('"action"%s*:%s*"([^"]+)"')
+    if not action then
+        return nil
+    end
+
+    local data = { action = action }
+    local difficulty = payload:match('"difficulty"%s*:%s*"([^"]+)"')
+    if difficulty then
+        data.difficulty = difficulty
+    end
+
+    local entryId = payload:match('"entryId"%s*:%s*(-?%d+)')
+    if entryId then
+        data.entryId = tonumber(entryId)
+    end
+
+    local offerIdQuoted = payload:match('"offerId"%s*:%s*"([^"]+)"')
+    local offerIdNumber = payload:match('"offerId"%s*:%s*(-?%d+)')
+    if offerIdQuoted then
+        data.offerId = offerIdQuoted
+    elseif offerIdNumber then
+        data.offerId = offerIdNumber
+    end
+
+    return data
+end
+
 local function fetchSingleRow(query)
     local resultId = db.storeQuery(query)
     if not resultId then
@@ -294,7 +391,7 @@ function WeeklyTasks.buildSyncPayload(player)
         shop = WeeklyTaskRewards.shop,
     }
 
-    return json.encode(response)
+    return encodeJson(response)
 end
 
 function WeeklyTasks.sendSync(player)
@@ -592,7 +689,7 @@ function WeeklyTasks.purchaseShop(player, offerId)
 end
 
 function WeeklyTasks.handleClientAction(player, payload)
-    local data = json.decode(payload)
+    local data = decodeActionPayload(payload)
     if type(data) ~= "table" then
         return false
     end
