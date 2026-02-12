@@ -78,17 +78,20 @@ function TaskBoardBountyService.selectDifficulty(playerId, difficulty)
 
     saveState(playerId, cache)
 
-    return {
-        events = {
-            {
-                type = TaskBoardConstants.DELTA_EVENT.TASK_UPDATED,
-                data = {
-                    scope = "bounty",
-                    tasks = cache.bounties,
-                    state = cache.state,
-                },
+    local events = {}
+    for index, bounty in ipairs(cache.bounties or {}) do
+        events[#events + 1] = {
+            type = TaskBoardConstants.DELTA_EVENT.TASK_UPDATED,
+            data = {
+                scope = "bounty",
+                task = bounty,
+                state = index == 1 and cache.state or nil,
             },
-        },
+        }
+    end
+
+    return {
+        events = events,
     }
 end
 
@@ -121,17 +124,20 @@ function TaskBoardBountyService.reroll(playerId, currentTimeUTC)
 
     saveState(playerId, cache)
 
-    return {
-        events = {
-            {
-                type = TaskBoardConstants.DELTA_EVENT.TASK_UPDATED,
-                data = {
-                    scope = "bounty",
-                    tasks = cache.bounties,
-                    rerollState = cache.rerollState,
-                },
+    local events = {}
+    for index, bounty in ipairs(cache.bounties or {}) do
+        events[#events + 1] = {
+            type = TaskBoardConstants.DELTA_EVENT.TASK_UPDATED,
+            data = {
+                scope = "bounty",
+                task = bounty,
+                rerollState = index == 1 and cache.rerollState or nil,
             },
-        },
+        }
+    end
+
+    return {
+        events = events,
     }
 end
 

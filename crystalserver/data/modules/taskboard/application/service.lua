@@ -27,6 +27,8 @@ if not TaskBoardCache then
     dofile(basePath .. "/infrastructure/cache.lua")
 end
 
+local getCache
+
 local function appendEvents(target, source)
     for _, event in ipairs((source and source.events) or {}) do
         target[#target + 1] = event
@@ -125,6 +127,7 @@ local function buildSyncPayload(playerId)
         nextStepPoints = math.max(1, totalCompleted + 1),
         premiumEnabled = false,
         playerId = playerId,
+        stateVersion = math.max(0, tonumber(cache.stateVersion) or 0),
     }
 end
 
@@ -177,16 +180,25 @@ function TaskBoardService.selectDifficulty(playerId, difficulty)
     local recalc = TaskBoardWeeklyService.recalcProgress(playerId)
     appendEvents(deltas, recalc)
 
-    deltas[#deltas + 1] = {
-        type = "taskUpdated",
-        data = {
-            scope = "weekly",
-            tasks = serialized,
-        },
-    }
+    for _, task in ipairs(serialized) do
+        deltas[#deltas + 1] = {
+            type = "taskUpdated",
+            data = {
+                scope = "weekly",
+                task = task,
+            },
+        }
+    end
+
+    for _, mission in ipairs(buildDailyMissions(cache)) do
+        local dailyDelta = buildDailyMissionDelta(mission)
+        if dailyDelta then
+            deltas[#deltas + 1] = dailyDelta
+        end
+    end
 
     return {
-        sync = buildSyncPayload(playerId),
+        sync = nil,
         deltas = deltas,
     }
 end

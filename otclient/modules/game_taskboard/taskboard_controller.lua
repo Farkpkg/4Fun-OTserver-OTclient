@@ -144,6 +144,7 @@ local function renderRewardTrack()
   if refs.multiplierState then
     refs.multiplierState:setText(string.format('x%.1f', (board.multiplier and board.multiplier.value) or 1.0))
   end
+  applyRewardStepToSlot(slot, step, laneName)
 end
 
 local function renderShop()
@@ -173,6 +174,8 @@ end
 function TaskBoardController.setup(window)
   ui = window
   refs = {}
+  dailyMissionWidgets = {}
+  rewardSlotWidgets = { free = {}, premium = {} }
 
   refs.closeButton = findChild(ui, 'closeButton')
   refs.mainPanel = findChild(ui, 'mainPanel')

@@ -28,6 +28,7 @@ function TaskBoardNetwork.sendSync(player, payload)
     end
 
     player:sendExtendedOpcode(TaskBoardConstants.OP_CODE_TASKBOARD, encoded)
+    traceDebug(string.format("[taskboard] sync bytes=%d", #encoded))
     return true
 end
 
@@ -42,6 +43,50 @@ function TaskBoardNetwork.sendDelta(player, delta)
     end
 
     player:sendExtendedOpcode(TaskBoardConstants.OP_CODE_TASKBOARD, encoded)
+    traceDebug(string.format("[taskboard] delta bytes=%d", #encoded))
+    return true
+end
+
+
+local function nowMs()
+    return math.floor((os.clock() or 0) * 1000)
+end
+
+local function isPlayerActive(player)
+    if not player then
+        return false
+    end
+
+    if type(player.isRemoved) == "function" and player:isRemoved() then
+        return false
+    end
+
+    if type(player.isOnline) == "function" and not player:isOnline() then
+        return false
+    end
+
+    return true
+end
+
+local function playerActionKey(player)
+    return tonumber(player and player:getGuid()) or 0
+end
+
+local function canProcessAction(playerId, action)
+    if action == TaskBoardConstants.ACTION.OPEN then
+        return true
+    end
+
+    local last = tonumber(LastActionAt[playerId]) or 0
+    local now = nowMs()
+    if (now - last) < ACTION_MIN_INTERVAL_MS then
+        return false
+    end
+
+    if LastActionAt[playerId] == nil then
+        ActionTrackSize = ActionTrackSize + 1
+    end
+    LastActionAt[playerId] = now
     return true
 end
 
@@ -142,16 +187,30 @@ function TaskBoardNetwork.onExtendedOpcode(player, opcode, buffer)
         return false
     end
 
+    local deltas = result.deltas or {}
+    local versions = {}
+    if #deltas > 0 and TaskBoardService.reserveDeltaVersions then
+        versions = TaskBoardService.reserveDeltaVersions(playerId, #deltas) or {}
+    end
+
     if result.sync then
+        result.sync.stateVersion = TaskBoardService.currentStateVersion and TaskBoardService.currentStateVersion(playerId) or result.sync.stateVersion
         TaskBoardNetwork.sendSync(player, result.sync)
     end
 
-    for _, delta in ipairs(result.deltas or {}) do
-        TaskBoardNetwork.sendDelta(player, delta)
+    traceDebug(string.format("[taskboard] emit player=%d action=%s deltas=%d", playerId, tostring(action), #deltas))
+
+    for index, delta in ipairs(deltas) do
+        if type(delta) == "table" then
+            delta.version = tonumber(versions[index]) or nil
+            delta.timestamp = os.time()
+            TaskBoardNetwork.sendDelta(player, delta)
+        end
     end
 
     if result.error then
         player:sendCancelMessage(string.format("TaskBoard: %s", tostring(result.error)))
+        traceDebug(string.format("[taskboard] reject action=%s player=%d reason=%s", tostring(action), playerId, tostring(result.error)))
     end
 
     return true
