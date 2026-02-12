@@ -5,6 +5,35 @@ local window
 local button
 local state = {}
 
+local SHOP_ICON_BY_TYPE = {
+  expansion = 18544,
+  experience = 3725,
+  seals = 3004,
+  item = 3031
+}
+
+local function fmtReward(task)
+  if task.taskType == 'kill' then
+    return string.format('Hunt %d %s', task.requiredAmount or 0, task.targetName or 'creatures')
+  end
+
+  return string.format('Deliver %d x %s', task.requiredAmount or 0, task.itemName or string.format('Item #%d', task.itemId or 0))
+end
+
+local function fmtShopDescription(offer)
+  if offer.type == 'expansion' then
+    return 'Unlocks +3 kill and +3 delivery tasks every week.'
+  elseif offer.type == 'experience' then
+    return string.format('Grants %s experience.', offer.amount or 0)
+  elseif offer.type == 'seals' then
+    return string.format('Grants %s Soul Seals.', offer.amount or 0)
+  elseif offer.type == 'item' then
+    return string.format('Grants %dx item #%d.', offer.amount or 1, offer.itemId or 0)
+  end
+
+  return 'Weekly task shop offer.'
+end
+
 local function sendAction(payload)
   local protocol = g_game.getProtocolGame()
   if protocol then
@@ -56,12 +85,20 @@ local function createTaskTile(parent, task)
     tile.item:setVisible(false)
     tile.creature:setVisible(true)
     tile.title:setText(task.targetName)
-    tile.creature:setName(task.targetName)
+    tile.reward:setText(fmtReward(task))
+    if task.outfit then
+      tile.creature:setOutfit(task.outfit)
+    else
+      tile.creature:setVisible(false)
+      tile.item:setVisible(true)
+      tile.item:setItemId(9640)
+    end
   else
     tile.item:setVisible(true)
     tile.creature:setVisible(false)
     tile.item:setItemId(task.itemId)
-    tile.title:setText(string.format('Item #%d', task.itemId))
+    tile.title:setText(task.itemName or string.format('Item #%d', task.itemId))
+    tile.reward:setText(fmtReward(task))
     tile.deliver.onClick = function()
       sendAction({ action = 'deliver', entryId = task.id })
     end
@@ -75,6 +112,19 @@ local function createTaskTile(parent, task)
   return tile
 end
 
+local function createShopTile(parent, offer)
+  local tile = g_ui.createWidget('WeeklyTaskShopTile', parent)
+  local iconId = offer.itemId or SHOP_ICON_BY_TYPE[offer.type] or 3031
+
+  tile.offerItem:setItemId(iconId)
+  tile.offerName:setText(offer.name or 'Offer')
+  tile.offerDescription:setText(fmtShopDescription(offer))
+  tile.offerPrice:setText(string.format('%d task points', offer.price or 0))
+  tile.buyButton.onClick = function()
+    sendAction({ action = 'shopPurchase', offerId = offer.id })
+  end
+end
+
 function refreshActivePage()
   local page = window.activePage
   page:setVisible(state.state == 1)
@@ -84,6 +134,7 @@ function refreshActivePage()
 
   page.killPanel.killList:destroyChildren()
   page.deliveryPanel.deliveryList:destroyChildren()
+  page.shopPanel:destroyChildren()
 
   local killCount = 0
   local deliveryCount = 0
@@ -103,10 +154,8 @@ function refreshActivePage()
 
   page.multiplierPanel.multiplierInfo:setText(string.format('Multiplier: x%.2f | Total completed: %d', state.multiplier or 1, (state.completedKillTasks or 0) + (state.completedDeliveryTasks or 0)))
 
-  local combo = page.shopPanel.shopOffers
-  combo:clearOptions()
   for _, offer in ipairs(state.shop or {}) do
-    combo:addOption(string.format('%s (%d pts)', offer.name, offer.price), offer.id)
+    createShopTile(page.shopPanel, offer)
   end
 end
 
@@ -144,12 +193,6 @@ function init()
   window.difficultyPage.btnAdept.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Adept' }) end
   window.difficultyPage.btnExpert.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Expert' }) end
   window.difficultyPage.btnMaster.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Master' }) end
-  window.activePage.shopPanel.buyOffer.onClick = function()
-    local id = window.activePage.shopPanel.shopOffers:getCurrentOption().data
-    if id then
-      sendAction({ action = 'shopPurchase', offerId = id })
-    end
-  end
 
   if modules.client_topmenu and modules.client_topmenu.addLeftGameButton then
     button = modules.client_topmenu.addLeftGameButton('weeklyTasksButton', tr('Weekly Tasks'), '/images/topbuttons/questlog', toggle)
