@@ -1,0 +1,224 @@
+MainWindow
+  id: taskBoardWindow
+  !text: tr('Task Board')
+  size: 980 620
+  visible: false
+
+  @onEscape: modules.game_taskboard.toggle()
+
+  TabBar
+    id: tabBar
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin: 8
+
+  Panel
+    id: tabContent
+    anchors.top: tabBar.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-left: 8
+    margin-right: 8
+    margin-bottom: 8
+
+  Panel
+    id: bountyPage
+    anchors.fill: tabContent
+
+    Panel
+      id: bountyToolbar
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 34
+
+      ComboBox
+        id: difficultyDropdown
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        width: 190
+
+      Button
+        id: preferredListButton
+        anchors.left: difficultyDropdown.right
+        anchors.verticalCenter: parent.verticalCenter
+        margin-left: 6
+        width: 120
+        text: Preferred List
+
+      Button
+        id: rerollButton
+        anchors.left: preferredListButton.right
+        anchors.verticalCenter: parent.verticalCenter
+        margin-left: 6
+        width: 95
+        text: Reroll
+
+      Button
+        id: claimDailyButton
+        anchors.left: rerollButton.right
+        anchors.verticalCenter: parent.verticalCenter
+        margin-left: 6
+        width: 120
+        text: Claim Daily
+
+    Panel
+      id: bountyDifficultyGate
+      anchors.top: bountyToolbar.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: bountyCardsContainer.top
+      margin-top: 6
+      margin-bottom: 6
+      image-source: /images/ui/panel_flat
+      image-border: 1
+
+      Label
+        id: difficultyCta
+        anchors.centerIn: parent
+        text: Select a difficulty
+
+    Panel
+      id: bountyCardsContainer
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: bountyTalismanPanel.top
+      height: 250
+      margin-bottom: 8
+      layout:
+        type: horizontalBox
+        spacing: 8
+
+    TaskBoardTalismanPanel
+      id: bountyTalismanPanel
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+
+  Panel
+    id: weeklyPage
+    anchors.fill: tabContent
+
+    Panel
+      id: weeklyTop
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: weeklyBottom.top
+      margin-bottom: 8
+
+      Panel
+        id: weeklyKillPanel
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        width: 480
+        image-source: /images/ui/panel_flat
+        image-border: 1
+
+        Label
+          id: weeklyKillTitle
+          anchors.top: parent.top
+          anchors.left: parent.left
+          anchors.right: parent.right
+          margin-top: 6
+          text-align: center
+          text: Weekly Kill Tasks
+
+        ScrollablePanel
+          id: weeklyKillGrid
+          anchors.top: weeklyKillTitle.bottom
+          anchors.left: parent.left
+          anchors.right: parent.right
+          anchors.bottom: parent.bottom
+          margin: 6
+          layout:
+            type: grid
+            cell-size: 150 84
+            flow: true
+
+      Panel
+        id: weeklyDeliveryPanel
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        width: 480
+        image-source: /images/ui/panel_flat
+        image-border: 1
+
+        Label
+          id: weeklyDeliveryTitle
+          anchors.top: parent.top
+          anchors.left: parent.left
+          anchors.right: parent.right
+          margin-top: 6
+          text-align: center
+          text: Weekly Delivery Tasks
+
+        ScrollablePanel
+          id: weeklyDeliveryGrid
+          anchors.top: weeklyDeliveryTitle.bottom
+          anchors.left: parent.left
+          anchors.right: parent.right
+          anchors.bottom: parent.bottom
+          margin: 6
+          layout:
+            type: grid
+            cell-size: 150 84
+            flow: true
+
+    Panel
+      id: weeklyBottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      height: 150
+
+      TaskBoardProgressTrack
+        id: weeklyProgressTrack
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: weeklyRewardsPanel.left
+        margin-right: 8
+
+      Panel
+        id: weeklyRewardsPanel
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        width: 250
+        image-source: /images/ui/panel_flat
+        image-border: 1
+
+        Label
+          id: weeklyRewardsTitle
+          anchors.top: parent.top
+          anchors.left: parent.left
+          anchors.right: parent.right
+          margin-top: 8
+          text-align: center
+          text: Weekly Rewards
+
+  Panel
+    id: shopPage
+    anchors.fill: tabContent
+
+    ScrollablePanel
+      id: shopGrid
+      anchors.fill: parent
+      layout:
+        type: grid
+        cell-size: 310 124
+        flow: true
+
+  Button
+    id: closeButton
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-right: 10
+    margin-bottom: 10
+    width: 80
+    text: Close
