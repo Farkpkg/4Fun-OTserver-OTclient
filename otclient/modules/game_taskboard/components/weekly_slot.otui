@@ -1,0 +1,52 @@
+TaskBoardWeeklySlot < Panel
+  height: 82
+  image-source: /images/ui/panel_flat
+  image-border: 1
+
+  Item
+    id: icon
+    size: 28 28
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+
+  Label
+    id: title
+    anchors.left: icon.right
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-left: 6
+    margin-top: 6
+    text: Weekly Task
+
+  ProgressBar
+    id: progressBar
+    anchors.left: title.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-right: 6
+    margin-bottom: 20
+    minimum: 0
+    maximum: 100
+    value: 0
+
+  Label
+    id: progressText
+    anchors.left: title.left
+    anchors.bottom: parent.bottom
+    margin-bottom: 5
+    text: 0 / 0
+
+  Label
+    id: completedOverlay
+    anchors.centerIn: parent
+    text-align: center
+    text: Completed
+    visible: false
+
+  Label
+    id: blockedOverlay
+    anchors.centerIn: parent
+    text-align: center
+    text: Select difficulty
+    visible: false
