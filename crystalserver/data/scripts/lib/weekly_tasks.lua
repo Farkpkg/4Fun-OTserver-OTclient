@@ -326,15 +326,49 @@ function WeeklyTasks.getTaskRows(player)
     end
 
     repeat
+        local taskType = Result.getString(resultId, "task_type")
+        local targetName = Result.getString(resultId, "target_name")
+        local itemId = Result.getNumber(resultId, "item_id")
+
+        local itemName = ""
+        if taskType == "delivery" and itemId > 0 then
+            local itemType = ItemType(itemId)
+            if itemType then
+                itemName = itemType:getName() or ""
+            end
+        end
+
+        local outfit = nil
+        if taskType == "kill" and targetName ~= "" then
+            local monsterType = MonsterType(targetName)
+            if monsterType then
+                local monsterOutfit = monsterType:getOutfit()
+                if monsterOutfit then
+                    outfit = {
+                        type = monsterOutfit.lookType,
+                        auxType = monsterOutfit.lookTypeEx,
+                        head = monsterOutfit.lookHead,
+                        body = monsterOutfit.lookBody,
+                        legs = monsterOutfit.lookLegs,
+                        feet = monsterOutfit.lookFeet,
+                        addons = monsterOutfit.lookAddons,
+                        mount = monsterOutfit.lookMount,
+                    }
+                end
+            end
+        end
+
         table.insert(rows, {
             id = Result.getNumber(resultId, "id"),
-            taskType = Result.getString(resultId, "task_type"),
-            targetName = Result.getString(resultId, "target_name"),
-            itemId = Result.getNumber(resultId, "item_id"),
+            taskType = taskType,
+            targetName = targetName,
+            itemId = itemId,
+            itemName = itemName,
             requiredAmount = Result.getNumber(resultId, "required_amount"),
             currentAmount = Result.getNumber(resultId, "current_amount"),
             difficultyTier = Result.getString(resultId, "difficulty_tier"),
             isCompleted = Result.getNumber(resultId, "is_completed") == 1,
+            outfit = outfit,
         })
     until not Result.next(resultId)
 

@@ -1,5 +1,5 @@
 WeeklyTaskTile < Panel
-  height: 56
+  height: 88
   margin-bottom: 3
   image-source: /images/ui/panel_flat
   image-border: 1
@@ -29,8 +29,15 @@ WeeklyTaskTile < Panel
   Label
     id: progress
     anchors.left: title.left
-    anchors.bottom: parent.bottom
-    margin-bottom: 6
+    anchors.top: title.bottom
+    margin-top: 6
+
+  Label
+    id: reward
+    anchors.left: title.left
+    anchors.top: progress.bottom
+    margin-top: 4
+    color: #bbbbbb
 
   Button
     id: deliver
@@ -39,6 +46,49 @@ WeeklyTaskTile < Panel
     margin-right: 5
     width: 55
     text: Deliver
+
+WeeklyTaskShopTile < Panel
+  height: 96
+  margin-bottom: 4
+  image-source: /images/ui/panel_flat
+  image-border: 1
+
+  Item
+    id: offerItem
+    size: 32 32
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+
+  Label
+    id: offerName
+    anchors.left: offerItem.right
+    anchors.top: parent.top
+    margin-left: 8
+    margin-top: 8
+
+  Label
+    id: offerDescription
+    anchors.left: offerName.left
+    anchors.right: buyButton.left
+    anchors.top: offerName.bottom
+    margin-top: 4
+    color: #cfcfcf
+
+  Label
+    id: offerPrice
+    anchors.left: offerName.left
+    anchors.bottom: parent.bottom
+    margin-bottom: 8
+    color: #f2d060
+
+  Button
+    id: buyButton
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 6
+    width: 88
+    text: Buy
 
 MainWindow
   id: weeklyTasksWindow
@@ -184,7 +234,7 @@ MainWindow
       id: multiplierPanel
       anchors.left: parent.left
       anchors.right: parent.right
-      anchors.bottom: shopPanel.top
+      anchors.bottom: shopLabel.top
       height: 46
       margin-bottom: 6
       image-source: /images/ui/panel_flat
@@ -195,39 +245,25 @@ MainWindow
         anchors.centerIn: parent
         text: Multiplier: x1
 
-    Panel
+    Label
+      id: shopLabel
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: shopPanel.top
+      margin-bottom: 4
+      text: Hunting Task Shop
+
+    ScrollablePanel
       id: shopPanel
       anchors.left: parent.left
       anchors.right: parent.right
       anchors.bottom: parent.bottom
-      height: 78
+      height: 160
       image-source: /images/ui/panel_flat
       image-border: 1
-
-      Label
-        anchors.top: parent.top
-        anchors.left: parent.left
-        margin-left: 8
-        margin-top: 4
-        text: Hunting Task Shop
-
-      ComboBox
-        id: shopOffers
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        margin-top: 24
-        margin-left: 8
-        margin-right: 106
-
-      Button
-        id: buyOffer
-        anchors.top: parent.top
-        anchors.right: parent.right
-        margin-top: 24
-        margin-right: 8
-        width: 90
-        text: Buy
+      layout:
+        type: verticalBox
+        spacing: 3
 
   Button
     id: close
