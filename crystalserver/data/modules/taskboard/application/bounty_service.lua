@@ -38,7 +38,12 @@ local function toTaskDtos(tasks)
 end
 
 local function getCache(playerId)
-    local cache = TaskBoardCache.get(playerId) or {
+    local cache = TaskBoardCache.get(playerId)
+    if not cache then
+        cache = TaskBoardRepository.loadSnapshot(playerId)
+    end
+
+    cache = cache or {
         state = TaskBoardDomainModels.PlayerTaskState:new({ playerId = playerId }):toDTO(),
         bounties = {},
         weeklyTasks = {},
@@ -50,10 +55,7 @@ end
 
 local function saveState(playerId, cache)
     TaskBoardCache.set(playerId, cache)
-    TaskBoardRepository.savePlayerState(playerId, cache.state)
-    for _, bountyDto in ipairs(cache.bounties or {}) do
-        TaskBoardRepository.saveTask(playerId, bountyDto)
-    end
+    TaskBoardRepository.saveSnapshot(playerId, cache)
 end
 
 function TaskBoardBountyService.selectDifficulty(playerId, difficulty)
@@ -196,6 +198,42 @@ function TaskBoardBountyService.claimBounty(playerId, bountyId)
                 data = {
                     scope = "bounty",
                     task = claimedTask,
+                },
+            },
+        },
+    }
+end
+
+
+function TaskBoardBountyService.claimDaily(playerId)
+    local cache = getCache(playerId)
+    local bounties = toTaskInstances(cache.bounties)
+    local changed = false
+
+    for _, bounty in ipairs(bounties) do
+        if bounty:isComplete() and not bounty.claimed then
+            bounty:markClaimed()
+            changed = true
+        end
+    end
+
+    if not changed then
+        return {
+            events = {},
+            error = "NO_DAILY_CLAIMS_AVAILABLE",
+        }
+    end
+
+    cache.bounties = toTaskDtos(bounties)
+    saveState(playerId, cache)
+
+    return {
+        events = {
+            {
+                type = TaskBoardConstants.DELTA_EVENT.TASK_UPDATED,
+                data = {
+                    scope = "bounty",
+                    tasks = cache.bounties,
                 },
             },
         },

@@ -34,29 +34,96 @@ local function appendEvents(target, source)
 end
 
 local function getCache(playerId)
-    local cache = TaskBoardCache.get(playerId) or {
-        state = TaskBoardDomainModels.PlayerTaskState:new({ playerId = playerId }):toDTO(),
-        bounties = {},
-        weeklyTasks = {},
-        weeklyProgress = TaskBoardDomainModels.WeeklyProgress:new():toDTO(),
-        multiplier = 1.0,
-        shopPurchases = {},
-    }
+    local cache = TaskBoardCache.get(playerId)
+    if not cache then
+        local snapshot = TaskBoardRepository.loadSnapshot(playerId)
+        cache = snapshot or {
+            state = TaskBoardDomainModels.PlayerTaskState:new({ playerId = playerId }):toDTO(),
+            bounties = {},
+            weeklyTasks = {},
+            weeklyProgress = TaskBoardDomainModels.WeeklyProgress:new():toDTO(),
+            multiplier = { value = 1.0, nextThreshold = 4 },
+            shopPurchases = {},
+        }
+    end
+
+    cache.weeklyProgress = TaskBoardDomainModels.WeeklyProgress:new(cache.weeklyProgress):toDTO()
+    if type(cache.multiplier) ~= "table" then
+        cache.multiplier = { value = tonumber(cache.multiplier) or 1.0, nextThreshold = 4 }
+    end
+
     TaskBoardCache.set(playerId, cache)
     return cache
 end
 
+local function buildRewardTrack(cache)
+    local steps = {}
+    local totalCompleted = (cache.weeklyProgress and cache.weeklyProgress.totalCompleted) or 0
+    local shopOffers = TaskBoardShopService.getOffers()
+    local purchases = cache.shopPurchases or {}
+
+    for step = 1, 18 do
+        local unlocked = totalCompleted >= step
+        local freeOffer = shopOffers[((step - 1) % #shopOffers) + 1]
+        local premiumOffer = shopOffers[((step) % #shopOffers) + 1]
+
+        steps[#steps + 1] = {
+            stepId = step,
+            unlocked = unlocked,
+            free = {
+                offerId = freeOffer.id,
+                title = freeOffer.name,
+                claimed = purchases[string.format("track:free:%d", step)] == 1,
+            },
+            premium = {
+                offerId = premiumOffer.id,
+                title = premiumOffer.name,
+                claimed = purchases[string.format("track:premium:%d", step)] == 1,
+            },
+        }
+    end
+
+    return steps
+end
+
+local function buildDailyMissions(cache)
+    local missions = {}
+    for idx = 1, 2 do
+        local bounty = (cache.bounties or {})[idx]
+        if bounty then
+            missions[#missions + 1] = {
+                id = bounty.id,
+                name = bounty.monsterName,
+                current = bounty.current,
+                required = bounty.required,
+                completed = bounty.completed,
+                claimed = bounty.claimed,
+            }
+        end
+    end
+    return missions
+end
+
 local function buildSyncPayload(playerId)
     local cache = getCache(playerId)
+    local totalCompleted = (cache.weeklyProgress and cache.weeklyProgress.totalCompleted) or 0
+
     return {
         state = cache.state,
         weekKey = cache.weekKey,
         bounties = cache.bounties or {},
         weeklyTasks = cache.weeklyTasks or {},
         weeklyProgress = cache.weeklyProgress or TaskBoardDomainModels.WeeklyProgress:new():toDTO(),
-        multiplier = cache.multiplier or 1.0,
+        multiplier = cache.multiplier or { value = 1.0, nextThreshold = 4 },
         rerollState = cache.rerollState,
         shopPurchases = cache.shopPurchases or {},
+        shopOffers = TaskBoardShopService.getOffers(),
+        dailyMissions = buildDailyMissions(cache),
+        rewardTrack = buildRewardTrack(cache),
+        playerLevel = totalCompleted,
+        currentPoints = totalCompleted,
+        nextStepPoints = math.max(1, totalCompleted + 1),
+        premiumEnabled = false,
         playerId = playerId,
     }
 end
@@ -164,6 +231,61 @@ function TaskBoardService.buy(playerId, offerId)
         sync = nil,
         deltas = result.events or {},
         error = result.error,
+    }
+end
+
+function TaskBoardService.claimBounty(playerId, bountyId)
+    local result = TaskBoardBountyService.claimBounty(playerId, bountyId)
+    return {
+        sync = nil,
+        deltas = result.events or {},
+        error = result.error,
+    }
+end
+
+function TaskBoardService.claimDaily(playerId)
+    local result = TaskBoardBountyService.claimDaily(playerId)
+    return {
+        sync = nil,
+        deltas = result.events or {},
+        error = result.error,
+    }
+end
+
+function TaskBoardService.claimReward(playerId, stepId, lane)
+    local cache = getCache(playerId)
+    local step = tonumber(stepId)
+    if not step or step < 1 or step > 18 then
+        return { sync = nil, deltas = {}, error = "INVALID_REWARD_STEP" }
+    end
+
+    lane = tostring(lane or "free")
+    if lane ~= "free" and lane ~= "premium" then
+        return { sync = nil, deltas = {}, error = "INVALID_REWARD_LANE" }
+    end
+
+    if lane == "premium" and not cache.premiumEnabled then
+        return { sync = nil, deltas = {}, error = "PREMIUM_REQUIRED" }
+    end
+
+    local totalCompleted = (cache.weeklyProgress and cache.weeklyProgress.totalCompleted) or 0
+    if totalCompleted < step then
+        return { sync = nil, deltas = {}, error = "REWARD_LOCKED" }
+    end
+
+    cache.shopPurchases = cache.shopPurchases or {}
+    local key = string.format("track:%s:%d", lane, step)
+    if cache.shopPurchases[key] == 1 then
+        return { sync = nil, deltas = {}, error = "REWARD_ALREADY_CLAIMED" }
+    end
+
+    cache.shopPurchases[key] = 1
+    TaskBoardRepository.saveSnapshot(playerId, cache)
+    TaskBoardCache.set(playerId, cache)
+
+    return {
+        sync = buildSyncPayload(playerId),
+        deltas = {},
     }
 end
 

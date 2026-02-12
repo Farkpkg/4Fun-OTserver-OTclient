@@ -25,11 +25,16 @@ local TASK_POINTS_PER_COMPLETION = 10
 local SOUL_SEALS_PER_COMPLETION = 1
 
 local function getCache(playerId)
-    local cache = TaskBoardCache.get(playerId) or {
+    local cache = TaskBoardCache.get(playerId)
+    if not cache then
+        cache = TaskBoardRepository.loadSnapshot(playerId)
+    end
+
+    cache = cache or {
         state = TaskBoardDomainModels.PlayerTaskState:new({ playerId = playerId }):toDTO(),
         weeklyTasks = {},
         weeklyProgress = TaskBoardDomainModels.WeeklyProgress:new():toDTO(),
-        multiplier = 1.0,
+        multiplier = { value = 1.0, nextThreshold = 4 },
     }
     TaskBoardCache.set(playerId, cache)
     return cache
@@ -53,10 +58,7 @@ end
 
 local function saveCache(playerId, cache)
     TaskBoardCache.set(playerId, cache)
-    for _, taskDto in ipairs(cache.weeklyTasks or {}) do
-        TaskBoardRepository.saveTask(playerId, taskDto)
-    end
-    TaskBoardRepository.savePlayerState(playerId, cache.state)
+    TaskBoardRepository.saveSnapshot(playerId, cache)
 end
 
 function TaskBoardWeeklyService.recalcProgress(playerId)
@@ -68,7 +70,7 @@ function TaskBoardWeeklyService.recalcProgress(playerId)
 
     local multiplierMeta = TaskBoardDomainCalculator.getMultiplier(progress.totalCompleted)
     cache.weeklyProgress = progress:toDTO()
-    cache.multiplier = multiplierMeta.value
+    cache.multiplier = multiplierMeta
 
     saveCache(playerId, cache)
 
