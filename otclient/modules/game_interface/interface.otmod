@@ -54,5 +54,6 @@ Module
     - game_rewardwall
     - game_forge
     - game_weeklytasks
+    - game_taskboard
   @onLoad: init()
   @onUnload: terminate()

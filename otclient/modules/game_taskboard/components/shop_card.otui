@@ -1,0 +1,68 @@
+TaskBoardShopCard < Panel
+  height: 146
+  image-source: /images/ui/panel_flat
+  image-border: 1
+
+  Item
+    id: icon
+    size: 34 34
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-left: 8
+    margin-top: 8
+
+  Label
+    id: name
+    anchors.left: icon.right
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-left: 8
+    margin-top: 8
+    text: Offer Name
+
+  Label
+    id: description
+    anchors.left: name.left
+    anchors.right: parent.right
+    anchors.top: name.bottom
+    margin-top: 4
+    margin-right: 8
+    text-wrap: true
+    text: Offer Description
+
+  Label
+    id: cost
+    anchors.left: name.left
+    anchors.bottom: limit.top
+    margin-bottom: 4
+    text: Cost: 0
+
+  Label
+    id: limit
+    anchors.left: name.left
+    anchors.bottom: purchased.top
+    margin-bottom: 3
+    text: Weekly limit: 0
+
+  Label
+    id: purchased
+    anchors.left: name.left
+    anchors.bottom: parent.bottom
+    margin-bottom: 8
+    text: Purchased: 0
+
+  Label
+    id: state
+    anchors.right: buy.left
+    anchors.verticalCenter: buy.verticalCenter
+    margin-right: 6
+    text: Ready
+
+  Button
+    id: buy
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-right: 8
+    margin-bottom: 6
+    width: 64
+    text: Buy
