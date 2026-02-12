@@ -160,6 +160,46 @@ local function fetchSingleRow(query)
     return row
 end
 
+local function columnExists(tableName, columnName)
+    local resultId = db.storeQuery(string.format(
+        "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = %s AND `COLUMN_NAME` = %s LIMIT 1",
+        db.escapeString(tableName),
+        db.escapeString(columnName)
+    ))
+
+    if not resultId then
+        return false
+    end
+
+    Result.free(resultId)
+    return true
+end
+
+local function ensureWeeklyEntriesCompatibility()
+    -- Compatibility with legacy schema created by migration v65:
+    -- required_count/progress_count/completed.
+    if not columnExists("player_weekly_task_entries", "required_amount") then
+        db.query("ALTER TABLE `player_weekly_task_entries` ADD COLUMN `required_amount` INT UNSIGNED NOT NULL DEFAULT 0")
+        if columnExists("player_weekly_task_entries", "required_count") then
+            db.query("UPDATE `player_weekly_task_entries` SET `required_amount` = `required_count`")
+        end
+    end
+
+    if not columnExists("player_weekly_task_entries", "current_amount") then
+        db.query("ALTER TABLE `player_weekly_task_entries` ADD COLUMN `current_amount` INT UNSIGNED NOT NULL DEFAULT 0")
+        if columnExists("player_weekly_task_entries", "progress_count") then
+            db.query("UPDATE `player_weekly_task_entries` SET `current_amount` = `progress_count`")
+        end
+    end
+
+    if not columnExists("player_weekly_task_entries", "is_completed") then
+        db.query("ALTER TABLE `player_weekly_task_entries` ADD COLUMN `is_completed` TINYINT(1) NOT NULL DEFAULT 0")
+        if columnExists("player_weekly_task_entries", "completed") then
+            db.query("UPDATE `player_weekly_task_entries` SET `is_completed` = `completed`")
+        end
+    end
+end
+
 function WeeklyTasks.ensureTables()
     db.query([[CREATE TABLE IF NOT EXISTS `player_weekly_tasks` (
         `player_id` INT UNSIGNED NOT NULL,
@@ -198,6 +238,8 @@ function WeeklyTasks.ensureTables()
         PRIMARY KEY (`player_id`),
         CONSTRAINT `fk_player_weekly_unlocks_player` FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;]])
+
+    ensureWeeklyEntriesCompatibility()
 end
 
 function WeeklyTasks.ensurePlayerUnlock(player)
