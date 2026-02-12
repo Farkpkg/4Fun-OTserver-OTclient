@@ -1,9 +1,13 @@
 if not TaskBoard then
   local dataDirectory = configManager.getString(configKeys.DATA_DIRECTORY)
-  local configuredPath = string.format('%s/modules/taskboard/init.lua', dataDirectory)
+  local modulePath = string.format('%s/modules/taskboard/init.lua', dataDirectory)
 
-  local loadedConfigured = pcall(dofile, configuredPath)
-  if not loadedConfigured then
-    dofile('data/modules/taskboard/init.lua')
+  local file = io.open(modulePath, 'r')
+  if file then
+    file:close()
+  else
+    modulePath = 'data/modules/taskboard/init.lua'
   end
+
+  dofile(modulePath)
 end
