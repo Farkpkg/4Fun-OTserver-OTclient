@@ -54,7 +54,7 @@ MainWindow
     anchors.right: parent.right
     margin: 8
 
-  StackPanel
+  Panel
     id: pages
     anchors.top: tabBar.bottom
     anchors.left: parent.left
@@ -215,15 +215,16 @@ MainWindow
         id: shopOffers
         anchors.top: parent.top
         anchors.left: parent.left
-        anchors.right: buyOffer.left
+        anchors.right: parent.right
         margin-top: 24
         margin-left: 8
-        margin-right: 8
+        margin-right: 106
 
       Button
         id: buyOffer
-        anchors.top: shopOffers.top
+        anchors.top: parent.top
         anchors.right: parent.right
+        margin-top: 24
         margin-right: 8
         width: 90
         text: Buy
