@@ -1,6 +1,6 @@
 TaskBoardGenerator = TaskBoardGenerator or {}
 
-local basePath = string.format("%s/modules/taskboard", configManager.getString(configKeys.DATA_DIRECTORY))
+local basePath = _G.TaskBoardBasePath or string.format("%s/modules/taskboard", configManager.getString(configKeys.DATA_DIRECTORY))
 
 if not TaskBoardDomainModels then
     dofile(basePath .. "/domain/models.lua")
