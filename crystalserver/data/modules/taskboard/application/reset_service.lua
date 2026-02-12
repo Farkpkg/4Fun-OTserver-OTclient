@@ -44,15 +44,16 @@ function TaskBoardResetService.ensureWeek(playerId, currentWeekKey)
 
         TaskBoardRepository.savePlayerState(playerId, state:toDTO())
 
-        mergeCache(playerId, {
+        local refreshed = mergeCache(playerId, {
             weekKey = currentWeekKey,
             state = state:toDTO(),
             bounties = {},
             weeklyTasks = {},
             weeklyProgress = TaskBoardDomainModels.WeeklyProgress:new():toDTO(),
-            multiplier = 1.0,
+            multiplier = { value = 1.0, nextThreshold = 4 },
             rerollState = nil,
         })
+        TaskBoardRepository.saveSnapshot(playerId, refreshed)
 
         return {
             rotated = true,
@@ -60,10 +61,11 @@ function TaskBoardResetService.ensureWeek(playerId, currentWeekKey)
         }
     end
 
-    mergeCache(playerId, {
+    local refreshed = mergeCache(playerId, {
         weekKey = currentWeekKey,
         state = state:toDTO(),
     })
+    TaskBoardRepository.saveSnapshot(playerId, refreshed)
 
     return {
         rotated = false,

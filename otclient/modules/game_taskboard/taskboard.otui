@@ -1,31 +1,152 @@
-MainWindow
-  id: taskBoardWindow
-  !text: tr('Task Board')
-  size: 980 620
-  visible: false
+TaskBoardMenuButton < UIButton
+  size: 120 24
+  image-source: /images/ui/panel_flat
+  image-border: 1
+  color: #d6d6d6
 
-  @onEscape: modules.game_taskboard.toggle()
+TaskBoardMissionWidget < Panel
+  height: 60
+  image-source: /images/ui/panel_flat
+  image-border: 1
 
-  TabBar
-    id: tabBar
+  Label
+    id: missionName
     anchors.top: parent.top
     anchors.left: parent.left
     anchors.right: parent.right
-    margin: 8
+    margin: 4
+    text: Daily Mission
 
-  Panel
-    id: tabContent
-    anchors.top: tabBar.bottom
+  RectangleProgressBar
+    id: missionProgress
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: missionProgressText.top
+    margin-left: 6
+    margin-right: 6
+    margin-bottom: 2
+    minimum: 0
+    maximum: 100
+    value: 0
+
+  Label
+    id: missionProgressText
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.bottom: parent.bottom
-    margin-left: 8
-    margin-right: 8
-    margin-bottom: 8
+    margin-bottom: 4
+    text-align: center
+    text: 0/0
+
+TaskBoardTrackRewardSlot < Panel
+  width: 96
+  height: 64
+  image-source: /images/ui/panel_flat
+  image-border: 1
+
+  Label
+    id: levelLabel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 2
+    text-align: center
+    text: Lv.1
+
+  Label
+    id: rewardName
+    anchors.top: levelLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 2
+    text-align: center
+    text: Reward
+
+  Button
+    id: claimButton
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-bottom: 2
+    width: 70
+    height: 18
+    text: Claim
+
+TaskBoardMissionPanel < Panel
+  id: missionPanel
 
   Panel
-    id: bountyPage
-    anchors.fill: tabContent
+    id: dailyBg
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 142
+    image-source: /images/ui/panel_flat
+    image-border: 1
+
+    Label
+      id: dailyTitle
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 4
+      text-align: center
+      text: Daily Missions
+
+    Panel
+      id: dailyMissionsBg
+      anchors.top: dailyTitle.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin: 6
+      layout:
+        type: verticalBox
+        spacing: 4
+
+  Panel
+    id: playerProgressPanel
+    anchors.top: dailyBg.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 72
+    margin-top: 6
+    image-source: /images/ui/panel_flat
+    image-border: 1
+
+    Label
+      id: playerLevel
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 10
+      text: Level 0
+
+    RectangleProgressBar
+      id: levelProgress
+      anchors.left: playerLevel.right
+      anchors.right: currentlyLevelText.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+      margin-right: 8
+      minimum: 0
+      maximum: 100
+      value: 0
+
+    Label
+      id: currentlyLevelText
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 10
+      text: 0/1
+
+  Panel
+    id: missionsBackground
+    anchors.top: playerProgressPanel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 6
+    image-source: /images/ui/panel_flat
+    image-border: 1
 
     Panel
       id: bountyToolbar
@@ -84,37 +205,26 @@ MainWindow
       id: bountyCardsContainer
       anchors.left: parent.left
       anchors.right: parent.right
-      anchors.bottom: bountyTalismanPanel.top
-      height: 250
-      margin-bottom: 8
+      anchors.bottom: weeklyContainer.top
+      height: 200
+      margin-bottom: 6
       layout:
         type: horizontalBox
         spacing: 8
 
-    TaskBoardTalismanPanel
-      id: bountyTalismanPanel
+    Panel
+      id: weeklyContainer
       anchors.left: parent.left
       anchors.right: parent.right
       anchors.bottom: parent.bottom
-
-  Panel
-    id: weeklyPage
-    anchors.fill: tabContent
-
-    Panel
-      id: weeklyTop
-      anchors.top: parent.top
-      anchors.left: parent.left
-      anchors.right: parent.right
-      anchors.bottom: weeklyBottom.top
-      margin-bottom: 8
+      height: 170
 
       Panel
         id: weeklyKillPanel
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.bottom: parent.bottom
-        width: 480
+        width: 470
         image-source: /images/ui/panel_flat
         image-border: 1
 
@@ -123,7 +233,7 @@ MainWindow
           anchors.top: parent.top
           anchors.left: parent.left
           anchors.right: parent.right
-          margin-top: 6
+          margin-top: 3
           text-align: center
           text: Weekly Kill Tasks
 
@@ -133,7 +243,7 @@ MainWindow
           anchors.left: parent.left
           anchors.right: parent.right
           anchors.bottom: parent.bottom
-          margin: 6
+          margin: 4
           layout:
             type: grid
             cell-size: 150 84
@@ -144,7 +254,7 @@ MainWindow
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        width: 480
+        width: 470
         image-source: /images/ui/panel_flat
         image-border: 1
 
@@ -153,7 +263,7 @@ MainWindow
           anchors.top: parent.top
           anchors.left: parent.left
           anchors.right: parent.right
-          margin-top: 6
+          margin-top: 3
           text-align: center
           text: Weekly Delivery Tasks
 
@@ -163,62 +273,134 @@ MainWindow
           anchors.left: parent.left
           anchors.right: parent.right
           anchors.bottom: parent.bottom
-          margin: 6
+          margin: 4
           layout:
             type: grid
             cell-size: 150 84
             flow: true
 
-    Panel
-      id: weeklyBottom
+TaskBoardProgressPanel < Panel
+  id: progressPanel
+  visible: false
+
+  Panel
+    id: progressHeader
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 72
+    image-source: /images/ui/panel_flat
+    image-border: 1
+
+    Label
+      id: trackHeader
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 6
+      text: Reward Track
+
+    TaskBoardProgressTrack
+      id: weeklyProgressTrack
       anchors.left: parent.left
       anchors.right: parent.right
       anchors.bottom: parent.bottom
-      height: 150
+      height: 48
 
-      TaskBoardProgressTrack
-        id: weeklyProgressTrack
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.right: weeklyRewardsPanel.left
-        margin-right: 8
+  Label
+    id: freeTrackLabel
+    anchors.top: progressHeader.bottom
+    anchors.left: parent.left
+    margin-top: 6
+    text: Free Track
 
-      Panel
-        id: weeklyRewardsPanel
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        width: 250
-        image-source: /images/ui/panel_flat
-        image-border: 1
+  ScrollablePanel
+    id: freeTrack
+    anchors.top: freeTrackLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 90
+    margin-top: 2
+    layout:
+      type: horizontalBox
+      spacing: 6
 
-        Label
-          id: weeklyRewardsTitle
-          anchors.top: parent.top
-          anchors.left: parent.left
-          anchors.right: parent.right
-          margin-top: 8
-          text-align: center
-          text: Weekly Rewards
+  Label
+    id: premiumTrackLabel
+    anchors.top: freeTrack.bottom
+    anchors.left: parent.left
+    margin-top: 6
+    text: Premium Track
 
-  Panel
-    id: shopPage
-    anchors.fill: tabContent
+  ScrollablePanel
+    id: premiumTrack
+    anchors.top: premiumTrackLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: shopGrid.top
+    margin-top: 2
+    margin-bottom: 6
+    layout:
+      type: horizontalBox
+      spacing: 6
 
-    ScrollablePanel
-      id: shopGrid
-      anchors.fill: parent
-      layout:
-        type: grid
-        cell-size: 310 124
-        flow: true
-
-  Button
-    id: closeButton
+  ScrollablePanel
+    id: shopGrid
+    anchors.left: parent.left
     anchors.right: parent.right
     anchors.bottom: parent.bottom
-    margin-right: 10
-    margin-bottom: 10
-    width: 80
-    text: Close
+    height: 140
+    layout:
+      type: grid
+      cell-size: 310 124
+      flow: true
+
+MainWindow
+  id: taskBoardWindow
+  !text: tr('Task Board')
+  size: 980 620
+  visible: false
+  @onEscape: modules.game_taskboard.toggle()
+
+  Panel
+    id: mainPanel
+    anchors.fill: parent
+    margin: 8
+
+    Panel
+      id: optionsTabBar
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 28
+
+      TaskBoardMenuButton
+        id: challengesMenu
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        text: Challenges
+
+      TaskBoardMenuButton
+        id: rewardsMenu
+        anchors.left: challengesMenu.right
+        anchors.verticalCenter: parent.verticalCenter
+        margin-left: 8
+        text: Rewards
+
+    Panel
+      id: contentPanel
+      anchors.top: optionsTabBar.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: closeButton.top
+      margin-top: 8
+      margin-bottom: 8
+
+      TaskBoardMissionPanel
+      TaskBoardProgressPanel
+
+    Button
+      id: closeButton
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      width: 80
+      text: Close

@@ -7,8 +7,8 @@ local function onExtendedOpcode(protocol, opcode, buffer)
     return
   end
 
-  local payload = json.decode(buffer)
-  if type(payload) ~= 'table' then
+  local ok, payload = pcall(json.decode, buffer)
+  if not ok or type(payload) ~= 'table' then
     return
   end
 

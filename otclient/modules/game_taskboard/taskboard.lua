@@ -22,6 +22,13 @@ local function onGameEnd()
   if window then
     window:setVisible(false)
   end
+
+  if TaskBoardStore and TaskBoardStore.clearState then
+    TaskBoardStore.clearState()
+  end
+  if TaskBoardController and TaskBoardController.reset then
+    TaskBoardController.reset()
+  end
 end
 
 function init()
@@ -56,6 +63,13 @@ function terminate()
   if button then
     button:destroy()
     button = nil
+  end
+
+  if TaskBoardStore and TaskBoardStore.clearState then
+    TaskBoardStore.clearState()
+  end
+  if TaskBoardController and TaskBoardController.reset then
+    TaskBoardController.reset()
   end
 
   if window then

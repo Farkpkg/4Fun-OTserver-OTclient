@@ -38,7 +38,12 @@ local function toTaskDtos(tasks)
 end
 
 local function getCache(playerId)
-    local cache = TaskBoardCache.get(playerId) or {
+    local cache = TaskBoardCache.get(playerId)
+    if not cache then
+        cache = TaskBoardRepository.loadSnapshot(playerId)
+    end
+
+    cache = cache or {
         state = TaskBoardDomainModels.PlayerTaskState:new({ playerId = playerId }):toDTO(),
         bounties = {},
         weeklyTasks = {},
@@ -50,10 +55,7 @@ end
 
 local function saveState(playerId, cache)
     TaskBoardCache.set(playerId, cache)
-    TaskBoardRepository.savePlayerState(playerId, cache.state)
-    for _, bountyDto in ipairs(cache.bounties or {}) do
-        TaskBoardRepository.saveTask(playerId, bountyDto)
-    end
+    TaskBoardRepository.saveSnapshot(playerId, cache)
 end
 
 function TaskBoardBountyService.selectDifficulty(playerId, difficulty)
@@ -76,17 +78,20 @@ function TaskBoardBountyService.selectDifficulty(playerId, difficulty)
 
     saveState(playerId, cache)
 
-    return {
-        events = {
-            {
-                type = TaskBoardConstants.DELTA_EVENT.TASK_UPDATED,
-                data = {
-                    scope = "bounty",
-                    tasks = cache.bounties,
-                    state = cache.state,
-                },
+    local events = {}
+    for index, bounty in ipairs(cache.bounties or {}) do
+        events[#events + 1] = {
+            type = TaskBoardConstants.DELTA_EVENT.TASK_UPDATED,
+            data = {
+                scope = "bounty",
+                task = bounty,
+                state = index == 1 and cache.state or nil,
             },
-        },
+        }
+    end
+
+    return {
+        events = events,
     }
 end
 
@@ -119,17 +124,20 @@ function TaskBoardBountyService.reroll(playerId, currentTimeUTC)
 
     saveState(playerId, cache)
 
-    return {
-        events = {
-            {
-                type = TaskBoardConstants.DELTA_EVENT.TASK_UPDATED,
-                data = {
-                    scope = "bounty",
-                    tasks = cache.bounties,
-                    rerollState = cache.rerollState,
-                },
+    local events = {}
+    for index, bounty in ipairs(cache.bounties or {}) do
+        events[#events + 1] = {
+            type = TaskBoardConstants.DELTA_EVENT.TASK_UPDATED,
+            data = {
+                scope = "bounty",
+                task = bounty,
+                rerollState = index == 1 and cache.rerollState or nil,
             },
-        },
+        }
+    end
+
+    return {
+        events = events,
     }
 end
 
@@ -199,6 +207,56 @@ function TaskBoardBountyService.claimBounty(playerId, bountyId)
                 },
             },
         },
+    }
+end
+
+
+function TaskBoardBountyService.claimDaily(playerId)
+    local cache = getCache(playerId)
+    local bounties = toTaskInstances(cache.bounties)
+    local claimedMissions = {}
+
+    for _, bounty in ipairs(bounties) do
+        if bounty:isComplete() and not bounty.claimed then
+            bounty:markClaimed()
+            claimedMissions[#claimedMissions + 1] = {
+                missionId = bounty.id,
+                claimed = true,
+                progress = {
+                    current = bounty.current,
+                    required = bounty.required,
+                },
+            }
+        end
+    end
+
+    if #claimedMissions == 0 then
+        return {
+            events = {},
+            error = "NO_DAILY_CLAIMS_AVAILABLE",
+            claimedCount = 0,
+        }
+    end
+
+    cache.bounties = toTaskDtos(bounties)
+    saveState(playerId, cache)
+
+    local events = {}
+    for _, mission in ipairs(claimedMissions) do
+        events[#events + 1] = {
+            type = TaskBoardConstants.DELTA_EVENT.TASK_UPDATED,
+            data = {
+                scope = "daily",
+                missionId = mission.missionId,
+                claimed = mission.claimed,
+                progress = mission.progress,
+            },
+        }
+    end
+
+    return {
+        events = events,
+        claimedCount = #claimedMissions,
     }
 end
 
