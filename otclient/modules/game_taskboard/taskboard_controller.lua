@@ -2,13 +2,34 @@ TaskBoardController = TaskBoardController or {}
 
 local ui
 local tabs = {}
+local refs = {}
+
+local function findChild(widget, id, required)
+  if not widget then
+    if required then
+      print(string.format('Taskboard: %s não encontrada', id))
+    end
+    return nil
+  end
+
+  local child = widget:getChildById(id)
+  if not child and widget.recursiveGetChildById then
+    child = widget:recursiveGetChildById(id)
+  end
+
+  if required and not child then
+    print(string.format('Taskboard: %s não encontrada', id))
+  end
+
+  return child
+end
 
 local function createMockBountyCards()
-  if not ui then return end
-  ui.bountyPage.bountyCardsContainer:destroyChildren()
+  if not refs.bountyCardsContainer then return end
+  refs.bountyCardsContainer:destroyChildren()
 
   for index = 1, 3 do
-    local card = g_ui.createWidget('TaskBoardBountyCard', ui.bountyPage.bountyCardsContainer)
+    local card = g_ui.createWidget('TaskBoardBountyCard', refs.bountyCardsContainer)
     card.title:setText(string.format('Bounty #%d', index))
     card.progressText:setText('0 / 100')
     card.rewardPreview:setText('Reward preview')
@@ -16,27 +37,27 @@ local function createMockBountyCards()
 end
 
 local function createMockWeeklySlots()
-  if not ui then return end
-  ui.weeklyPage.weeklyTop.weeklyKillPanel.weeklyKillGrid:destroyChildren()
-  ui.weeklyPage.weeklyTop.weeklyDeliveryPanel.weeklyDeliveryGrid:destroyChildren()
+  if not refs.weeklyKillGrid or not refs.weeklyDeliveryGrid then return end
+  refs.weeklyKillGrid:destroyChildren()
+  refs.weeklyDeliveryGrid:destroyChildren()
 
   for index = 1, 6 do
-    local killSlot = g_ui.createWidget('TaskBoardWeeklySlot', ui.weeklyPage.weeklyTop.weeklyKillPanel.weeklyKillGrid)
+    local killSlot = g_ui.createWidget('TaskBoardWeeklySlot', refs.weeklyKillGrid)
     killSlot.title:setText(string.format('Kill Task %d', index))
     killSlot.progressText:setText('0/0')
 
-    local deliverySlot = g_ui.createWidget('TaskBoardWeeklySlot', ui.weeklyPage.weeklyTop.weeklyDeliveryPanel.weeklyDeliveryGrid)
+    local deliverySlot = g_ui.createWidget('TaskBoardWeeklySlot', refs.weeklyDeliveryGrid)
     deliverySlot.title:setText(string.format('Delivery Task %d', index))
     deliverySlot.progressText:setText('0/0')
   end
 end
 
 local function createMockShopCards()
-  if not ui then return end
-  ui.shopPage.shopGrid:destroyChildren()
+  if not refs.shopGrid then return end
+  refs.shopGrid:destroyChildren()
 
   for index = 1, 6 do
-    local card = g_ui.createWidget('TaskBoardShopCard', ui.shopPage.shopGrid)
+    local card = g_ui.createWidget('TaskBoardShopCard', refs.shopGrid)
     card.name:setText(string.format('Offer %d', index))
     card.description:setText('Shop item description placeholder.')
     card.cost:setText('Cost: 0')
@@ -44,10 +65,10 @@ local function createMockShopCards()
 end
 
 local function applyViewModel(vm)
-  if not ui then return end
+  if not refs.bountyDifficultyGate or not refs.bountyCardsContainer then return end
 
-  ui.bountyPage.bountyDifficultyGate:setVisible(vm.bounty.showDifficultyGate)
-  ui.bountyPage.bountyCardsContainer:setVisible(not vm.bounty.showDifficultyGate)
+  refs.bountyDifficultyGate:setVisible(vm.bounty.showDifficultyGate)
+  refs.bountyCardsContainer:setVisible(not vm.bounty.showDifficultyGate)
 end
 
 local function selectTab(tabId)
@@ -57,17 +78,41 @@ end
 
 function TaskBoardController.setup(window)
   ui = window
+  refs = {}
 
-  ui.closeButton.onClick = function()
+  refs.closeButton = findChild(ui, 'closeButton', true)
+  refs.tabBar = findChild(ui, 'tabBar', true)
+  refs.tabContent = findChild(ui, 'tabContent', true)
+
+  refs.bountyPage = findChild(ui, 'bountyPage', true)
+  if not refs.bountyPage then
+    return
+  end
+
+  refs.weeklyPage = findChild(ui, 'weeklyPage', true)
+  refs.shopPage = findChild(ui, 'shopPage', true)
+  refs.bountyDifficultyGate = findChild(refs.bountyPage, 'bountyDifficultyGate', true)
+  refs.bountyCardsContainer = findChild(refs.bountyPage, 'bountyCardsContainer', true)
+  refs.bountyToolbar = findChild(refs.bountyPage, 'bountyToolbar', true)
+  refs.difficultyDropdown = findChild(refs.bountyToolbar, 'difficultyDropdown', true)
+  refs.weeklyKillGrid = findChild(refs.weeklyPage, 'weeklyKillGrid', true)
+  refs.weeklyDeliveryGrid = findChild(refs.weeklyPage, 'weeklyDeliveryGrid', true)
+  refs.shopGrid = findChild(refs.shopPage, 'shopGrid', true)
+
+  if not refs.closeButton or not refs.tabBar or not refs.tabContent or not refs.weeklyPage or not refs.shopPage then
+    return
+  end
+
+  refs.closeButton.onClick = function()
     modules.game_taskboard.toggle()
   end
 
-  ui.tabBar:setContentWidget(ui.tabContent)
-  tabs.bounty = ui.tabBar:addTab('Bounty Tasks', ui.bountyPage)
-  tabs.weekly = ui.tabBar:addTab('Weekly Tasks', ui.weeklyPage)
-  tabs.shop = ui.tabBar:addTab('Hunting Task Shop', ui.shopPage)
+  refs.tabBar:setContentWidget(refs.tabContent)
+  tabs.bounty = refs.tabBar:addTab('Bounty Tasks', refs.bountyPage)
+  tabs.weekly = refs.tabBar:addTab('Weekly Tasks', refs.weeklyPage)
+  tabs.shop = refs.tabBar:addTab('Hunting Task Shop', refs.shopPage)
 
-  ui.tabBar.onTabChange = function(_, tab)
+  refs.tabBar.onTabChange = function(_, tab)
     if tab == tabs.bounty then
       selectTab('bounty')
     elseif tab == tabs.weekly then
@@ -77,11 +122,13 @@ function TaskBoardController.setup(window)
     end
   end
 
-  ui.bountyPage.bountyToolbar.difficultyDropdown.onOptionChange = function(widget, text)
-    local currentState = TaskBoardStore.getState()
-    currentState.board.difficulty = text
-    TaskBoardStore.replaceState(currentState)
-    applyViewModel(TaskBoardViewModel.build(currentState))
+  if refs.difficultyDropdown then
+    refs.difficultyDropdown.onOptionChange = function(_, text)
+      local currentState = TaskBoardStore.getState()
+      currentState.board.difficulty = text
+      TaskBoardStore.replaceState(currentState)
+      applyViewModel(TaskBoardViewModel.build(currentState))
+    end
   end
 
   createMockBountyCards()

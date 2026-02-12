@@ -15,6 +15,14 @@ ProgressBar < UIProgressBar
 ThickProgressBar < ProgressBar
   image-source: /images/ui/progressbar_thick
 
+RectangleProgressBar < ProgressBar
+  height: 14
+  image-source: /images/ui/progressbar
+  image-border: 2
+  background-color: #222222
+  text-auto-resize: false
+  text-offset: 0 1
+
 LifeProgressBar < UIProgressBar
   height: 16
   background-color: green
