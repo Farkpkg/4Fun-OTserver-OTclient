@@ -7,6 +7,29 @@ local function normalizeLowerString(value)
     return value:lower()
 end
 
+
+local DIFFICULTIES = {
+    Beginner = true,
+    Adept = true,
+    Expert = true,
+    Master = true,
+}
+
+function TaskBoardDomainValidator.validateDifficulty(difficulty)
+    if type(difficulty) ~= "string" then
+        return false
+    end
+    return DIFFICULTIES[difficulty] == true
+end
+
+function TaskBoardDomainValidator.validateOfferId(offerId)
+    return type(offerId) == "string" and offerId ~= ""
+end
+
+function TaskBoardDomainValidator.validateTaskId(taskId)
+    return type(taskId) == "string" and taskId ~= ""
+end
+
 function TaskBoardDomainValidator.validateKill(task, monsterName)
     if type(task) ~= "table" then
         return false

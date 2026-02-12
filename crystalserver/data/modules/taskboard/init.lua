@@ -10,8 +10,9 @@ dofile(basePath .. "/infrastructure/network.lua")
 dofile(basePath .. "/infrastructure/hooks.lua")
 
 function TaskBoard.init()
+    TaskBoardRepository.ensureTables()
     TaskBoardHooks.init()
-    logger.info("[TaskBoard] Bootstrap complete (FASE 1)")
+    logger.info("[TaskBoard] Bootstrap complete")
     return true
 end
 

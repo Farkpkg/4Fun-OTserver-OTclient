@@ -3,7 +3,7 @@
 Este projeto utiliza o Codex como assistente de desenvolvimento.
 
 Antes de trabalhar:
-1. Abra /ai/CODEX_PROMPT.md
+1. Abra `./ai/CODEX_PROMPT.md` (caminho relativo à raiz do repositório)
 2. Copie todo o conteúdo
 3. Cole no Codex
 4. Leia os arquivos:

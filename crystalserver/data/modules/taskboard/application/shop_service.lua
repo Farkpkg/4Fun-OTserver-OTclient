@@ -23,7 +23,12 @@ local OFFERS = {
 }
 
 local function getCache(playerId)
-    local cache = TaskBoardCache.get(playerId) or {
+    local cache = TaskBoardCache.get(playerId)
+    if not cache then
+        cache = TaskBoardRepository.loadSnapshot(playerId)
+    end
+
+    cache = cache or {
         state = TaskBoardDomainModels.PlayerTaskState:new({ playerId = playerId }):toDTO(),
         weeklyProgress = TaskBoardDomainModels.WeeklyProgress:new():toDTO(),
         shopPurchases = {},
@@ -34,7 +39,7 @@ end
 
 local function saveState(playerId, cache)
     TaskBoardCache.set(playerId, cache)
-    TaskBoardRepository.savePlayerState(playerId, cache.state)
+    TaskBoardRepository.saveSnapshot(playerId, cache)
 end
 
 function TaskBoardShopService.buy(playerId, offerId)
@@ -78,6 +83,24 @@ function TaskBoardShopService.buy(playerId, offerId)
             },
         },
     }
+end
+
+
+function TaskBoardShopService.getOffers()
+    local offers = {}
+    for _, offer in pairs(OFFERS) do
+        offers[#offers + 1] = {
+            id = offer.id,
+            name = offer.name,
+            price = offer.price,
+        }
+    end
+
+    table.sort(offers, function(a, b)
+        return a.price < b.price
+    end)
+
+    return offers
 end
 
 return TaskBoardShopService
