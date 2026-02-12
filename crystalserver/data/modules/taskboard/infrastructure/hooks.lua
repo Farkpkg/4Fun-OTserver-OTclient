@@ -1,6 +1,6 @@
 TaskBoardHooks = TaskBoardHooks or {}
 
-local basePath = string.format("%s/modules/taskboard", configManager.getString(configKeys.DATA_DIRECTORY))
+local basePath = _G.TaskBoardBasePath or string.format("%s/modules/taskboard", configManager.getString(configKeys.DATA_DIRECTORY))
 
 if not TaskBoardService then
     dofile(basePath .. "/application/service.lua")
