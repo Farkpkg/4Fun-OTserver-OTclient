@@ -1,0 +1,8 @@
+PartyButton < CreatureButton
+  &isBattleButton: true
+
+BattleButton < UIRealCreatureButton
+  height: 21
+  width: 152
+  margin-left: 4
+  &isBattleButton: true

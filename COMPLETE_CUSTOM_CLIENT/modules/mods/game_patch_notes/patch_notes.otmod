@@ -1,0 +1,8 @@
+Module
+  name: game_patch_notes
+  description: Path Notes
+  author: Christianlb
+  sandboxed: true
+  scripts: [ patch_notes ]
+  @onLoad: init()
+  @onUnload: terminate()

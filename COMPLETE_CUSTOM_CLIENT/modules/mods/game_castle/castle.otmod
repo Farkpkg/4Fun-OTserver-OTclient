@@ -1,0 +1,8 @@
+Module
+  name: game_castle
+  description: Castle
+  author: R!ck && ZLukSrT#8740 && Christianlb
+  sandboxed: true
+  scripts: [ castle ]
+  @onLoad: init()
+  @onUnload: terminate()

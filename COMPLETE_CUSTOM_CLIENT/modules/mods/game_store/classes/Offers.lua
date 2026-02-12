@@ -1,0 +1,894 @@
+if not Offers then
+	Offers = {}
+	Offers.__index = Offers
+end
+
+Offers.displayPanel = nil
+Offers.redirect = nil
+Offers.displayOffer = nil
+Offers.offers = nil
+Offers.currentFilter = ''
+Offers.reasons = {}
+Offers.selectedWidget = nil
+Offers.preBuySelectedName = nil
+Offers.event = nil
+Offers.completePurchaseEvent = nil
+Offers.gotoEvent = nil
+Offers.coinCheck = nil
+Offers.loadOffersEvent = nil
+Offers.clientOffers = {}
+
+function Offers:stopAllEvents()
+	if HomeOffer.event then
+		HomeOffer.event:cancel()
+	end
+
+	if Offers.gotoEvent then
+		Offers.gotoEvent:cancel()
+	end
+
+	if Offers.coinCheck then
+		Offers.coinCheck:cancel()
+	end
+end
+
+function Offers:configure(categoryName, offers, redirect, sortingType, filters, currentFilter, reasons)
+	if Offers.displayPanel then
+		Offers.displayPanel:destroy()
+		Offers.displayPanel = nil
+	end
+
+	Offers:stopAllEvents()
+
+	Offers.displayPanel = g_ui.createWidget('GeneralOffersPanel', StoreWindow.contentPanel)
+	Offers.displayPanel:setId(categoryName)
+
+	Offers.offers = offers
+	Offers.redirect = redirect
+
+	Offers.displayPanel.optionsMaped.customOptions:clearOptions()
+	Offers.displayPanel.optionsMaped.customOptions:addOption("Show All")
+	for i, pid in pairs(filters) do
+		Offers.displayPanel.optionsMaped.customOptions:addOption(pid)
+	end
+
+	Offers.displayPanel.optionsMaped.customOptions:setCurrentOption(currentFilter ~= "" and "" or "Show All")
+
+	Offers.currentFilter = currentFilter
+
+	Offers.reasons = reasons
+	Offers.reasons[#Offers.reasons + 1] = "You don't have money"
+	Offers.clientOffers = {}
+	Offers:checkOrder(nil, sortingType, currentFilter)
+end
+
+function Offers:checkOrder(self, currentIndex, currentFilter)
+	Offers.displayOffer = Offers.offers
+	if not Offers.displayOffer then
+		return Offers:refreshOffers(Offers.displayOffer, Offers.redirect, currentFilter)
+	end
+	if currentIndex == 1 then
+		table.sort(Offers.displayOffer, function (a, b) return a.TimesBought < b.TimesBought end)
+	elseif currentIndex == 2 then
+		table.sort(Offers.displayOffer, function (a, b) return a.name:upper() < b.name:upper() end)
+	end
+
+	Offers:refreshOffers(Offers.displayOffer, Offers.redirect, currentFilter)
+end
+
+local function getOfferUI(offer)
+	if offer.itemId ~= 0 then
+		return 'ItemOffer'
+	elseif offer.icon ~= "" then
+		return 'ImageOffer'
+	elseif offer.offerType >= 1 and offer.offerType <= 4 then
+		return 'CreatureOffer'
+	else
+		return 'ImageOffer'
+	end
+end
+
+function calldescription(offerId)
+	if Offers.event then Offers.event:cancel() end
+	Offers.event =  scheduleEvent(function()
+		g_game.doThing(false)
+		g_game.requestOfferDescription(offerId)
+		g_game.doThing(true)
+	end, Store.displayDescription)
+end
+
+function Offers:refreshOffers(displayOffer, redirect, filter)
+	if not displayOffer or not Offers.displayPanel then
+		return
+	end
+
+	if offerCheckBox then
+		offerCheckBox:destroy()
+	end
+
+	offerCheckBox:clearSelected()
+	local offerPanel = Offers.displayPanel:recursiveGetChildById("offers")
+	if not offerPanel then
+		return
+	end
+
+	offerPanel:destroyChildren()
+
+	if Offers.coinCheck then
+		Offers.coinCheck:cancel()
+	end
+
+	if Offers.loadOffersEvent then
+		removeEvent(Offers.loadOffersEvent)
+	end
+
+	Offers.loadOffersEvent = scheduleEvent(function()
+	-- setando offers
+	local offerTotalCount = 0
+	for counter, offer in ipairs(displayOffer) do
+		if Offers.currentFilter ~= '' and string.lower(Offers.currentFilter) ~= string.lower(offer.filter) then
+			goto continue
+		end
+
+		local widget = g_ui.createWidget(getOfferUI(offer), offerPanel)
+		widget:setId(offer.id)
+		widget.name:setText(offer.name)
+		Offers.clientOffers[offer.id] = ""
+		local color = ''
+		if offer.state == OFFER_STATE_NEW then
+			widget.name:setColor("$var-text-cip-color-green")
+			widget.flag:setVisible(true)
+			widget.flag:setSize("78 78")
+			widget.flag:setImageSource("/images/store/new")
+			color = "$var-text-cip-color-green"
+		elseif offer.state == OFFER_STATE_SALE then
+			widget.name:setColor("$var-text-cip-store-sale")
+			widget.flag:setVisible(true)
+			widget.flag:setSize("28 28")
+			widget.flag:setImageSource("/images/store/store-flag-sale")
+			color = "$var-text-cip-store-sale"
+		elseif offer.state == OFFER_STATE_TIMED then
+			widget.name:setColor("$var-text-cip-store-timed")
+			widget.flag:setVisible(true)
+			widget.flag:setSize("10 15")
+			widget.flag:setImageSource("/images/store/store-flag-expires")
+			color = "$var-text-cip-store-timed"
+		end
+
+		if offerTotalCount == 0 then
+			widget.onClick = function()
+				calldescription(offer.id)
+			end
+		end
+		if offer.icon ~= "" then
+			local currentWidget = widget.image
+			currentWidget.currentImageRequest = Store.currentRequest
+			Store.imageRequests[Store.currentRequest] = currentWidget
+			Store.currentRequest = Store.currentRequest + 1
+
+			currentWidget:insertLuaCall("onDestroy")
+			currentWidget.onDestroy = function()
+				Store.imageRequests[currentWidget.currentImageRequest] = nil
+			end
+
+			Store:downloadImage(currentWidget.currentImageRequest, "64/"..offer.icon)
+    	elseif offer.itemId ~= 0 then
+			widget.item:setItemId(offer.itemId)
+			widget.item:hook()
+		elseif offer.offerType == CATEGORY_MOUNT then
+			local outfit = {
+				type = offer.mountId
+			}
+
+			widget.creature:setOutfit(outfit)
+		elseif offer.offerType == CATEGORY_OUTFIT then
+			local outfit = {
+				type = offer.type,
+				head = offer.head,
+				body = offer.body,
+				legs = offer.legs,
+				feet = offer.feet,
+				addons = 3,
+			}
+
+			widget.creature:setOutfit(outfit)
+		elseif offer.offerType == CATEGORY_HIRELING then
+			local outfit = {
+				type = offer.maleOutfit,
+				head = offer.head,
+				body = offer.body,
+				legs = offer.legs,
+				feet = offer.feet,
+				addons = 3,
+			}
+
+			widget.creature:setOutfit(outfit)
+		end
+
+		local selected = false
+		-- setup price
+		local count = 0
+		for i = #offer.offers, 1, -1 do
+			local subOffer = offer.offers[i]
+			if subOffer.id == redirect then
+				selected = true
+			end
+
+			if offer.state == OFFER_STATE_SALE then
+				local daysLeft = math.floor((subOffer.saleValidUntilTimestamp - os.time()) / 86400)
+				Offers.clientOffers[offer.id] = string.format("<font color=\"#ECAC46\">{star} Valid until %s{star} %d days left<br /></font>", os.date("%Y-%m-%d, %X", subOffer.saleValidUntilTimestamp), daysLeft)
+			end
+
+			local changeCount = #Offers.reasons
+			-- check price   subOffer.price
+			if subOffer.coinType == COIN_TYPE_DEFAULT then -- normal coin
+				if Store.coins < subOffer.price then
+					subOffer.disabledReasons[#subOffer.disabledReasons + 1] = {reasonId = #Offers.reasons}
+
+					widget:getChildById("price" .. i):setColor("$var-text-cip-store-red")
+					widget.coinCheck = true
+				end
+			elseif subOffer.coinType == COIN_TYPE_TRANSFERABLE then -- transfeable coin
+				if Store.transferableCoins < subOffer.price then
+					subOffer.disabledReasons[#subOffer.disabledReasons + 1] = {reasonId = #Offers.reasons}
+          			local slot = i == 2 and 1 or 2
+					widget:getChildById("price" .. slot):setColor("$var-text-cip-store-red")
+					widget.coinCheck = true
+				end
+			elseif subOffer.coinType == COIN_TYPE_TOURNAMENT then -- tournament coin
+				if Store.tournamentCoins < subOffer.price then
+					subOffer.disabledReasons[#subOffer.disabledReasons + 1] = {reasonId = #Offers.reasons}
+					widget:getChildById("price" .. i):setColor("$var-text-cip-store-red")
+					widget.coinCheck = true
+				end
+			end
+
+			local canChange = false
+			for _, i in pairs(subOffer.disabledReasons) do
+				if changeCount ~= i.reasonId then
+					canChange = true
+				end
+				subOffer.disabledReason = string.format("%s* %s\n", subOffer.disabledReason, Offers.reasons[i.reasonId])
+			end
+
+			if subOffer.disabledReason ~= '' then
+				subOffer.disabledReason = string.sub(subOffer.disabledReason, 1, -2)
+			end
+
+			if count == 0 then
+				if subOffer.price > 0 then
+					widget.price1:setText(formatMoney(subOffer.price, ","))
+				else
+					widget.price1:setText("Free")
+				end
+				if subOffer.count > 1 or #offer.offers > 1 then
+					widget.count1:setText(subOffer.count .. "x")
+					if not string.empty(color) then
+						widget.count1:setColor(color)
+					end
+				else
+					widget.count1:setVisible(false)
+				end
+				if subOffer.basePrice > 0 and subOffer.basePrice ~= subOffer.price then
+					local percentageChange = ((subOffer.price - subOffer.basePrice) / subOffer.basePrice) * 100
+					-- Timestamp alvo
+					local targetTimestamp = subOffer.saleValidUntilTimestamp
+					local currentTimestamp = os.time()
+					local differenceInSeconds = targetTimestamp - currentTimestamp
+
+					-- Converter a diferen�a em dias
+					local differenceInDays = (differenceInSeconds / (60 * 60 * 24)) - 1
+
+					widget.priceOff:setVisible(true)
+					widget.priceOff:setText(formatMoney(subOffer.basePrice, ","))
+					widget.priceOff:setTooltip(string.format("%d%%, %d d left", percentageChange, math.ceil(differenceInDays)))
+				end
+			else
+				widget.price2:setVisible(true)
+				if subOffer.price == 0 then
+					widget.price2:setText("Free")
+				else
+					widget.price2:setText(formatMoney(subOffer.price, ","))
+				end
+				if subOffer.count > 1 or #offer.offers > 1 then
+					widget.count2:setVisible(true)
+					widget.count2:setText(subOffer.count .. "x")
+					if not string.empty(color) then
+						widget.count2:setColor(color)
+					end
+				else
+					widget.count2:setVisible(false)
+				end
+			end
+
+			if #subOffer.disabledReasons > 0 and canChange then
+				Offers:setDisableShader(widget, subOffer.disabledReason, false, offer.state)
+			end
+
+			if subOffer.coinType == COIN_TYPE_TRANSFERABLE then
+				widget:setImageClip("0 ".. count * 80 .." 240 82")
+			else
+				widget:setImageClip("0 ".. (count * 80) + 159 .." 240 82")
+			end
+			count = count + 1
+		end
+
+		widget.offer = offer
+
+
+		offerCheckBox:addWidget(widget)
+		if redirect == 0 and counter == 1 then
+			Offers.step = offerTotalCount
+			widget:focus()
+			offerCheckBox:selectWidget(widget)
+			Offers.gotoEvent = scheduleEvent(function() Offers:gotoRedirect() end, 300)
+			calldescription(offer.id)
+		elseif selected then
+			Offers.step = offerTotalCount
+			widget:focus()
+			Offers.gotoEvent = scheduleEvent(function() Offers:gotoRedirect() end, 300)
+			offerCheckBox:selectWidget(widget)
+			calldescription(offer.id)
+		end
+
+		offerTotalCount = offerTotalCount + 1
+		::continue::
+	end
+
+	Offers:checkOfferValue()
+
+	if Offers.preBuySelectedName then
+		for _,offer in pairs(offerPanel:getChildren()) do
+		  if offer.name:getText() == Offers.preBuySelectedName then
+			Offers:onSelectionOffer(nil, offer)
+		  end
+		end
+	end
+	Offers.preBuySelectedName = nil
+
+	end, 100)
+end
+
+function Offers:gotoRedirect()
+	if not Offers.displayPanel or Offers.displayPanel:getId() == "Home" then
+		return
+	end
+
+	if not Offers.displayPanel.offerListScrollBar then
+		return
+	end
+	local scroll = Offers.displayPanel.offerListScrollBar
+	if scroll then
+		scroll:setValue(Offers.step * 80)
+	end
+end
+
+-- Product_PremiumTime180.png
+function Offers:setDisableShader(widget, disabledReason, active, state)
+	widget.grayHover:setVisible(not active)
+
+	if widget.image then
+		widget.image:setImageShader("image_disabled")
+	end
+
+	-- modify strings
+	if not active then
+		local c_color = "$var-text-cip-store-disabled"
+		if state == OFFER_STATE_NEW then
+			c_color = "$var-text-cip-color-green-disabled"
+		elseif state == OFFER_STATE_SALE then
+			c_color = "$var-text-cip-store-sale-disabled"
+		elseif state == OFFER_STATE_TIMED then
+			c_color = "$var-text-cip-store-timed-disabled"
+		end
+
+		widget.name:setColor(c_color)
+
+		local color = not string.find(disabledReason, "You don't have money") and "$var-text-cip-store-disabled" or "$var-text-cip-store-red-disabled"
+
+		widget.price1:setColor(color)
+		widget.price2:setColor(color)
+
+		widget.count1:setColor(c_color)
+		widget.count2:setColor(c_color)
+	end
+end
+
+function Offers:refreshOptions(widgetId, currentIndex)
+	local text = currentIndex.text
+	if text == 'Show All' then
+		text = ''
+	end
+
+	-- evitar criar novas UI
+	if text == Offers.currentFilter then
+		return
+	end
+
+	Offers.currentFilter = text
+	Offers:refreshOffers(Offers.displayOffer, Offers.redirect, Offers.currentFilter)
+end
+
+
+function Offers:onSelectionOffer(_, selectedWidget)
+	if Offers.selectedWidget then
+		Offers.selectedWidget:setBorderWidth(0)
+	end
+
+	Offers.selectedWidget = selectedWidget
+	if not selectedWidget or not Offers.displayPanel.offerName then
+		return
+	end
+
+	Offers.selectedWidget:setBorderWidth(2)
+	Offers.selectedWidget:setBorderColor('#FFFFFF')
+	-- configure
+
+	Offers.displayPanel.offerName:setText(selectedWidget.name:getText())
+
+	Offers.displayPanel.infopanel.outfit:setCreature(nil)
+	Offers.displayPanel.infopanel.item:setItem(nil)
+	Offers.displayPanel.infopanel.image:setImageSource('')
+
+	local offer = Offers.selectedWidget.offer
+	calldescription(offer.id)
+
+	if offer.icon ~= "" then
+		local widget = Offers.displayPanel.infopanel.image
+		widget.currentImageRequest = Store.currentRequest
+		Store.imageRequests[Store.currentRequest] = widget.image
+		Store.currentRequest = Store.currentRequest + 1
+
+		widget:insertLuaCall("onDestroy")
+		widget.onDestroy = function()
+			Store.imageRequests[widget.currentImageRequest] = nil
+		end
+
+		if selectedWidget.image.imagePath then
+			widget:setImageSize("126 126")
+			widget:setImageSmooth(false)
+			widget:setImageSource(selectedWidget.image.imagePath)
+		else
+			Store:downloadImage(widget.currentImageRequest, "64/"..offer.icon)
+		end
+
+	elseif offer.itemId ~= 0 then
+		local item = Offers.displayPanel.infopanel.item
+		item:setItemId(offer.itemId)
+		item:hook()
+	elseif offer.offerType == CATEGORY_MOUNT then
+		local outfit = {
+			type = offer.mountId
+		}
+
+		Offers.displayPanel.infopanel.outfit:setOutfit(outfit)
+	elseif offer.offerType == CATEGORY_OUTFIT then
+		local outfit = {
+			type = offer.type,
+			head = offer.head,
+			body = offer.body,
+			legs = offer.legs,
+			feet = offer.feet,
+			addons = 3,
+		}
+
+		Offers.displayPanel.infopanel.outfit:setOutfit(outfit)
+	elseif offer.offerType == CATEGORY_HIRELING then
+		local outfit = {
+			type = offer.maleOutfit,
+			head = offer.head,
+			body = offer.body,
+			legs = offer.legs,
+			feet = offer.feet,
+			addons = 3,
+		}
+
+		Offers.displayPanel.infopanel.outfit:setOutfit(outfit)
+	end
+
+	if offer.offers[1].count > 1 then
+		Offers.displayPanel.buy1:setText("Buy " .. offer.offers[1].count)
+	else
+		Offers.displayPanel.buy1:setText("Buy")
+	end
+
+	if offer.tryMode ~= 0 then
+		Offers.displayPanel.tryOn:setVisible(true)
+		Offers.displayPanel.tryOn.onClick = function()
+			g_client.setInputLockWidget(nil)
+			StoreWindow:hide()
+			local id = 0
+			if offer.maleOutfit ~= 0 then
+				id = offer.maleOutfit
+				offer.tryMode = 3
+			elseif offer.mountId ~= 0 then
+				id = offer.mountId
+			elseif offer.type ~= 0 then
+				id = offer.type
+			end
+			g_game.requestOutfit(offer.tryMode, id)
+		end
+	else
+		Offers.displayPanel.tryOn:setVisible(false)
+	end
+
+	local disabled = false
+	Offers.displayPanel.buy1:setImageSource("/images/store/buybutton")
+	Offers.displayPanel.buy1:setOn(true)
+	Offers.displayPanel.buy1:setTooltip('')
+	Offers.displayPanel.buy2:setTooltip('')
+	Offers.displayPanel.price1.price:setColor("$var-text-cip-color")
+	Offers.displayPanel.price2.price:setColor("$var-text-cip-color")
+	if offer.offers[1].disabledReason ~= '' then
+		Offers.displayPanel.buy1.onClick = function() end
+		local msg = {}
+		setStringColor(msg, "The product is not available for this character:\n", "$var-text-cip-store-red")
+		setStringColor(msg, offer.offers[1].disabledReason, "$var-text-cip-store-red")
+		Offers.displayPanel.buy1:setTooltip(msg)
+		Offers.displayPanel.buy1:setImageSource("/images/store/buybutton")
+		Offers.displayPanel.buy1:setOn(false)
+
+
+		if string.find(offer.offers[1].disabledReason, "You don't have money") then
+			Offers.displayPanel.price1.price:setColor("$var-text-cip-store-red")
+		end
+		disabled = true
+	else
+		Offers.displayPanel.buy1.onClick = function() buyStoreOffer(offer, offer.offers[1]) end
+	end
+
+	if offer.RequiresConfiguration == 1 then
+		Offers.displayPanel.buy1:setText(tr("Configure"))
+	end
+
+	if offer.offers[1].price > 0 then
+		Offers.displayPanel.price1.price:setText(formatMoney(offer.offers[1].price, ","))
+	else
+		Offers.displayPanel.price1.price:setText("Free")
+	end
+	Offers.displayPanel.price1.image:setImageSource(offer.offers[1].coinType ~= COIN_TYPE_TRANSFERABLE and "/images/store/icon-tibiacoin" or "/images/store/icon-tibiacointransferable")
+
+	if offer.offers[1].basePrice > 0 and offer.offers[1].basePrice ~= offer.offers[1].price then
+		local percentageChange = ((offer.offers[1].price - offer.offers[1].basePrice) / offer.offers[1].basePrice) * 100
+		-- Timestamp alvo
+		local targetTimestamp = offer.offers[1].saleValidUntilTimestamp
+		local currentTimestamp = os.time()
+		local differenceInSeconds = targetTimestamp - currentTimestamp
+
+		-- Converter a diferen?a em dias
+		local differenceInDays = (differenceInSeconds / (60 * 60 * 24)) - 1
+
+		local priceOff = Offers.displayPanel.price1.priceOff
+		priceOff:setVisible(true)
+		if priceOff:isVisible() then
+			Offers.displayPanel.price1.image:setMarginLeft(45)
+		end
+		Offers.displayPanel.price1.priceOff:setText(formatMoney(offer.offers[1].basePrice, ","))
+		Offers.displayPanel.price1.priceOff:setTooltip(string.format("%d%%, %d d left", percentageChange, math.ceil(differenceInDays)))
+	else
+		Offers.displayPanel.price1.priceOff:setVisible(false)
+	end
+
+	if #offer.offers > 1 then
+		Offers.displayPanel.buy2:setVisible(true)
+		Offers.displayPanel.price2:setVisible(true)
+		Offers.displayPanel.buy2:setText("Buy " .. offer.offers[2].count)
+		if offer.offers[2].price > 0 then
+			Offers.displayPanel.price2.price:setText(formatMoney(offer.offers[2].price, ","))
+		else
+			Offers.displayPanel.price2.price:setText("Free")
+		end
+		Offers.displayPanel.price2.image:setImageSource(offer.offers[2].coinType ~= COIN_TYPE_TRANSFERABLE and "/images/store/icon-tibiacoin" or "/images/store/icon-tibiacointransferable")
+
+		Offers.displayPanel.buy2:setImageSource("/images/store/buybutton")
+		Offers.displayPanel.buy2:setOn(true)
+		if offer.offers[2].disabledReason ~= '' then
+			Offers.displayPanel.buy2.onClick = function() end
+			local msg = {}
+			setStringColor(msg, "The product is not available for this character:\n", "$var-text-cip-store-red")
+			setStringColor(msg, offer.offers[2].disabledReason, "$var-text-cip-store-red")
+			Offers.displayPanel.buy2:setOn(false)
+			Offers.displayPanel.buy2:setTooltip(msg)
+
+
+			if string.find(offer.offers[2].disabledReason, "You don't have money") then
+				Offers.displayPanel.price2.price:setColor("$var-text-cip-store-red")
+			end
+
+			disabled = true
+		else
+			Offers.displayPanel.buy2.onClick = function() buyStoreOffer(offer, offer.offers[2]) end
+		end
+	else
+		Offers.displayPanel.buy2:setVisible(false)
+		Offers.displayPanel.price2:setVisible(false)
+	end
+
+	if disabled then
+		Offers.displayPanel.description.error:setText('The product is currently not available\nfor this character. See the Buy button\ntooltip for details.\n ')
+		Offers.displayPanel.description.error:setHeight(60)
+		Offers.displayPanel.description.error:setVisible(true)
+	else
+		Offers.displayPanel.description.error:setText('')
+		Offers.displayPanel.description.error:setHeight(0)
+		Offers.displayPanel.description.error:setVisible(false)
+	end
+
+	Offers.displayPanel.description.image:setHeight(600)
+	Offers.displayPanel.description.package:destroyChildren()
+	Offers.displayPanel.description.package:setHeight(20)
+	if #offer.bundles > 0 then
+		Offers.displayPanel.description.image:setHeight(500)
+		local size = 0
+		g_ui.createWidget('PackageLabel', Offers.displayPanel.description.package)
+		size = 30
+
+		for i, bundles in pairs(offer.bundles) do
+			size = size + 64
+			if bundles.offerType == 3 then
+				local ui = g_ui.createWidget('CreatureLabel', Offers.displayPanel.description.package)
+				ui.creature:setOutfit({ auxType = bundles.itemId})
+				ui.name:setText(bundles.name)
+			elseif bundles.offerType == 1 then
+				local ui = g_ui.createWidget('CreatureLabel', Offers.displayPanel.description.package)
+				ui.creature:setOutfit({type = bundles.mountId})
+				ui.name:setText(bundles.name)
+			elseif bundles.offerType == 2 then
+				local ui = g_ui.createWidget('CreatureLabel', Offers.displayPanel.description.package)
+				ui.creature:setOutfit({
+					type = bundles.type,
+					head = bundles.head,
+					body = bundles.body,
+					legs = bundles.legs,
+					feet = bundles.feet,
+					addons = 3,
+				})
+				ui.name:setText(bundles.name)
+			end
+		end
+		Offers.displayPanel.description.package:setHeight(size)
+	end
+end
+
+function Offers:configureDescription(offerId, description)
+	if not description or not Offers.clientOffers[offerId] then
+		return true
+	end
+
+	local desc = Offers.displayPanel:recursiveGetChildById("description")
+	if not desc or not desc.image then
+		return
+	end
+
+	if Offers.clientOffers[offerId] ~= "" then
+		description = Offers.clientOffers[offerId] .. "\n" .. description
+	end
+
+	local novo_texto = string.gsub(description, "\n", "<br/>")
+	novo_texto = string.gsub(novo_texto, "<br>", "<br/>")
+	novo_texto = string.gsub(novo_texto, "{info}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_1.png"  width="13" height="13" />')
+	novo_texto = string.gsub(novo_texto, "{character}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_2.png" width="13" height="13" />only usable by purchasing character')
+	novo_texto = string.gsub(novo_texto, "{activated}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_11.png"  width="13" height="13" />activated at purchase')
+	novo_texto = string.gsub(novo_texto, "{useicon}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_14.png"  width="13" height="13" />')
+	novo_texto = string.gsub(novo_texto, "{limit|(%d+)}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_7.png"  width="13" height="13" />maximum amount that can be owned by character: %1')
+	novo_texto = string.gsub(novo_texto, "{house}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_6.png"  width="13" height="13" />can only be unwrapped in a house owned by the purchasing character')
+	novo_texto = string.gsub(novo_texto, "{box}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_4.png"  width="13" height="13" />comes in a box which can only be unwrapped by purchasing character')
+	novo_texto = string.gsub(novo_texto, "{storeinbox}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_5.png"  width="13" height="13" />will be sent to your Store inbox and can only be stored there and in depot box')
+	novo_texto = string.gsub(novo_texto, "{usablebyallicon}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_3.png"  width="13" height="13" />')
+	novo_texto = string.gsub(novo_texto, "{backtoinbox}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_8.png"  width="13" height="13" />will be wrapped back and sent to inbox if the purchasing character is no longer the house owner')
+	novo_texto = string.gsub(novo_texto, "{storeinboxicon}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_8.png"  width="13" height="13" />')
+	novo_texto = string.gsub(novo_texto, "{capacity}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_13.png"  width="13" height="13" /><i>cannot be purchased if capacity is exceeded</i>')
+	novo_texto = string.gsub(novo_texto, "{speedboost}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_10.png"  width="13" height="13" />provides character with a speed boost')
+	novo_texto = string.gsub(novo_texto, "{battlesign}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_12.png"  width="13" height="13" />cannot be purchased by characters with protection zone block or battle sign')
+	novo_texto = string.gsub(novo_texto, "{once}", '<img src="https://raw.githubusercontent.com/Imagens404/store/main/store-icons-inline_7.png"  width="13" height="13" />can only be purchased once')
+	novo_texto = string.gsub(novo_texto, "{star}", '<img src="https://raw.githubusercontent.com/Imagens404/seekanddestroy/main/R/store/13/icon-star-gold.png"  width="9" height="10" />')
+
+
+	desc.image:setHTML(novo_texto)
+
+
+	-- Store:getDescription(currentWidget.currentImageRequest, offerId, Offers.clientOffers[offerId] .. novo_texto)
+end
+
+function buyStoreOffer(generalOffer, selectedOffer)
+	if not m_settings.getOption('storeAskBeforeBuyingProducts') then
+		return modules.game_store.onBuyOffer(buyOfferWindow.okBuyButton, selectedOffer.id, generalOffer.offerType)
+	end
+
+	if buyOfferWindow:isVisible() then
+		return true
+	end
+
+	StoreWindow:hide()
+	g_client.setInputLockWidget(nil)
+
+	buyOfferWindow:show(true)
+	g_client.setInputLockWidget(buyOfferWindow)
+	buyOfferWindow.productWarning:setText(tr('Do you want to buy the product "%dx %s"?', selectedOffer.count, generalOffer.name))
+
+	buyOfferWindow.description.offerName:setText(tr('%dx %s', selectedOffer.count, generalOffer.name))
+	buyOfferWindow.description.offerPrice:setText(tr('Price: %d', selectedOffer.price))
+	buyOfferWindow.icon.creature:setOutfit({})
+	buyOfferWindow.icon.image:setImageSource('')
+	buyOfferWindow.icon.item:setItem(nil)
+
+	local imageCoin = selectedOffer.coinType == COIN_TYPE_DEFAULT and 'tibiacoin' or 'tibiacointransferable'
+	buyOfferWindow.description.coinType:setImageSource('/images/store/icon-' .. imageCoin)
+
+	if generalOffer.icon ~= "" then
+		local widget = buyOfferWindow.icon.image
+		widget.currentImageRequest = Store.currentRequest
+		Store.imageRequests[Store.currentRequest] = widget
+		Store.currentRequest = Store.currentRequest + 1
+
+		widget:insertLuaCall("onDestroy")
+		widget.onDestroy = function()
+			Store.imageRequests[widget.currentImageRequest] = nil
+		end
+
+		Store:downloadImage(widget.currentImageRequest, "64/"..generalOffer.icon)
+	elseif generalOffer.itemId ~= 0 then
+		buyOfferWindow.icon.item:setItemId(generalOffer.itemId)
+	elseif generalOffer.offerType == 1 then
+		local outfit = {
+			type = generalOffer.mountId
+		}
+
+		buyOfferWindow.icon.creature:setOutfit(outfit)
+	elseif generalOffer.offerType == 2 then
+		local outfit = {
+			type = generalOffer.type,
+			head = generalOffer.head,
+			body = generalOffer.body,
+			legs = generalOffer.legs,
+			feet = generalOffer.feet,
+			addons = 3,
+		}
+
+		buyOfferWindow.icon.creature:setOutfit(outfit)
+	end
+
+	buyOfferWindow.okBuyButton.onClick = function()
+		modules.game_store.onBuyOffer(buyOfferWindow.okBuyButton, selectedOffer.id, generalOffer.offerType)
+	end
+	return true
+end
+
+function onBuyOffer(widget, id, offerType, text, offerName)
+	if widget:getId() == 'cancelButton' or text == 'cancelButton' then
+		if buyOfferWindow and buyOfferWindow:isVisible() then
+			buyOfferWindow:hide()
+			g_client.setInputLockWidget(nil)
+		end
+		if not StoreWindow:isVisible() then
+			showStoreWindow()
+		end
+	elseif widget:getId() == 'okBuyButton' then
+		local productType = offerName and 10 or 0
+		g_game.buyStoreOffer(id, productType, "", 0, offerName)
+		Offers.preBuySelectedName = Offers.selectedWidget and Offers.selectedWidget.name:getText() or nil
+
+		if buyOfferWindow and buyOfferWindow:isVisible() then
+			buyOfferWindow:hide()
+			g_client.setInputLockWidget(nil)
+		end
+	end
+
+	local askButton = buyOfferWindow:recursiveGetChildById("storeAskBeforeBuyingProducts")
+	askButton:setEnabled(true)
+end
+
+function onStorePurchase(message)
+	SucessOfferWindow:show(true)
+	StoreWindow:hide()
+	buyOfferWindow:hide()
+	g_client.setInputLockWidget(nil)
+	SucessOfferWindow.confirm.image:setImageSource('/images/store/purchasecomplete_idle')
+	SucessOfferWindow.confirm.image:setImageClip("0 0 108 108")
+	SucessOfferWindow.description.message:setText(message)
+	scheduleEvent(function() SucessOfferWindow:focus() end, 50)
+end
+
+local function animateImage(widget, width, height, frame_init, frame_end, time)
+	if not widget then
+		return true
+	end
+
+    local crop = {}
+    local totalframes = frame_end - frame_init + 1
+    local nextTime = totalframes * time
+
+    for i = frame_init, frame_end do
+        crop[i] = width * (i-1) .. " 0 " .. width .. " " .. height
+    end
+
+    for k = frame_init, frame_end do
+        scheduleEvent(function()
+            widget:setImageClip(crop[k])
+        end, time * (k - frame_init + 1))
+    end
+    return true
+end
+
+function completePurchase(widget, immediate)
+	if Offers.completePurchaseEvent then
+		Offers.completePurchaseEvent:cancel()
+	end
+	if widget then
+		widget.image:setImageSource('/images/store/purchasecomplete_pressed')
+		widget.image:setImageClip("0 0 108 108")
+		animateImage(widget.image, 108, 108, 1, 13, 100)
+	end
+
+	local action = function()
+		if SucessOfferWindow:isVisible() then
+			SucessOfferWindow:hide()
+		end
+		if not StoreWindow:isVisible() then
+			showStoreWindow()
+			Categories:onSelectCategory(Categories.selectTreeItem, Categories.name)
+		end
+	end
+
+	if immediate then
+		action()
+	else
+		Offers.completePurchaseEvent = scheduleEvent(action, 1000)
+	end
+end
+
+function Offers:checkOfferValue()
+	local panel = Offers.displayPanel.offers
+	if not panel then
+		return
+	end
+
+	for _, widget in pairs(panel:getChildren()) do
+		local offer = widget.offer
+		for i = #offer.offers, 1, -1 do
+			local subOffer = offer.offers[i]
+			if subOffer.coinType == COIN_TYPE_DEFAULT then -- normal coin
+				if Store.coins < subOffer.price then
+					subOffer.disabledReasons[#subOffer.disabledReasons + 1] = {reasonId = #Offers.reasons}
+
+          local slot = i == 2 and 1 or 2
+          if #offer.offers == 1 then
+          	slot = 1
+          end
+          local priceSlot = widget:getChildById("price" .. slot)
+					priceSlot:setColor(widget.grayHover:isVisible() and "$var-text-cip-store-red-disabled" or "$var-text-cip-store-red")
+					widget.coinCheck = true
+				end
+			elseif subOffer.coinType == COIN_TYPE_TRANSFERABLE then -- transfeable coin
+				if Store.transferableCoins < subOffer.price then
+					subOffer.disabledReasons[#subOffer.disabledReasons + 1] = {reasonId = #Offers.reasons}
+          local slot = i == 2 and 1 or 2
+          if #offer.offers == 1 then
+          	slot = 1
+          end
+          local priceSlot = widget:getChildById("price" .. slot)
+					priceSlot:setColor((widget.grayHover:isVisible() and "$var-text-cip-store-red-disabled" or "$var-text-cip-store-red"))
+					widget.coinCheck = true
+				end
+			elseif subOffer.coinType == COIN_TYPE_TOURNAMENT then -- tournament coin
+				if Store.tournamentCoins < subOffer.price then
+					subOffer.disabledReasons[#subOffer.disabledReasons + 1] = {reasonId = #Offers.reasons}
+          local slot = i == 2 and 1 or 2
+          if #offer.offers == 1 then
+          	slot = 1
+          end
+          local priceSlot = widget:getChildById("price" .. slot)
+					priceSlot:setColor(widget.grayHover:isVisible() and "$var-text-cip-store-red-disabled" or "$var-text-cip-store-red")
+					widget.coinCheck = true
+				end
+			end
+
+			if #subOffer.disabledReasons > 0 and not widget.coinCheck then
+				Offers:setDisableShader(widget, subOffer.disabledReason, false, offer.state)
+			end
+
+		end
+	end
+
+	Offers.coinCheck = scheduleEvent(function() Offers:checkOfferValue() end, 1000)
+end

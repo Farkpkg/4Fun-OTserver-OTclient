@@ -1,0 +1,2 @@
+--g_soundtype.loadSounds("data/sounds/sounds_catalog.json")
+-- UNLOVED VAGABOND <3

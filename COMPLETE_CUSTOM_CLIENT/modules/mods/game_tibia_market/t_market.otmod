@@ -1,0 +1,8 @@
+Module
+  name: game_tibia_market
+  description: Market like real RubinOT.
+  author: R!ck && Christianlb
+  sandboxed: true
+  scripts: [ t_market, classes/t_history, classes/t_ownOffers ]
+  @onLoad: init()
+  @onUnload: terminate()

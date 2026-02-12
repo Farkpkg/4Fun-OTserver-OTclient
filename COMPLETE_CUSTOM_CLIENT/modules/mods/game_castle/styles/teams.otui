@@ -1,0 +1,168 @@
+Horde < Panel
+  size: 400 60
+  UIWidget
+    size: 378 97
+    id: background
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    image-source: /images/game/castle/horderBg
+    margin-top: 2
+    phantom: true
+    opacity: 0.6
+  ProgressBarSD
+    id: hordeHp
+    size: 300 29
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    image-source: /images/game/castle/hordeLifeCrystal
+    margin-top: 21
+    margin-left: 30
+    phantom: true
+    opacity: 0.6
+  ProgressBarSD
+    id: towerHp
+    size: 251 22
+    anchors.top: prev.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    image-source: /images/game/castle/hordeLifeTower
+    margin-top: 4
+    margin-left: 6
+    phantom: true
+    opacity: 0.6
+  UIWidget
+    size: 218 95
+    id: hordeIcon
+    anchors.top: parent.top
+    anchors.left: parent.left
+    image-source: /images/game/castle/hordeIcon
+    margin-top: 5
+    margin-left: 11
+    phantom: true
+  Panel
+    id: crystalHealthLabel
+    anchors.top: hordeHp.top
+    anchors.left: parent.left
+    margin-top: 8
+    margin-left: 140
+    font: verdana-11px-rounded
+    text-align: center
+    text-offset: 0 1
+    text: 100%
+    text-auto-resize: true
+    phantom: true
+  Panel
+    id: towerHealthLabel
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    margin-top: 14
+    margin-left: 140
+    font: verdana-11px-rounded
+    text-align: center
+    text-offset: 0 1
+    text: 100%
+    text-auto-resize: true
+    phantom: true
+  UIWidget
+    size: 55 12
+    id: nameLabel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    image-source: /images/game/castle/hordeLabel
+    margin-top: 5
+    margin-left: 95
+
+
+Alliance < Panel
+  id: allianceBar
+  size: 400 60
+
+  UIWidget
+    size: 378 97
+    id: background
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    image-source: /images/game/castle/allianceBg
+    margin-top: 2
+    phantom: true
+    opacity: 0.6
+  ProgressBarSDInv
+    id: allianceHp
+    size: 300 29
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    image-source: /images/game/castle/allianceLifeCrystal
+    margin-top: 21
+    margin-right: 34
+    phantom: true
+    opacity: 0.6
+  ProgressBarSDInv
+    id: towerHp
+    size: 251 22
+    anchors.top: prev.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    image-source: /images/game/castle/allianceLifeTower
+    margin-top: 4
+    margin-right: 9
+    phantom: true
+    opacity: 0.6
+  UIWidget
+    size: 218 95
+    id: allianceIcon
+    anchors.top: parent.top
+    anchors.right: parent.right
+    image-source: /images/game/castle/allianceIcon
+    margin-top: 3
+    margin-right: 11
+    phantom: true
+  Panel
+    id: crystalHealthLabel
+    anchors.top: allianceHp.top
+    anchors.right: parent.right
+    margin-top: 7
+    margin-right: 140
+    font: verdana-11px-rounded
+    text-align: center
+    text-offset: 0 1
+    text: 100%
+    text-auto-resize: true
+    phantom: true
+  Panel
+    id: towerHealthLabel
+    anchors.top: prev.bottom
+    anchors.right: parent.right
+    margin-top: 15
+    margin-right: 140
+    font: verdana-11px-rounded
+    text-align: center
+    text-offset: 0 1
+    text: 100%
+    text-auto-resize: true
+    phantom: true
+  UIWidget
+    size: 78 12
+    id: nameLabel
+    anchors.top: parent.top
+    anchors.right: parent.right
+    image-source: /images/game/castle/allianceLabel
+    margin-top: 5
+    margin-right: 95
+
+
+UIWindow
+  anchors.top: parent.top
+  anchors.horizontalCenter: parent.horizontalCenter
+  margin-top: 50
+  image-source:
+  size: 1000 60
+
+  Horde
+    id: horde
+    anchors.top: parent.top
+    anchors.left: parent.left
+
+  Alliance
+    id: alliance
+    anchors.top: parent.top
+    anchors.right: parent.right
+
+  @onEscape: self:hide()

@@ -1,0 +1,146 @@
+Title < UIWidget
+  background-color: #363636
+  height: 38
+  border-width: 1
+  border-color: #f7af48
+  Label
+    id: date
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-left: 3
+    font: $var-cip-font
+    color: $var-text-cip-color-highlight
+    text-auto-resize: true
+
+Note < UIWidget
+  background-color: #484848
+  height: 25
+  UIWidget
+    id: noteIcon
+    size: 12 9
+    image-source: /images/store/icon-yes
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 9
+    margin-left: 5
+  Label
+    id: noteText
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-top: 4
+    margin-left: 5
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-auto-resize: true
+
+NewHeadlessWindow
+  id: patchNotesWindow
+  anchors.horizontalCenter: parent.horizontalCenter
+  size: 900 595
+  &static: true
+  @onEscape: close()
+  UIWidget
+    size: 145 56
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -33
+    image-source: /images/game/tutorial/backdrop_crestr
+    phantom: true
+  Panel
+    id: contentPanel
+    anchors.fill: parent
+    margin: 15 13 17 13
+    Panel
+      id: infoPanel
+      height: 245
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 11
+      margin-bottom: 10
+      image-source: /images/ui/t2pixel-up-frame-borderimage
+      image-border: 35
+      Label
+        id: title
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 2
+        !text: tr('RubinOT Client - Patch Notes')
+        font: $var-cip-font
+        color: $var-text-cip-store-sale
+        text-auto-resize: true
+      TextList
+        id: patchList
+        anchors.fill: parent
+        margin: 24 8 8 8
+        padding: 1
+        padding-right: 14
+        focusable: true
+        vertical-scrollbar: patchListScrollBar
+      VerticalScrollBar
+        id: patchListScrollBar
+        anchors.top: prev.top
+        anchors.right: prev.right
+        anchors.bottom: prev.bottom
+        margin: 1 1 1 0
+        step: 25
+        pixels-scroll: true
+    Panel
+      id: svInfoPanel
+      height: 60
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: separator.top
+      margin-top: 20
+      margin-bottom: 10
+      image-source: /images/ui/t2pixel-up-frame-borderimage
+      image-border: 35
+      Label
+        id: svTitle
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 2
+        !text: tr('RubinOT Server - Patch Notes')
+        font: $var-cip-font
+        color: $var-text-cip-store-sale
+        text-auto-resize: true
+      TextList
+        id: svPatchList
+        anchors.fill: parent
+        margin: 24 8 8 8
+        padding: 1
+        padding-right: 14
+        focusable: true
+        vertical-scrollbar: svPatchListScrollBar
+      VerticalScrollBar
+        id: svPatchListScrollBar
+        anchors.top: prev.top
+        anchors.right: prev.right
+        anchors.bottom: prev.bottom
+        margin: 1 1 1 0
+        step: 25
+        pixels-scroll: true
+    HorizontalSeparator
+      id: separator
+      anchors.bottom: closeButton.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-bottom: 9
+    Button
+      id: closeButton
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      !text: tr('Close')
+      size: 43 20
+      enabled: false
+      @onClick: close()
+    Button
+      id: discordButton
+      size: 80 20
+      anchors.bottom: parent.bottom
+      anchors.right: prev.left
+      !text: tr('RubinOT Discord')
+      margin-right: 10
+      image-source: /images/ui/buttons-blue
+      @onClick: g_platform.openUrl("https://discord.gg/rubini")

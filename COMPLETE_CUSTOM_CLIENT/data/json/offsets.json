@@ -1,0 +1,81 @@
+{
+    "OutfitOffset": [
+        {
+            "data": {
+                "type": 2594,
+                "marktarget": false,
+                "circletarget": true,
+                "collision": 4,
+                "draw": {
+                    "x": -10,
+                    "y": -7
+                },
+                "animated": {
+                   "x": -48,
+                   "y": -48
+                }
+            }
+        },
+		{
+            "data": {
+                "type": 2595,
+                "marktarget": false,
+                "circletarget": true,
+                "collision": 4,
+                "draw": {
+                    "x": -10,
+                    "y": -7
+                },
+                "animated": {
+                   "x": -48,
+                   "y": -48
+                }
+            }
+        },
+        {
+            "data": {
+                "type": 2596,
+                "marktarget": false,
+                "collision": 4,
+                "draw": {
+                    "x": 12,
+                    "y": 12
+                },
+                "animated": {
+                   "x": -48,
+                   "y": -48
+                }
+            }
+        },
+        {
+            "data": {
+                "type": 2597,
+                "marktarget": false,
+                "collision": 4,
+                "draw": {
+                    "x": 12,
+                    "y": 12
+                },
+                "animated": {
+                   "x": -48,
+                   "y": -48
+                }
+            }
+        },
+        {
+            "data": {
+                "type": 2598,
+                "marktarget": false,
+                "collision": 4,
+                "draw": {
+                    "x": 12,
+                    "y": 12
+                },
+                "animated": {
+                   "x": -48,
+                   "y": -48
+                }
+            }
+        }
+    ]
+}

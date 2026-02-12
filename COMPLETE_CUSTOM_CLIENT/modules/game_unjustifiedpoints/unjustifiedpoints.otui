@@ -1,0 +1,131 @@
+SkullProgressPanel < UIWidget
+  height: 5
+  image-source: /images/game/skull_progress
+
+SkullProgressBar < ProgressBarSD
+  height: 5
+  image-source: /game_cyclopedia/images/ui/mosnter-bar
+
+SkullWidget < UIWidget
+  size: 15 15
+  margin-right: 2
+  anchors.right: parent.right
+  image-source: /images/game/skull_socket
+
+SkullWidgetLeft < UIWidget
+  size: 16 16
+  margin-left: 36
+  margin-top: 4
+  anchors.left: parent.left
+  image-source: /images/game/skull_socket
+
+MiniWindow
+  id: unjustifiedPointsWindow
+  &type: 'unjustifiedPoints'
+  !text: tr('Unjustified Points')
+  height: 74
+  icon: /images/icons/icon-unjustified-points-widget
+  @onClose: modules.game_unjustifiedpoints.onMiniWindowClose()
+
+  MiniWindowContents
+    Label
+      anchors.top: parent.top
+      anchors.left: parent.left
+      !text: tr('Open:')
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+      !tooltip: tr('Open PvP situations.')
+      phantom: false
+      margin-top: -4
+      margin-left: 3
+
+    Label
+      id: openPvpSituationsLabel
+      anchors.top: parent.top
+      anchors.left: prev.right
+      font: $var-cip-font
+      color: $var-text-cip-color
+      margin-top: -4
+      margin-left: 3
+      phantom: false
+      text-auto-resize: true
+
+    SkullWidgetLeft
+      id: currentSkullWidget
+      anchors.top: prev.bottom
+
+    Label
+      id: skullTimeLabel
+      anchors.top: prev.top
+      anchors.right: prev.left
+      font: verdana-11px-rounded
+      margin-right: 6
+      visible: false
+      phantom: false
+
+    SkullProgressPanel
+      id: progressBg
+      anchors.right: daySkullWidget.left
+      anchors.top: parent.top
+      margin-right: 4
+      margin-top: 4
+
+    SkullProgressBar
+      id: dayProgressBar
+      anchors.top: prev.top
+      anchors.bottom: prev.bottom
+      anchors.left: prev.left
+      anchors.right: prev.right
+      margin-top: 1
+      margin-bottom: 1
+      margin-left: 1
+      margin-right: 1
+
+    SkullWidget
+      id: daySkullWidget
+      anchors.top: parent.top
+
+    SkullProgressPanel
+      anchors.right: weekSkullWidget.left
+      anchors.top: parent.top
+      margin-right: 4
+      margin-top: 20
+
+    SkullProgressBar
+      id: weekProgressBar
+      anchors.top: prev.top
+      anchors.bottom: prev.bottom
+      anchors.left: prev.left
+      anchors.right: prev.right
+      margin-top: 1
+      margin-bottom: 1
+      margin-left: 1
+      margin-right: 1
+
+    SkullWidget
+      id: weekSkullWidget
+      anchors.top: daySkullWidget.bottom
+      margin-top: 2
+
+    SkullProgressPanel
+      anchors.right: monthSkullWidget.left
+      anchors.top: parent.top
+      margin-right: 4
+      margin-top: 37
+
+    SkullProgressBar
+      id: monthProgressBar
+      anchors.top: prev.top
+      anchors.bottom: prev.bottom
+      anchors.left: prev.left
+      anchors.right: prev.right
+      margin-top: 1
+      margin-bottom: 1
+      margin-left: 1
+      margin-right: 1
+
+    SkullWidget
+      id: monthSkullWidget
+      anchors.top: weekSkullWidget.bottom
+      margin-top: 2

@@ -1,0 +1,6 @@
+Module
+  name: game_pvp_queue
+  sandboxed: true
+  scripts: [ pvp_queue, pvp_const, pvp_map_phase, pvp_leaderboard ]
+  @onLoad: init()
+  @onUnload: terminate()

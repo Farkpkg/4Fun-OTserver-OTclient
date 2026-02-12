@@ -1,0 +1,2549 @@
+ConfirmLeaveQueueWindow < NewHeadlessWindow
+  id: confirmLeaveQueueWindow
+  anchors.horizontalCenter: parent.horizontalCenter
+  size: 386 115
+  UIWidget
+    size: 145 56
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -33
+    image-source: /images/game/tutorial/backdrop_crestr
+    phantom: true
+  Panel
+    id: mainPanel
+    anchors.fill: parent
+    margin: 25 15 15 15
+    Label
+      id: confirmLabel
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 5
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+      text-wrap: true
+      text-align: center
+
+    HorizontalSeparator
+      id: separator
+      anchors.bottom: next.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-bottom: 10
+    Button
+      id: noButton
+      !text: tr('No')
+      size: 43 20
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+    Button
+      id: yesButton
+      !text: tr('Yes')
+      size: 43 20
+      anchors.bottom: parent.bottom
+      anchors.right: prev.left
+      margin-right: 5
+
+InfoWarningWindow < NewHeadlessWindow
+  id: infoWarningWindow
+  anchors.horizontalCenter: parent.horizontalCenter
+  size: 610 115
+  UIWidget
+    size: 145 56
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -33
+    image-source: /images/game/tutorial/backdrop_crestr
+    phantom: true
+  Panel
+    id: mainPanel
+    anchors.fill: parent
+    margin: 25 15 15 15
+    Label
+      id: messageLabel
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 5
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+      text-wrap: true
+      text-align: center
+
+    HorizontalSeparator
+      id: separator
+      anchors.bottom: next.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-bottom: 10
+    Button
+      id: okButton
+      !text: tr('Ok')
+      size: 43 20
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      
+PrestigePlayerInspect < NewHeadlessWindow
+  anchors.horizontalCenter: parent.horizontalCenter
+  size: 245 465
+  @onEscape: modules.game_pvp_queue.show()
+  UIWidget
+    size: 145 56
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -33
+    image-source: /images/game/tutorial/backdrop_crestr
+    phantom: true
+  Panel
+    id: mainPanel
+    anchors.fill: parent
+    margin: 15 13 17 13
+    Panel
+      id: contentPanel
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: separator.top
+      margin-top: 12
+      margin-bottom: 8
+      Panel
+        id: profilePanel
+        width: 220
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        image-source: /images/ui/minipanel
+        image-border: 19
+        Label
+          id: characterName
+          !text: tr('Character Name')
+          anchors.top: parent.top
+          anchors.horizontalCenter: parent.horizontalCenter
+          margin-top: 2
+          font: $var-cip-font
+          color: $var-text-cip-color-grey
+          text-auto-resize: true
+        Panel
+          id: profilePanelContent
+          anchors.fill: parent
+          margin: 26 9 9 9
+          UIWidget
+            id: playerOutfitBg
+            size: 66 66
+            anchors.top: parent.top
+            anchors.left: parent.left
+            image-source: /images/ui/item66
+            image-border: 5
+            UICreature
+              id: outfit
+              size: 64 64
+              anchors.top: parent.top
+              anchors.left: parent.left
+              outfit-id: 418
+              margin-top: 1
+              margin-left: 1
+              idle-animate: true
+
+          UIWidget
+            id: playerRank
+            anchors.top: prev.top
+            anchors.left: prev.right
+            margin-top: 1
+            margin-left: 5
+            image-source: /images/game/ranked-queue/ranks/rank-9
+            image-auto-resize: true
+          Label
+            id: progressTitle
+            !text: tr('Prestige Progress')
+            anchors.top: playerOutfitBg.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            margin-top: 5
+            font: $var-cip-font
+            color: $var-text-cip-color-highlight
+            text-auto-resize: true
+          UIWidget
+            id: prestigeBarBg
+            height: 20
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            image-source: /images/ui/bosstiary-bg
+            margin-top: 4
+            image-border: 15
+            ProgressBarSD
+              id: prestigeProgress
+              anchors.fill: parent
+              margin: 1 1 1 1
+              image-source: /images/ui/bosstiary-progress
+              percent: 0
+            Label
+              id: currentlyPrestigeText
+              anchors.verticalCenter: parent.verticalCenter
+              anchors.horizontalCenter: parent.horizontalCenter
+              margin-left: -5
+              text: 0
+              font: $var-cip-font
+              color: $var-text-cip-color
+              text-auto-resize: true
+
+          Label
+            id: divisionLabel
+            !text: tr('Division')
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            margin-top: 5
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          Label
+            id: divisionRankLabel
+            !text: tr('Newbie')
+            anchors.top: prev.top
+            anchors.right: parent.right
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+
+          Label
+            id: wdNameLabel
+            !text: tr('World')
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            margin-top: 5
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          Label
+            id: worldName
+            !text: tr('World Name')
+            anchors.top: prev.top
+            anchors.right: parent.right
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          
+          HorizontalSeparator
+            id: infoSep1
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            margin-top: 7
+
+          Label
+            id: actualWinStreakLabel
+            !text: tr('Current Win Streak')
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            margin-top: 5
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          Label
+            id: actualWinStreak
+            !text: tr('0 Wins')
+            anchors.top: prev.top
+            anchors.right: parent.right
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          
+          HorizontalSeparator
+            id: infoSep2
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            margin-top: 7
+
+          Label
+            id: seasonLabel
+            !text: tr('Season')
+            anchors.top: prev.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            margin-top: 3
+            font: $var-cip-font
+            color: $var-text-cip-color-highlight
+            text-auto-resize: true
+
+          Label
+            id: seasonBestMapInfoLabel
+            !text: tr('Best Map')
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            margin-top: 3
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          Label
+            id: seasonBestMap
+            !text: tr('None')
+            anchors.top: prev.top
+            anchors.right: parent.right
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+
+          Label
+            id: seasonBestStreakInfoLabel
+            !text: tr('Best Streak')
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            margin-top: 2
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          Label
+            id: seasonBestStreak
+            !text: tr('0 Wins')
+            anchors.top: prev.top
+            anchors.right: parent.right
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+
+          Label
+            id: seasonBestDivisionInfoLabel
+            !text: tr('Best Division')
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            margin-top: 2
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          Label
+            id: seasonBestDivision
+            !text: tr('Newbie')
+            anchors.top: prev.top
+            anchors.right: parent.right
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+
+          Label
+            id: seasonBestPrestigeInfoLabel
+            !text: tr('Best Prestige')
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            margin-top: 2
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          Label
+            id: seasonBestPrestige
+            !text: tr('0')
+            anchors.top: prev.top
+            anchors.right: parent.right
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          
+          HorizontalSeparator
+            id: infoSep3
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            margin-top: 7
+
+          Label
+            id: allTimeLabel
+            !text: tr('All Time')
+            anchors.top: prev.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            margin-top: 3
+            font: $var-cip-font
+            color: $var-text-cip-color-highlight
+            text-auto-resize: true
+
+          Label
+            id: bestMapInfoLabel
+            !text: tr('Best Map')
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            margin-top: 1
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          Label
+            id: bestMap
+            !text: tr('True Asura')
+            anchors.top: prev.top
+            anchors.right: parent.right
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+
+          Label
+            id: bestStreakInfoLabel
+            !text: tr('Best Streak')
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            margin-top: 2
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          Label
+            id: bestStreak
+            !text: tr('4 Wins')
+            anchors.top: prev.top
+            anchors.right: parent.right
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+
+          Label
+            id: bestDivisionInfoLabel
+            !text: tr('Best Division')
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            margin-top: 2
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          Label
+            id: bestDivision
+            !text: tr('Newbie')
+            anchors.top: prev.top
+            anchors.right: parent.right
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+
+          Label
+            id: bestPrestigeInfoLabel
+            !text: tr('Best Prestige')
+            anchors.top: prev.bottom
+            anchors.left: parent.left
+            margin-top: 2
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+          Label
+            id: bestPrestige
+            !text: tr('6510')
+            anchors.top: prev.top
+            anchors.right: parent.right
+            font: $var-cip-font
+            color: $var-text-cip-color
+            text-auto-resize: true
+
+    HorizontalSeparator
+      id: separator
+      anchors.bottom: next.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-bottom: 10
+    Button
+      id: close
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      !text: tr('Close')
+      size: 43 20
+
+CastWidget < UIWidget
+  size: 244 114
+  image-source: /images/game/ranked-queue/cast/cast-bg
+  border-color: alpha
+  border-width: 0
+  $focus:
+    border-width: 1
+    border-color: #ffffff
+  UICreature
+    id: playerOutfit1
+    size: 64 64
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 5
+    idle-animate: true
+    outfit-id: 418
+    phantom: true
+    visible: true
+  UIWidget
+    id: tooltipLabel1
+    size: 64 64
+    tooltip-delayed: true
+    anchors.fill: prev
+  UIWidget
+    id: playerRank1
+    anchors.top: playerOutfit1.bottom
+    anchors.right: playerOutfit1.right
+    image-auto-resize: true
+    margin-right: 7
+
+  UIWidget
+    id: vsIcon
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    image-source: /images/game/ranked-queue/cast/VS
+    image-auto-resize: true
+    phantom: true
+
+  UICreature
+    id: playerOutfit2
+    size: 64 64
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 5
+    margin-right: 15
+    idle-animate: true
+    outfit-id: 418
+    phantom: true
+    visible: true
+  UIWidget
+    id: tooltipLabel2
+    size: 64 64
+    tooltip-delayed: true
+    anchors.fill: prev
+  UIWidget
+    id: playerRank2
+    anchors.top: playerOutfit2.bottom
+    anchors.right: playerOutfit2.right
+    image-auto-resize: true
+    margin-right: 7
+    
+  Label
+    id: mapNameLabel
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    !text: tr('Map Name')
+    text-align: center
+    font: $var-cip-font
+    color: $var-text-cip-color-highlight
+    text-auto-resize: true
+    margin-bottom: 9
+    phantom: true
+
+PlayerRankWidget < UIWidget
+  height: 16
+  $first:
+    margin-top: 16
+  UIWidget
+    id: rankPosition
+    width: 44
+    anchors.top: parent.top
+    anchors.left: parent.left
+    text-align: left
+    text: 1.
+    font: $var-cip-font
+    color: $var-text-cip-color
+    margin-left: 1
+  UIWidget
+    id: rankPoints
+    width: 56
+    anchors.top: parent.top
+    anchors.left: prev.right
+    text-align: left
+    !text: tr("(+ 6)")
+    font: $var-cip-font
+    color: $var-text-cip-color-green
+    margin-left: 2
+
+  UIWidget
+    id: infoIcon
+    size: 7 4
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-top: 7
+    margin-left: 4
+    image-source: /images/game/ranked-queue/icon-arrow-up
+  UIWidget
+    id: name
+    width: 205
+    text-align: left
+    !text: tr("")
+    color: $var-text-cip-color
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 4
+
+  UIWidget
+    id: division
+    width: 124
+    !text: tr("Newbie")
+    color: $var-text-cip-color
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 3
+    text-align: left
+
+
+  UIWidget
+    id: vocation
+    width: 115
+    !text: tr("Druid")
+    text-align: left
+    color: $var-text-cip-color
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 6
+
+  UIWidget
+    id: world
+    width: 110
+    text: World Name
+    text-align: left
+    color: $var-text-cip-color
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 2
+    text-overflow-length: 15
+    tooltip-delayed: true
+
+  UIWidget
+    id: score
+    width: 72
+    text: 200
+    text-align: left
+    color: $var-text-cip-color
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 7
+
+PlayerHistoryWidget < UIWidget
+  height: 20
+  $first: 
+    margin-top: 16
+  UIWidget
+    height: 20
+    width: 6
+    anchors.top: parent.top
+    anchors.left: parent.left
+    UIWidget
+      id: winnerOrLooserColor
+      anchors.fill: parent
+      opacity: 0.5
+      $hover:
+        opacity: 0.7
+  UIWidget
+    id: date
+    width: 93
+    anchors.top: parent.top
+    anchors.left: prev.right
+    text-align: left
+    text: 14/08/25
+    font: $var-cip-font
+    color: $var-text-cip-color
+    margin-left: 3
+    margin-top: 2
+  UIWidget
+    id: adversaryName
+    width: 160
+    text-align: left
+    text: 
+    color: $var-text-cip-color
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 4
+    margin-top: 2
+  UIWidget
+    id: adversaryPrestige
+    width: 59
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-align: left
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 2
+    margin-top: 2
+  UIWidget
+    id: level
+    width: 59
+    text-align: left
+    color: $var-text-cip-color
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 2
+    margin-top: 2
+  UIWidget
+    id: voc
+    width: 110
+    text-align: left
+    color: $var-text-cip-color
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 4
+    margin-top: 2
+  UIWidget
+    id: map
+    width: 140
+    text-align: left
+    color: $var-text-cip-color
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 2
+    margin-top: 2
+  UIWidget
+    id: result
+    width: 107
+    text-align: left
+    color: $var-text-cip-color
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 2
+    margin-top: 2
+
+MapBackground < UIWidget
+  size: 146 358
+  image-source: /images/game/ranked-queue/MapBg
+  Label
+    id: mapName
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-bottom: 7
+    margin-left: 7
+    margin-right: 7
+    text: Map Name
+    text-align: center
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-auto-resize: true
+    phantom: true
+  UIWidget
+    id: mapImage
+    size: 128 321
+    anchors.top: parent.top
+    anchors.left: parent.left
+    image-source: /images/game/ranked-queue/map-images/ice-library
+    image-clip: 0 0 128 321
+    margin-top: 9
+    margin-left: 9
+    phantom: true
+
+SearchQueuePanel < UIWidget
+  anchors.fill: parent
+  UIWidget
+    id: announcerBg
+    size: 95 97
+    anchors.top: parent.top
+    anchors.left: parent.left
+    image-source: /images/game/ranked-queue/announcer
+    image-border: 5
+  Panel
+    id: announcePanel
+    height: 97
+    anchors.top: parent.top
+    anchors.left: prev.right
+    anchors.right: parent.right
+    image-source: /images/ui/2pixel-up-frame-borderimage
+    image-border: 19
+    margin-left: 6
+    padding: 5
+    UIWidget
+      id: announceBackground
+      anchors.fill: parent
+      image-source: /images/ui/textedit
+      image-border: 5
+      Label
+        id: announceText
+        !text: tr('Are you ready to unleash your power and habilities?\nProve your strength and rise through the ranks.\nOnly the strongest will claim the title of true warrior.')
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 5
+        margin-left: 10
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+        text-wrap: true
+
+  HorizontalSeparator
+    id: queueSep2
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 9
+
+  UIWidget
+    id: searchingQueueBg
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    image-source: /images/ui/3pixel-frame-borderimage
+    image-border: 5
+    margin-top: 8
+    padding: 9
+    UIWidget
+      id: background0
+      anchors.top: parent.top
+      anchors.left: parent.left
+      image-auto-resize: true
+      margin-left: -6
+      margin-top: -6
+      visible: true
+    UIWidget
+      image-source: /images/game/ranked-queue/banners/bg
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      image-auto-resize: true
+      margin-top: -6
+      visible: true
+    UIWidget
+      id: bannerBg
+      image-source: /images/game/ranked-queue/banners/rank-0-bg
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      image-auto-resize: true
+      margin-top: -6
+      visible: true
+    UIWidget
+      id: playerRank
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 27
+      image-source: /images/game/ranked-queue/ranks/rank-1
+      image-auto-resize: true
+    Label
+      id: currentDivisionLabel
+      !text: tr('Newbie')
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 2
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+    Button
+      id: searchBattleButton
+      size: 108 20
+      anchors.bottom: parent.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      image-source: /images/ui/buttons-blue
+      !text: tr('Search Battle')
+      margin-bottom: 5
+      tooltip-delayed: true
+      on: true
+      $on:
+        image-clip: 0 0 43 20
+        text-offset: 0 2
+      $!on:
+        color: #dfdfdf88
+        opacity: 0.8
+        change-cursor-image: false
+      $on pressed:
+        image-clip: 0 20 43 20
+        text-offset: 2 4
+      $!on pressed:
+        image-clip: 0 0 43 20
+        text-offset: 0 2
+
+      @onClick: |
+        if self:isOn() then
+          g_game.sendManagePrestigeArenaQueue(false)
+        end
+    UIProgressRect
+      id: searchTimer
+      background: #101010aa
+      percent: 0
+      showTime: true
+      showProgress: false
+      focusable: false
+      phantom: true
+      size: 108 20
+      margin-bottom: 4
+      anchors.bottom: parent.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      font: verdana-11px-rounded
+      color: $var-text-cip-store-red
+    UIWidget
+      id: buttonBorder
+      size: 120 33
+      image-source: /images/ui/button_startplaying_idle
+      anchors.top: searchBattleButton.top
+      anchors.left: searchBattleButton.left
+      margin-top: -6
+      margin-left: -6
+      phantom: true
+    Label
+      id: availablePlayersLabel
+      !text: tr('')
+      anchors.bottom: prev.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-bottom: 10
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+
+SearchingQueuePanel < UIWidget
+  anchors.fill: parent
+  UIWidget
+    id: announcerBg
+    size: 95 97
+    anchors.top: parent.top
+    anchors.left: parent.left
+    image-source: /images/game/ranked-queue/announcer
+    image-border: 5
+  Panel
+    id: announcePanel
+    height: 97
+    anchors.top: parent.top
+    anchors.left: prev.right
+    anchors.right: parent.right
+    image-source: /images/ui/2pixel-up-frame-borderimage
+    image-border: 19
+    margin-left: 6
+    padding: 5
+    UIWidget
+      id: announceBackground
+      anchors.fill: parent
+      image-source: /images/ui/textedit
+      image-border: 5
+      Label
+        id: announceText
+        !text: tr('Are you ready to unleash your power and habilities?\nProve your strength and rise through the ranks.\nOnly the strongest will claim the title of true warrior.')
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 15
+        margin-left: 10
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+        text-wrap: true
+
+  HorizontalSeparator
+    id: queueSep2
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 9
+
+  UIWidget
+    id: searchingQueueBg
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    image-source: /images/ui/3pixel-frame-borderimage
+    image-border: 5
+    margin-top: 8
+    padding: 9
+    UIWidget
+      id: background1
+      anchors.top: parent.top
+      anchors.left: parent.left
+      image-auto-resize: true
+      margin-left: -6
+      margin-top: -6
+      visible: true
+    UIWidget
+      image-source: /images/game/ranked-queue/banners/bg
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      image-auto-resize: true
+      margin-top: -6
+      visible: true
+    UIWidget
+      id: bannerBg1
+      image-source: /images/game/ranked-queue/banners/rank-0-bg
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      image-auto-resize: true
+      margin-top: -6
+      visible: true
+    Panel
+      id: queueTimerPanel
+      size: 122 20
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 5
+      visible: true
+      UIWidget
+        id: queueTimerBg
+        size: 96 20
+        anchors.top: parent.top
+        anchors.left: parent.left
+        margin-left: 7
+        Label
+          id: availableSearchText
+          anchors.verticalCenter: parent.verticalCenter
+          anchors.horizontalCenter: parent.horizontalCenter
+          text: 00:00
+          font: $var-cip-font
+          color: $var-text-cip-color
+          text-auto-resize: true
+        UIWidget
+          id: searchHourglassIcon
+          size: 10 15
+          anchors.top: prev.top
+          anchors.left: prev.right
+          margin-left: 5
+          image-source: /images/game/battlepass/battlepass-hourglass
+      UIButton
+        id: leaveQueueButton
+        anchors.top: prev.top
+        anchors.left: prev.right
+        image-source: /images/game/ranked-queue/icon-no
+        image-auto-resize: true
+        !tooltip: tr('Leave Queue')
+        delayed-tooltip: true
+        @onClick: modules.game_pvp_queue.PrestigeBattle:manageOnLeaveQueue(false)
+
+    UIWidget
+      id: playerRank
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 3
+      image-source: /images/game/ranked-queue/ranks/rank-1
+      image-auto-resize: true
+    Label
+      id: currentDivisionLabel
+      !text: tr('Newbie')
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 2
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+
+    Label
+      id: queueLabel
+      !text: tr('Searching for a battle...')
+      anchors.bottom: parent.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-bottom: 7
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+      text-align: left
+    UIWidget
+      size: 22 22
+      anchors.bottom: prev.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-bottom: 7
+      image-source: /images/game/ranked-queue/icon-hourglass
+
+PlayerHistory < Panel
+  anchors.fill: parent
+  TextList
+    id: playerHistoryContent
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 5
+    margin-bottom: 8
+    padding: 1
+    focusable: false
+    vertical-scrollbar: playerHistoryScrollBar
+  VerticalScrollBar
+    id: playerHistoryScrollBar
+    anchors.top: prev.top
+    anchors.right: prev.right
+    anchors.bottom: prev.bottom
+    margin: 1 1 1 0
+    step: 14
+    pixels-scroll: true
+  UIWidget
+    size: 755 17
+    anchors.top: playerHistoryContent.top
+    anchors.left: playerHistoryContent.left
+    margin-left: 1
+    border-width-bottom: 1
+    border-color-bottom: #757575
+  UIWidget
+    id: resultColorButton
+    size: 6 15
+    anchors.top: playerHistoryContent.top
+    anchors.left: playerHistoryContent.left
+    margin-top: 1
+    margin-left: 1
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 376
+    anchors.top: playerHistoryContent.top
+    anchors.left: prev.right
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: dateButton
+    size: 95 15
+    text: Date
+    color: $var-text-cip-color
+    font: $var-cip-font
+    text-offset: 1 -1
+    text-align: leftCenter
+    anchors.top: playerHistoryContent.top
+    anchors.left: prev.right
+    margin-top: 1
+    margin-left: 1
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 376
+    anchors.top: playerHistoryContent.top
+    anchors.left: prev.right
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: adversaryButton
+    size: 160 15
+    text: Adversary
+    color: $var-text-cip-color
+    font: $var-cip-font
+    text-offset: 1 -1
+    text-align: leftCenter
+    anchors.top: playerHistoryContent.top
+    anchors.left: prev.right
+    margin-top: 1
+    margin-left: 1
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 376
+    anchors.top: playerHistoryContent.top
+    anchors.left: prev.right
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: adversaryPrestigeButton
+    size: 60 15
+    text: Prestige
+    color: $var-text-cip-color
+    font: $var-cip-font
+    text-offset: 1 -1
+    text-align: leftCenter
+    anchors.top: playerHistoryContent.top
+    anchors.left: prev.right
+    margin-top: 1
+    margin-left: 1
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 376
+    anchors.top: playerHistoryContent.top
+    anchors.left: prev.right
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: levelButton
+    size: 60 15
+    text: Level
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-offset: 1 -1
+    text-align: leftCenter
+    anchors.top: playerHistoryContent.top
+    anchors.left: adversaryPrestigeButton.right
+    margin-top: 1
+    margin-left: 2
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 376
+    anchors.left: prev.right
+    anchors.top: playerHistoryContent.top
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: vocButton
+    size: 110 15
+    text: Vocation
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-offset: 1 -1
+    text-align: leftCenter
+    anchors.top: playerHistoryContent.top
+    anchors.left: levelButton.right
+    margin-top: 1
+    margin-left: 2
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 376
+    anchors.left: prev.right
+    anchors.top: playerHistoryContent.top
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: mapButton
+    size: 140 15
+    text: Map
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-offset: 1 -1
+    text-align: rightCenter
+    anchors.top: playerHistoryContent.top
+    anchors.left: prev.right
+    margin-top: 1
+    margin-left: 1
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 376
+    anchors.left: prev.right
+    anchors.top: playerHistoryContent.top
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: resultButton
+    size: 117 15
+    text: Result
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-offset: 1 -1
+    text-align: rightCenter
+    anchors.top: playerHistoryContent.top
+    anchors.left: prev.right
+    margin-top: 1
+    margin-left: 1
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+    
+RankedPanel < Panel
+  anchors.fill: parent
+  Panel
+    id: profilePanel
+    width: 220
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    image-source: /images/ui/minipanel
+    image-border: 19
+    Label
+      id: characterName
+      !text: tr('Character Name')
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 2
+      font: $var-cip-font
+      color: $var-text-cip-color-grey
+      text-auto-resize: true
+    Panel
+      id: content
+      anchors.fill: parent
+      margin: 26 9 9 9
+      UIWidget
+        id: playerOutfitBg
+        size: 66 66
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        image-source: /images/ui/item66
+        image-border: 5
+        UICreature
+          id: outfit
+          size: 64 64
+          anchors.top: parent.top
+          anchors.left: parent.left
+          outfit-id: 418
+          margin-top: 1
+          margin-left: 1
+          idle-animate: true
+
+      Button
+        id: historyButton
+        size: 66 20
+        !text: tr('History')
+        anchors.top: prev.bottom
+        anchors.left: prev.left
+        icon: /images/game/ranked-queue/icon-scoretable
+        icon-offset: -20 0
+        text-offset: 13 0
+        margin-top: 5
+        image-source: /images/ui/buttons-blue
+        $pressed:
+          icon-offset: -19 1
+          text-offset: 14 1
+        @onClick: modules.game_pvp_queue.PrestigeBattle:loadMenu('playerHistory')
+
+      Label
+        id: progressTitle
+        !text: tr('Prestige Progress')
+        anchors.top: historyButton.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 5
+        font: $var-cip-font
+        color: $var-text-cip-color-highlight
+        text-auto-resize: true
+      UIWidget
+        id: prestigeBarBg
+        height: 20
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        image-source: /images/ui/bosstiary-bg
+        margin-top: 4
+        image-border: 15
+        ProgressBarSD
+          id: prestigeProgress
+          anchors.fill: parent
+          margin: 1 1 1 1
+          image-source: /images/ui/bosstiary-progress
+          percent: 0
+        Label
+          id: currentlyPrestigeText
+          anchors.verticalCenter: parent.verticalCenter
+          anchors.horizontalCenter: parent.horizontalCenter
+          margin-left: -5
+          text: 0
+          font: $var-cip-font
+          color: $var-text-cip-color
+          text-auto-resize: true
+
+      Label
+        id: divisionLabel
+        !text: tr('Division')
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        margin-top: 5
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+
+      Label
+        id: divisionRankLabel
+        !text: tr('Newbie')
+        anchors.top: prev.top
+        anchors.right: parent.right
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      
+      HorizontalSeparator
+        id: infoSep1
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 7
+
+      Label
+        id: actualWinStreakLabel
+        !text: tr('Current Win Streak')
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        margin-top: 5
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      Label
+        id: actualWinStreak
+        !text: tr('0 Wins')
+        anchors.top: prev.top
+        anchors.right: parent.right
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      
+      HorizontalSeparator
+        id: infoSep2
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 7
+
+      Label
+        id: seasonLabel
+        !text: tr('Season')
+        anchors.top: prev.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 3
+        font: $var-cip-font
+        color: $var-text-cip-color-highlight
+        text-auto-resize: true
+
+      Label
+        id: seasonBestMapInfoLabel
+        !text: tr('Best Map')
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        margin-top: 3
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      Label
+        id: seasonBestMap
+        !text: tr('None')
+        anchors.top: prev.top
+        anchors.right: parent.right
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+
+      Label
+        id: seasonBestStreakInfoLabel
+        !text: tr('Best Streak')
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        margin-top: 2
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      Label
+        id: seasonBestStreak
+        !text: tr('0 Wins')
+        anchors.top: prev.top
+        anchors.right: parent.right
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+
+      Label
+        id: seasonBestDivisionInfoLabel
+        !text: tr('Best Division')
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        margin-top: 2
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      Label
+        id: seasonBestDivision
+        !text: tr('Newbie')
+        anchors.top: prev.top
+        anchors.right: parent.right
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+
+      Label
+        id: seasonBestPrestigeInfoLabel
+        !text: tr('Best Prestige')
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        margin-top: 2
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      Label
+        id: seasonBestPrestige
+        !text: tr('0')
+        anchors.top: prev.top
+        anchors.right: parent.right
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      
+      HorizontalSeparator
+        id: infoSep3
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 7
+
+      Label
+        id: allTimeLabel
+        !text: tr('All Time')
+        anchors.top: prev.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 3
+        font: $var-cip-font
+        color: $var-text-cip-color-highlight
+        text-auto-resize: true
+
+      Label
+        id: bestMapInfoLabel
+        !text: tr('Best Map')
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        margin-top: 1
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      Label
+        id: bestMap
+        !text: tr('None')
+        anchors.top: prev.top
+        anchors.right: parent.right
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+
+      Label
+        id: bestStreakInfoLabel
+        !text: tr('Best Streak')
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        margin-top: 2
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      Label
+        id: bestStreak
+        !text: tr('0 Wins')
+        anchors.top: prev.top
+        anchors.right: parent.right
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+
+      Label
+        id: bestDivisionInfoLabel
+        !text: tr('Best Division')
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        margin-top: 2
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      Label
+        id: bestDivision
+        !text: tr('Newbie')
+        anchors.top: prev.top
+        anchors.right: parent.right
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+
+      Label
+        id: bestPrestigeInfoLabel
+        !text: tr('Best Prestige')
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        margin-top: 2
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      Label
+        id: bestPrestige
+        !text: tr('0')
+        anchors.top: prev.top
+        anchors.right: parent.right
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+
+  Panel
+    id: rightPanel
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.left: prev.right
+    anchors.right: parent.right
+    image-source: /images/ui/2pixel-up-frame-borderimage
+    image-border: 19
+    margin-left: 8
+    Panel
+      id: content
+      anchors.fill: parent
+      margin: 9 9 9 9
+      SearchQueuePanel
+        id: queuePanel
+        anchors.fill: parent
+        visible: true
+      SearchingQueuePanel
+        id: searchingQueue
+        anchors.fill: parent
+        visible: false
+
+HighscoresPanel < Panel
+  anchors.fill: parent
+  UIWidget
+    id: filters
+    height: 55
+    anchors.top: parent.top
+    anchors.right: parent.right
+    anchors.left: parent.left
+    margin-top: -6
+    image-source: /images/ui/t2pixel-up-frame-borderimage
+    image-border: 3
+    padding-top: 22
+    padding-left: 12
+    padding-bottom: 10
+    UIWidget
+      id: filterslabel
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: -21
+      !text: tr("Leaderboard Configuration")
+      font: $var-cip-font
+      color: $var-text-cip-color-grey
+      text-auto-resize: true
+      visible: true
+    UIWidget
+      id: rankLabel
+      size: 85 12
+      anchors.top: parent.top
+      anchors.left: parent.left
+      !text: tr("Division")..":"
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+      margin-top: 5
+    ComboBox
+      id: rankBox
+      size: 140 20
+      anchors.top: parent.top
+      anchors.left: rankLabel.right
+      margin-top: 2
+      margin-left: 5
+
+    VerticalSeparator
+      id: separator0
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.left: prev.right
+      margin-left: 10
+    UIWidget
+      id: vocationLabel
+      anchors.top: rankBox.top
+      anchors.left: prev.right
+      margin-top: 3
+      margin-left: 10
+      !text: tr("Vocation")..":"
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+    ComboBox
+      id: vocationBox
+      size: 110 20
+      anchors.top: rankBox.top
+      anchors.left: vocationLabel.right
+      margin-left: 5
+
+    VerticalSeparator
+      id: separator1
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.left: prev.right
+      margin-left: 10
+    UIWidget
+      id: worldLabel
+      anchors.top: rankBox.top
+      anchors.left: prev.right
+      margin-top: 3
+      margin-left: 10
+      !text: tr("Game World")..":"
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+    ComboBox
+      id: worldBox
+      size: 155 20
+      anchors.top: rankBox.top
+      anchors.left: worldLabel.right
+      margin-left: 5
+
+    VerticalSeparator
+      id: separator1
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.left: prev.right
+      margin-left: 10
+
+    Button
+      id: submitButton
+      size: 60 20
+      !text: tr("Submit")
+      anchors.top: vocationBox.top
+      anchors.left: prev.right
+      margin-left: 10
+      image-source: /images/ui/buttons-blue
+
+  TextList
+    id: rankList
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: showOwnRank.top
+    margin-top: 10
+    margin-bottom: 5
+    padding: 1
+    focusable: false
+    vertical-scrollbar: rankListcrollBar
+  VerticalScrollBar
+    id: rankListcrollBar
+    anchors.top: prev.top
+    anchors.right: prev.right
+    anchors.bottom: prev.bottom
+    margin: 1 1 1 0
+    step: 14
+    pixels-scroll: true
+  UIWidget
+    size: 755 17
+    anchors.top: rankList.top
+    anchors.left: rankList.left
+    margin-left: 1
+    border-width-bottom: 1
+    border-color-bottom: #757575
+  UIWidget
+    id: rankButton
+    size: 44 15
+    text: Rank
+    color: $var-text-cip-color
+    font: $var-cip-font
+    text-offset: 1 -1
+    text-align: leftCenter
+    anchors.top: rankList.top
+    anchors.left: rankList.left
+    margin-top: 1
+    margin-left: 1
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 305
+    anchors.left: prev.right
+    anchors.top: rankList.top
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: rankPointsButton
+    size: 56 15
+    text: #
+    color: $var-text-cip-color
+    font: $var-cip-font
+    text-offset: 1 -1
+    text-align: leftCenter
+    anchors.top: rankList.top
+    anchors.left: prev.right
+    margin-top: 1
+    margin-left: 1
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 305
+    anchors.top: rankList.top
+    anchors.left: prev.right
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: nameButton
+    size: 218 15
+    text: Name
+    color: $var-text-cip-color
+    font: $var-cip-font
+    text-offset: 1 -1
+    text-align: leftCenter
+    anchors.top: rankList.top
+    anchors.left: prev.right
+    margin-top: 1
+    margin-left: 1
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 305
+    anchors.left: prev.right
+    anchors.top: rankList.top
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: divisionButton
+    size: 128 15
+    text: Division
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-offset: 1 -1
+    text-align: leftCenter
+    anchors.top: rankList.top
+    anchors.left: nameButton.right
+    margin-top: 1
+    margin-left: 2
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 305
+    anchors.left: prev.right
+    anchors.top: rankList.top
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: vocationButton
+    size: 115 15
+    text: Vocation
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-offset: 1 -1
+    text-align: leftCenter
+    anchors.top: rankList.top
+    anchors.left: divisionButton.right
+    margin-top: 1
+    margin-left: 2
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 305
+    anchors.left: prev.right
+    anchors.top: rankList.top
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: worldButton
+    size: 115 15
+    text: World
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-offset: 1 -1
+    text-align: leftCenter
+    anchors.top: rankList.top
+    anchors.left: vocationButton.right
+    margin-top: 1
+    margin-left: 2
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  UIWidget
+    height: 305
+    anchors.left: prev.right
+    anchors.top: rankList.top
+    image-source: /images/ui/separator_vertical
+    margin-top: 1
+    image-border: 2
+  UIWidget
+    id: scoreButton
+    size: 72 15
+    text: Score
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-offset: 1 -1
+    text-align: leftCenter
+    anchors.top: rankList.top
+    anchors.left: prev.right
+    margin-top: 1
+    margin-left: 1
+    border-width-bottom: 1
+    border-color-bottom: #292a29
+    background-color: #363636
+    opacity: 1.0
+    $pressed:
+      color: #dfdfdf88
+      opacity: 0.8
+  
+  Button
+    id: showOwnRank
+    size: 100 20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-left: 201
+    image-source: /images/game/highscore/own_rank
+    image-clip: 0 0 100 20
+    $pressed:
+      image-clip: 0 20 100 20
+    $hover !pressed:
+      image-clip: 0 0 100 20
+
+  Button
+    id: first
+    size: 20 20
+    anchors.bottom: prev.bottom
+    anchors.left: prev.right
+    margin-left: 5
+    image-source: /images/game/highscore/arrow
+    image-clip: 0 0 20 20
+    $pressed:
+      image-clip: 40 0 20 20
+    $hover !pressed:
+      image-clip: 0 0 20 20
+  Button
+    id: prevButton
+    size: 20 20
+    anchors.bottom: prev.bottom
+    anchors.left: prev.right
+    margin-left: 5
+    image-source: /images/game/highscore/arrow
+    image-clip: 0 20 20 20
+    $pressed:
+      image-clip: 40 20 20 20
+    $hover !pressed:
+      image-clip: 0 20 20 20
+  UIWidget
+    id: page
+    size: 40 20
+    anchors.bottom: prev.bottom
+    anchors.left: prevButton.right
+    margin-bottom: 4
+    margin-left: 27
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-auto-resize: true
+    text: 1/?
+  Button
+    id: nextButton
+    size: 20 20
+    anchors.bottom: prevButton.bottom
+    anchors.left: page.right
+    margin-left: 26
+    image-source: /images/game/highscore/arrow
+    image-clip: 20 20 20 20
+    $pressed:
+      image-clip: 60 20 20 20
+    $hover !pressed:
+      image-clip: 20 20 20 20
+  Button
+    id: last
+    size: 20 20
+    anchors.bottom: prev.bottom
+    anchors.left: prev.right
+    margin-left: 5
+    image-source: /images/game/highscore/arrow
+    image-clip: 20 0 20 20
+    $pressed:
+      image-clip: 60 0 20 20
+    $hover !pressed:
+      image-clip: 20 0 20 20
+  Label
+    id: lastUpdate
+    height: 21
+    anchors.bottom: prev.bottom
+    anchors.left: prev.right
+    margin-left: 6
+    margin-bottom: 3
+    !text: tr("Last Update...")
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-auto-resize: true
+
+CastWindow < NewHeadlessWindow
+  anchors.horizontalCenter: parent.horizontalCenter
+  size: 795 520
+  @onEscape: modules.game_pvp_queue.hide()
+  UIWidget
+    size: 145 56
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -33
+    image-source: /images/game/tutorial/backdrop_crestr
+    phantom: true
+  Panel
+    id: mainPanel
+    anchors.fill: parent
+    margin: 25 13 17 13
+    UIWidget
+      id: filters
+      height: 40
+      anchors.top: parent.top
+      anchors.right: parent.right
+      anchors.left: parent.left
+      margin-top: 5
+      image-source: /images/ui/2pixel-up-frame-borderimage
+      image-border: 3
+      padding-left: 12
+      padding-bottom: 5
+      padding-top: 5
+      UIWidget
+        id: rankLabel
+        size: 85 12
+        anchors.top: parent.top
+        anchors.left: parent.left
+        !text: tr("Rank")..":"
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+        margin-top: 5
+      ComboBox
+        id: rankBox
+        size: 180 20
+        anchors.top: parent.top
+        anchors.left: prev.right
+        margin-left: 5
+        margin-top: 5
+        @onOptionChange: modules.game_pvp_queue.PrestigeBattle:displayLiveMatches()
+      VerticalSeparator
+        id: separator0
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: prev.right
+        margin-left: 15
+      UIWidget
+        id: vocationLabel
+        anchors.top: rankLabel.top
+        anchors.left: prev.right
+        margin-left: 13
+        !text: tr("Vocation")..":"
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      ComboBox
+        id: vocBox
+        size: 180 20
+        anchors.top: rankBox.top
+        anchors.left: prev.right
+        margin-left: 5
+        @onOptionChange: modules.game_pvp_queue.PrestigeBattle:displayLiveMatches()
+      Button
+        id: refreshListButton
+        size: 60 20
+        anchors.top: prev.top
+        anchors.left: prev.right
+        !text: tr("Refresh")
+        margin-left: 10
+        @onClick: g_game.sendRequestPrestigeArenaLiveMatches()
+
+    TextList
+      id: castList
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: separator.top
+      margin-top: 10
+      margin-bottom: 10
+      image-source: /images/ui/textedit
+      vertical-scrollbar: castListScrollBar
+      padding-top: 6
+      padding-left: 8
+      layout:
+        type: grid
+        cell-size: 244 114
+        cell-spacing: 5
+        flow: true
+    VerticalScrollBar
+      id: castListScrollBar
+      anchors.top: prev.top
+      anchors.bottom: prev.bottom
+      anchors.right: prev.right
+      margin-bottom: 1
+      margin-right: 1
+      margin-top: 1
+      step: 40
+    Label
+      id: noCastsLabel
+      anchors.horizontalCenter: parent.horizontalCenter
+      anchors.verticalCenter: parent.verticalCenter
+      !text: tr('No active matches.')
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+      visible: false
+
+    HorizontalSeparator
+      id: separator
+      anchors.bottom: next.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-bottom: 10
+    Button
+      id: close
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      !text: tr('Close')
+      size: 43 20
+      @onClick: modules.game_pvp_queue.hide()
+    
+    Button
+      size: 43 20
+      id: watchButton
+      anchors.bottom: parent.bottom
+      anchors.right: close.left
+      !text: tr('Watch')
+      image-source: /images/ui/buttons-blue
+      margin-right: 5
+      visible: false
+
+MatchFound < NewHeadlessWindow
+  id: matchFoundWindow
+  anchors.horizontalCenter: parent.horizontalCenter
+  size: 370 153
+  &static: true
+  UIWidget
+    size: 145 56
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -33
+    image-source: /images/game/tutorial/backdrop_crestr
+    phantom: true
+  Panel
+    id: contentPanel
+    anchors.fill: parent
+    margin: 25 15 17 14
+    Label
+      id: titleLabel
+      !text: tr('Match Found!')
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 5
+      font: Verdana Bold-13px
+      color: $var-text-cip-color-green
+      text-auto-resize: true
+    Label
+      id: matchFoundText
+      !text: tr('Prepare to ban a map for the upcoming battle.')
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 7
+      margin-left: 10
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+      text-wrap: true
+    UIWidget
+      id: acceptMatchBG
+      height: 20
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      image-source: /images/ui/bosstiary-bg
+      margin-top: 10
+      image-border: 5
+      ProgressBarSD
+        id: acceptMatchTimerProgress
+        anchors.fill: parent
+        margin: 1 1 1 1
+        image-source: /images/ui/bosstiary-progress
+        percent: 100
+      Label
+        id: acceptMatchTimerText
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        !text: tr("30 second(s) left")
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      UIWidget
+        id: hourglassIcon
+        size: 10 15
+        anchors.top: prev.top
+        anchors.left: prev.right
+        margin-top: 1
+        margin-left: 5
+        tooltip-delayed: true
+        image-source: /images/game/battlepass/battlepass-hourglass
+
+    HorizontalSeparator
+      id: separator
+      anchors.bottom: next.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-bottom: 10
+    Button
+      id: cancelButton
+      size: 43 20
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      !text: tr('Cancel')
+      @onClick: modules.game_pvp_queue.PrestigeBattle:closeMatchAcceptWindow(false)
+    Button
+      id: acceptButton
+      size: 53 20
+      anchors.bottom: parent.bottom
+      anchors.right: prev.left
+      image-source: /images/ui/buttons-blue
+      !text: tr('Accept')
+      margin-right: 5
+      @onClick: modules.game_pvp_queue.PrestigeBattle:closeMatchAcceptWindow(true)
+
+BanMapWindow < NewHeadlessWindow
+  id: pvpQueueWindow
+  anchors.horizontalCenter: parent.horizontalCenter
+  size: 795 520
+  UIWidget
+    size: 145 56
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -33
+    image-source: /images/game/tutorial/backdrop_crestr
+    phantom: true
+  Panel
+    id: contentPanel
+    anchors.fill: parent
+    margin: 25 15 17 14
+    UIWidget
+      id: announcerBg
+      size: 95 97
+      anchors.top: parent.top
+      anchors.left: parent.left
+      image-source: /images/game/ranked-queue/announcer
+      image-border: 5
+    Panel
+      id: announcePanel
+      height: 70
+      anchors.top: parent.top
+      anchors.left: prev.right
+      anchors.right: parent.right
+      image-source: /images/ui/2pixel-up-frame-borderimage
+      image-border: 19
+      margin-left: 6
+      padding: 5
+      UIWidget
+        id: announceBackground
+        anchors.fill: parent
+        image-source: /images/ui/textedit
+        image-border: 5
+        Label
+          id: announceText
+          !text: tr('Here, you will select a map to ban for the upcoming battle...\nYour opponent will also ban a map, so be ready to adapt to their choice\nand adjust your strategy accordingly.')
+          anchors.top: parent.top
+          anchors.left: parent.left
+          anchors.right: parent.right
+          margin-top: 5
+          margin-left: 10
+          font: $var-cip-font
+          color: $var-text-cip-color
+          text-auto-resize: true
+          text-wrap: true
+    UIWidget
+      id: banMapTimerBG
+      height: 20
+      anchors.top: prev.bottom
+      anchors.left: announcePanel.left
+      anchors.right: parent.right
+      image-source: /images/ui/bosstiary-bg
+      margin-top: 5
+      image-border: 5
+      ProgressBarSD
+        id: banMapTimerProgress
+        anchors.fill: parent
+        margin: 1 1 1 1
+        image-source: /images/ui/bosstiary-progress
+        percent: 100
+      Label
+        id: banMapTimerText
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-left: -30
+        !text: tr("30 second(s) left")
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+      UIWidget
+        id: hourglassIcon
+        size: 10 15
+        anchors.top: prev.top
+        anchors.left: prev.right
+        margin-top: 1
+        margin-left: 5
+        tooltip-delayed: true
+        image-source: /images/game/battlepass/battlepass-hourglass
+    UIWidget
+      id: banMapPanel
+      anchors.top: announcerBg.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      image-source: /images/ui/textedit
+      image-border: 1
+      margin-top: 7
+      margin-bottom: 5
+      padding: 5
+      Panel
+        id: mapsGrid
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        padding: 1
+        padding-left: 3
+        layout:
+          type: grid
+          cell-size: 146 358
+          cell-spacing: 5
+          num-lines: 1
+          num-columns: 5
+      
+NewHeadlessWindow
+  id: pvpQueue
+  anchors.horizontalCenter: parent.horizontalCenter
+  size: 795 520
+  @onEscape: modules.game_pvp_queue.PrestigeBattle:manageOnLeaveQueue(true)
+  UIWidget
+    size: 145 56
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -33
+    image-source: /images/game/tutorial/backdrop_crestr
+    phantom: true
+  Panel
+    id: mainPanel
+    anchors.fill: parent
+    margin: 15 13 17 13
+    Panel
+      id: optionsTabBar
+      height: 36
+      image-source: /images/game/destiny_wheel/menuBg
+      image-border: 1
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 12
+      Button
+        id: rankedMenu
+        anchors.top: parent.top
+        anchors.left: parent.left
+        size: 384 34
+        margin-left: 1
+        margin-top: 1
+        image-source: /images/game/ranked-queue/queue_menu
+        image-clip: 0 0 384 34
+        icon: /images/game/ranked-queue/icon-swords
+        icon-offset: -170 0
+        $hover !checked:
+          image-clip: 0 0 384 34
+        $pressed:
+          image-clip: 0 34 384 34
+        $checked:
+          image-clip: 0 34 384 34
+          icon-offset: -169 1
+        @onClick: modules.game_pvp_queue.PrestigeBattle:loadMenu('rankedMenu')
+      Button
+        id: highscoreMenu
+        anchors.top: parent.top
+        anchors.left: prev.right
+        size: 383 34
+        margin-left: 1
+        margin-top: 1
+        image-source: /images/game/ranked-queue/queue_menu
+        image-clip: 0 68 383 34
+        icon: /images/game/ranked-queue/icon-trophy
+        icon-offset: -170 0
+        $hover !checked:
+          image-clip: 0 68 383 34
+        $pressed:
+          image-clip: 0 102 383 34
+        $checked:
+          image-clip: 0 102 383 34
+          icon-offset: -169 1
+        @onClick: modules.game_pvp_queue.PrestigeBattle:loadMenu('highscoreMenu')
+
+    Panel
+      id: contentPanel
+      anchors.top: optionsTabBar.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: separator.top
+      margin-top: 12
+      margin-bottom: 8
+      RankedPanel
+        id: rankedPanel
+        visible: false
+      HighscoresPanel
+        id: highScoresPanel
+        visible: false
+      PlayerHistory
+        id: playerHistory
+        anchors.fill: parent
+        visible: false
+
+    HorizontalSeparator
+      id: separator
+      anchors.bottom: next.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-bottom: 10
+    Button
+      id: close
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      !text: tr('Close')
+      size: 43 22
+      @onClick: modules.game_pvp_queue.PrestigeBattle:manageOnLeaveQueue(true)
+
+    Button
+      id: backButton
+      anchors.bottom: parent.bottom
+      anchors.right: prev.left
+      !text: tr('Back')
+      size: 43 22
+      margin-right: 5
+      visible: false
+      @onClick: modules.game_pvp_queue.PrestigeBattle:loadMenu('rankedMenu')
+
+    Button
+      size: 65 22
+      id: minimizeButton
+      anchors.bottom: parent.bottom
+      anchors.right: close.left
+      !text: tr('Minimize')
+      margin-right: 5
+      visible: false
+      @onClick: modules.game_pvp_queue.PrestigeBattle:onMinimizeWindow()
+
+    Button
+      id: prestigeWiki
+      size: 90 22
+      anchors.bottom: parent.bottom
+      anchors.right: close.left
+      margin-right: 5
+      !text: tr('Prestige Arena Wiki')
+      @onClick: g_platform.openUrl("https://wiki.rubinot.com/pt-BR/prestige-arena")
+
+    TextEdit
+      id: searchText
+      size: 166 22
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      font: $var-cip-font
+      color: $var-text-cip-color
+      padding-left: 4
+      padding-top: 3
+      !placeholder: tr('Search a player')
+      box-text-padding: 27
+      focusable: true
+      @onTextChange: |
+        local searchIcon = self:getChildById("searchIcon")
+        searchIcon:setEnabled(#self:getText() > 0)
+      Button
+        id: searchIcon
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.right: parent.right
+        size: 20 20
+        margin-top: -2
+        margin-right: 1
+        image-source: /images/store/search-up
+        image-clip: 0 0 20 20
+        enabled: false
+        $hover !disabled:
+          image-clip: 0 0 20 20
+        $pressed:
+          image-clip: 0 20 20 20
+        $disabled:
+          image-clip: 0 40 20 20
+        @onClick: modules.game_pvp_queue.PrestigeBattle:sendPrestigeInspect()
+    
+    Panel
+      id: goldCoinPanel
+      size: 130 22
+      anchors.bottom: parent.bottom
+      anchors.left: prev.right
+      image-source: /images/ui/progress
+      image-border: 7
+      margin-left: 5
+      Panel
+        image-source: /images/store/icon-goldcoin
+        anchors.right: parent.right
+        anchors.top: parent.top
+        margin-top: 6
+        margin-right: 3
+      UIWidget
+        id: goldCoins
+        !text: tr('0')
+        anchors.top: parent.top
+        anchors.right: prev.left
+        margin-right: 5
+        margin-top: 3
+        text-auto-resize: true
+        color: #c0c0c0
+        font: Verdana Bold-11px
+        tooltip-font: $var-cip-font-wheel
+    Panel
+      id: availableMatchesPanel
+      size: 75 22
+      anchors.bottom: parent.bottom
+      anchors.left: prev.right
+      image-source: /images/ui/progress
+      image-border: 7
+      margin-left: 5
+      Panel
+        image-source: /images/icons/icon-battlelist
+        anchors.right: parent.right
+        anchors.top: parent.top
+        margin-top: 4
+        margin-right: 4
+      UIWidget
+        id: matches
+        !text: tr('? / ?')
+        anchors.top: parent.top
+        anchors.right: prev.left
+        margin-top: 3
+        margin-right: 5
+        text-auto-resize: true
+        font: $var-cip-font
+        color: $var-text-cip-color
+        tooltip: Available matches to play today.
+        tooltip-delayed: true
+
+    FlatLabel
+      id: showEmblemPanel
+      anchors.bottom: parent.bottom
+      anchors.left: prev.right
+      margin-left: 5
+      size: 110 22
+      CheckBox
+        id: checkBoxEmblem
+        checked: true
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        margin-left: 6
+        change-cursor-image: false
+        @onCheckChange: g_game.sendManagePrestigeEmblem(self:isChecked())
+      UIWidget
+        !text: tr('Division Icon')
+        text-auto-resize: true
+        font: $var-cip-font
+        color: $var-text-cip-color
+        anchors.left: checkBoxEmblem.right
+        anchors.verticalCenter: parent.verticalCenter
+        margin-left: 4
+        @onClick: |
+          local checkBox = self:getParent():recursiveGetChildById("checkBoxEmblem")
+          checkBox:setChecked(not checkBox:isChecked())

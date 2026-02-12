@@ -1,0 +1,308 @@
+PlayerWidget < UIWidget
+  height: 16
+  UIWidget
+    id: rank
+    width: 50
+    anchors.top: parent.top
+    anchors.left: parent.left
+    text-align: left
+    color: #c0c0c0
+    font: $var-cip-font
+    margin-left: 2
+
+  UIWidget
+    width: 50
+    anchors.top: parent.top
+    anchors.left: parent.left
+
+  UIWidget
+    id: separator1
+    anchors.left: prev.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    image-source: /images/ui/separator_vertical
+
+  UIWidget
+    id: name
+    width: 143
+    text-align: left
+    color: #c0c0c0
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 3
+
+  UIWidget
+    width: 143
+    anchors.top: parent.top
+    anchors.left: separator1.right
+
+  UIWidget
+    id: kills
+    width: 78
+    text-align: left
+    color: #c0c0c0
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 8
+
+  UIWidget
+    id: deaths
+    width: 78
+    text-align: left
+    color: #c0c0c0
+    font: $var-cip-font
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 5
+
+  UIWidget
+    width: 78
+    anchors.top: parent.top
+    anchors.left: separator3.right
+
+
+NewMainWindow
+  id: resultMainWindow
+  size: 401 401
+  anchors.horizontalCenter: parent.horizontalCenter
+  !text: tr('Castle Winner')
+  font: $var-cip-font
+  color: $var-text-cip-color-grey
+  @onEscape: self:hide()
+  UIWidget
+    size: 192 70
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -85
+    image-source: /images/ui/dragon-animated
+  Panel
+    id: contentPanel
+    size: 368 156
+    anchors.fill: parent
+    margin: 10 12 12 12
+    UIWidget
+      id: logohorde
+      size: 64 64
+      anchors.top: parent.top
+      anchors.left: parent.left
+      image-source: /images/game/castle/hordeLogo
+      margin-left: 55
+    UIWidget
+      id: logoAlliance
+      size: 64 64
+      anchors.top: parent.top
+      anchors.right: parent.right
+      image-source: /images/game/castle/allianceLogo
+      margin-right: 60
+
+    UICreature
+      id: winnerOutfit
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-right: 20
+      size: 64 64
+      outfit-id: 137
+      phantom: true
+      margin: -24 1 1 1
+    UIItem
+      id: trophy
+      anchors.top: prev.top
+      anchors.right: prev.left
+      size: 32 32
+      item-id: 9209
+      priceable: false
+      virtual: true
+      margin-top: 30
+      margin-right: -25
+      visible: true
+    Label
+      id: winnerLabel
+      anchors.top: winnerOutfit.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: -2
+      !text: 'Chest Winner'
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+    Label
+      id: winnerName
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 3
+      !text: 'Player Name'
+      font: $var-cip-font
+      color: $var-text-cip-color-highlight
+      text-auto-resize: true
+    HorizontalSeparator
+      id: separator
+      anchors.top: winnerName.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 12
+    Label
+      anchors.top: separator.bottom
+      anchors.left: parent.left
+      !text: 'Horde Kills'
+      font: $var-cip-font
+      color: #d33c3c
+      margin-top: 5
+      margin-left: 50
+      text-auto-resize: true
+    Panel
+      id: hordeCount
+      size: 120 20
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: separator1.left
+      margin-top: 3
+      margin-right: 5
+      image-source: /images/ui/progress
+      image-border: 7
+    VerticalSeparator
+      id: separator1
+      anchors.top: separator.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      anchors.bottom: next.top
+      margin-top: 4
+      margin-bottom: 5
+    Label
+      anchors.top: separator.bottom
+      anchors.right: parent.right
+      !text: 'Alliance Kills'
+      font: $var-cip-font
+      color: #20a0ff
+      margin-top: 5
+      margin-right: 50
+      text-auto-resize: true
+    Panel
+      id: allianceCount
+      size: 120 20
+      anchors.top: prev.bottom
+      anchors.left: separator1.right
+      anchors.right: parent.right
+      margin-top: 3
+      margin-left: 5
+      image-source: /images/ui/progress
+      image-border: 7
+
+    TextList
+      id: killsRank
+      anchors.top: hordeCount.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 5
+      padding: 1
+      focusable: false
+      vertical-scrollbar: killsRankcrollBar
+    VerticalScrollBar
+      id: killsRankcrollBar
+      anchors.top: prev.top
+      anchors.right: prev.right
+      anchors.bottom: prev.bottom
+      margin: 1 1 1 0
+      step: 14
+      pixels-scroll: true
+    UIWidget
+      size: 355 17
+      anchors.top: killsRank.top
+      anchors.left: killsRank.left
+      margin-left: 1
+      border-width-bottom: 1
+      border-color-bottom: #757575
+    UIWidget
+      id: rankButton
+      size: 50 15
+      text: Rank
+      color: $var-text-cip-color
+      font: $var-cip-font
+      text-offset: 1 -1
+      text-align: leftCenter
+      anchors.top: killsRank.top
+      anchors.left: killsRank.left
+      margin-top: 1
+      margin-left: 1
+      border-width-bottom: 1
+      border-color-bottom: #292a29
+      background-color: #363636
+      opacity: 1.0
+      $pressed:
+        color: #dfdfdf88
+        opacity: 0.8
+    UIWidget
+      height: 233
+      anchors.left: prev.right
+      anchors.top: killsRank.top
+      image-source: /images/ui/separator_vertical
+      margin-top: 1
+    UIWidget
+      id: nameButton
+      size: 143 15
+      text: Name
+      color: $var-text-cip-color
+      font: $var-cip-font
+      text-offset: 1 -1
+      text-align: leftCenter
+      anchors.top: killsRank.top
+      anchors.left: prev.right
+      margin-top: 1
+      margin-left: 2
+      border-width-bottom: 1
+      border-color-bottom: #292a29
+      background-color: #363636
+      opacity: 1.0
+      $pressed:
+        color: #dfdfdf88
+        opacity: 0.8
+    UIWidget
+      height: 233
+      anchors.left: prev.right
+      anchors.top: killsRank.top
+      image-source: /images/ui/separator_vertical
+      margin-top: 1
+    UIWidget
+      id: killsButton
+      size: 78 15
+      text: Kills
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-offset: 4 -1
+      text-align: leftCenter
+      anchors.top: killsRank.top
+      anchors.left: nameButton.right
+      margin-top: 1
+      margin-left: 2
+      border-width-bottom: 1
+      border-color-bottom: #292a29
+      background-color: #363636
+      opacity: 1.0
+      $pressed:
+        color: #dfdfdf88
+        opacity: 0.8
+    UIWidget
+      height: 233
+      anchors.left: prev.right
+      anchors.top: killsRank.top
+      image-source: /images/ui/separator_vertical
+      margin-top: 1
+    UIWidget
+      id: deathsButton
+      size: 78 15
+      text: Deaths
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-offset: 4 -1
+      text-align: leftCenter
+      anchors.top: killsRank.top
+      anchors.left: prev.right
+      margin-top: 1
+      margin-left: 2
+      border-width-bottom: 1
+      border-color-bottom: #292a29
+      background-color: #363636
+      opacity: 1.0
+      $pressed:
+        color: #dfdfdf88
+        opacity: 0.8

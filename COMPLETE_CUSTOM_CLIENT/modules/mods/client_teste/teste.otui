@@ -1,0 +1,10 @@
+MainWindow
+  id: mainWindow
+  text: "Main Window"
+  size: 800 600
+
+  Label
+    id: label
+    text: "Hello, World!"
+    position: 10 10
+    size: 200 30

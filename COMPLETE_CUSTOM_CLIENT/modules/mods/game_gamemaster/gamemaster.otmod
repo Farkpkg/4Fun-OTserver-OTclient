@@ -1,0 +1,9 @@
+Module
+  name: game_gamemaster
+  description: Forge
+  author: MMOServers
+  website:
+  sandboxed: true
+  scripts: [ gamemaster ]
+  @onLoad: init()
+  @onUnload: terminate()

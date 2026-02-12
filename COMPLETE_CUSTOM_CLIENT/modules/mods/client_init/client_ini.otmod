@@ -1,0 +1,10 @@
+Module
+  name: client_init
+  description: Initialize the client and setups its main window
+  author: Luksrt
+  website: https://github.com/edubart/otclient
+  reloadable: false
+  sandboxed: true
+  scripts: [ client_init ]
+  @onLoad: init()
+  @onUnload: terminate()

@@ -1,0 +1,10 @@
+Module
+  name: client_teste
+  description: Castle
+  author: R!ck && ZLukSrT#8740 && Christianlb
+  sandboxed: true
+  scripts: [ teste ]
+  autoload: true
+  autoload-priority: 1001
+  @onLoad: init()
+  @onUnload: terminate()

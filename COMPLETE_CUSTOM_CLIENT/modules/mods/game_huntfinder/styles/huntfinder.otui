@@ -1,0 +1,1233 @@
+ElementInfo < Panel
+  height: 9
+  UIWidget
+    id: icon
+    size: 9 9
+    anchors.top: parent.top
+    anchors.left: parent.left
+    image-source: /images/game/cyclopedia/icons/monster-icon-physical-resist
+    image-clip: 0 0 9 9
+  ProgressBar
+    id: progress
+    anchors.left: prev.right
+    anchors.verticalCenter: parent.verticalCenter
+    background-color: #c00000
+    margin-left: 3
+    height: 5
+    width: 65
+    border: 1 black
+    percent: 100
+  VerticalSeparator
+    id: left
+    anchors.verticalCenter: progress.verticalCenter
+    anchors.left: progress.left
+    margin-left: 20
+    border-width: 1
+    border-color: black
+    phantom: true
+    height: 7
+    width: 1
+  VerticalSeparator
+    id: right
+    anchors.verticalCenter: progress.verticalCenter
+    anchors.right: progress.right
+    margin-right: 20
+    border-width: 1
+    border-color: black
+    phantom: true
+    height: 7
+    width: 1
+
+ImbuiInfoSlot < UIButton
+  size: 66 66
+  image-source: /images/game/imbuing/slot
+  border-width: 1
+  border-color-top: #161616
+  border-color-left: #161616
+  border-color-bottom: #787878
+  border-color-right: #787878
+
+HuntWidget < UIButton
+  size: 227 185
+  image-source: /images/game/wiki/hunt-finder/hunt-finder-background
+  UIWidget
+    id: highlightHunt
+    size: 227 185
+    visible: false
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+    image-source: /images/topbuttons/highlight
+    image-border: 1
+
+  UIWidget
+    id: trackingHunt
+    size: 11 11
+    visible: false
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 10
+    margin-left: 10
+    !tooltip: tr('Tracking this hunt on the map')
+    image-source: /images/game/cyclopedia/icons/star-icon
+
+  UICreature
+    id: creatureOutfit1
+    size: 64 64
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 15
+    idle-animate: true
+    outfit-id: 418
+    phantom: true
+    visible: false
+  UIWidget
+    id: tooltipLabel1
+    size: 64 64
+    anchors.fill: prev
+    visible: false
+  UICreature
+    id: creatureOutfit2
+    size: 64 64
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 115
+    idle-animate: true
+    outfit-id: 418
+    phantom: true
+    visible: false
+  UIWidget
+    id: tooltipLabel2
+    size: 64 64
+    anchors.fill: prev
+    visible: false
+  UICreature
+    id: creatureOutfit0
+    size: 64 64
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 20
+    margin-left: 65
+    idle-animate: true
+    outfit-id: 418
+    phantom: true
+    visible: false
+  UIWidget
+    id: tooltipLabel0
+    size: 64 64
+    anchors.fill: prev
+    visible: false
+  Label
+    id: huntNameLabel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    !text: tr('Hunt Name')
+    text-align: center
+    font: $var-cip-font
+    color: $var-text-cip-color-highlight
+    text-auto-resize: true
+    margin-top: 90
+  Label
+    id: huntLevelLabel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    !text: tr('Level Range')
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-auto-resize: true
+    margin-top: 108
+    margin-left: 7
+  Label
+    id: huntXpLabel
+    anchors.top: prev.top
+    anchors.left: prev.right
+    !text: tr('Xp/Hour')
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-auto-resize: true
+    margin-left: 35
+  Label
+    id: huntLootLabel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    !text: tr('Loot/Hour')
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-auto-resize: true
+    margin-top: 144
+    margin-left: 7
+  Label
+    id: huntLocationLabel
+    anchors.top: prev.top
+    anchors.left: prev.right
+    !text: tr('Location')
+    font: $var-cip-font
+    color: $var-text-cip-color
+    text-auto-resize: true
+    margin-left: 46
+
+  // Labels with results
+  UIWidget
+    anchors.top: huntLevelLabel.bottom
+    anchors.left: parent.left
+    margin-top: 4
+    margin-left: 7
+    size: 92 18
+    Label
+      id: huntWidgetLevel
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      !text: tr('100 +')
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+      text-align: center
+      margin-top: 2
+  UIWidget
+    anchors.top: huntXpLabel.bottom
+    anchors.left: huntXpLabel.left
+    margin-top: 4
+    margin-left: 1
+    size: 78 18
+    Label
+      id: huntWidgetXpHour
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      !text: tr('100 +')
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+      text-align: center
+      margin-top: 2
+  UIWidget
+    anchors.top: huntLootLabel.bottom
+    anchors.left: huntLootLabel.left
+    margin-top: 2
+    margin-left: 1
+    size: 92 18
+    Label
+      id: huntWidgetLootHour
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      !text: tr('100 +')
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+      text-align: center
+      margin-top: 2
+  UIWidget
+    anchors.top: huntLocationLabel.bottom
+    anchors.left: huntLocationLabel.left
+    margin-top: 2
+    margin-left: 1
+    size: 78 18
+    Label
+      id: huntWidgetLocation
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      !text: tr('100 +')
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-auto-resize: true
+      text-align: center
+      margin-top: 2
+
+ListPanel < Panel
+  anchors.fill: parent
+  TextList
+    id: hunts
+    anchors.fill: parent
+    image-source: /images/ui/textedit
+    vertical-scrollbar: huntListScrollBar
+    keep-scroll-range: true
+    padding-top: 9
+    padding-left: 9
+    layout:
+      type: grid
+      cell-size: 227 185
+      cell-spacing: 6
+      flow: true
+
+    @onSetup: |
+      for i = 1, 6 do
+        local widget = g_ui.createWidget("HuntWidget", self)
+        widget:setId("widget" .. i)
+      end
+
+  VerticalScrollBar
+    id: huntListScrollBar
+    anchors.top: prev.top
+    anchors.bottom: prev.bottom
+    anchors.right: prev.right
+    margin-bottom: 1
+    margin-right: 1
+    margin-top: 1
+    step: 1
+
+HuntInfoPanel < Panel
+  anchors.fill: parent
+  image-source: /images/ui/t2pixel-up-frame-borderimage
+  image-border: 18
+  padding: 0 8 7 10
+  Label
+    id: huntName
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 2
+    !text: tr('Hunt Name')
+    font: $var-cip-font
+    color: $var-text-cip-color-grey
+    text-auto-resize: true
+  Panel
+    id: leftPanel
+    width: 380
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    margin-top: 1
+    Panel
+      id: creaturePanel
+      size: 380 145
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 5
+      image-source: /images/ui/t2pixel-up-frame-borderimage
+      image-border: 18
+      Label
+        id: creaturesLabel
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 2
+        !text: tr('Creatures')
+        font: $var-cip-font
+        color: $var-text-cip-color-grey
+        text-auto-resize: true
+      TextList
+        id: creaturesInfo
+        width: 110
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        image-source: /images/ui/textedit
+        vertical-scrollbar: creaturesInfoScrollBar
+        margin-top: 22
+        margin-bottom: 5
+        margin-left: 6
+      VerticalScrollBar
+        id: creaturesInfoScrollBar
+        anchors.top: prev.top
+        anchors.bottom: prev.bottom
+        anchors.right: prev.right
+        margin-bottom: 1
+        margin-right: 1
+        margin-top: 1
+      
+      Panel
+        id: creatureInfoPanel
+        height: 150
+        anchors.top: parent.top
+        anchors.left: creaturesInfo.right
+        anchors.right: parent.right
+        margin-left: 5
+        UIWidget
+          id: planeCreature
+          size: 69 72
+          image-auto-resize: true
+          anchors.top: parent.top
+          anchors.left: parent.left
+          image-source: /game_cyclopedia/images/ui/boss
+          margin-top: 50
+          margin-left: 15
+        UICreature
+          id: creatureInfoOutfit
+          size: 64 64
+          anchors.top: parent.top
+          anchors.left: parent.left
+          margin-top: 35
+          idle-animate: true
+          outfit-id: 418
+          phantom: true
+          visible: true
+        Label
+          id: creatureName
+          anchors.top: prev.top
+          anchors.left: prev.left
+          !text: tr('')
+          margin-top: -13
+          margin-left: 15
+          text-auto-resize: true
+          font: $var-cip-font
+          color: $var-text-cip-color
+          text-overflow-length: 23
+
+        CheckBox
+          id: trackerKills
+          anchors.top: planeCreature.bottom
+          anchors.left: parent.left
+          margin-top: 3
+          !text: tr('Track kills')
+          font: $var-cip-font
+          text-auto-resize: true
+          color: $var-text-cip-color
+          text-offset: 14 -2
+          change-cursor-image: false
+          visible: true
+          
+        VerticalSeparator
+          id: separator
+          anchors.top: planeCreature.top
+          anchors.left: planeCreature.right
+          margin-top: -7
+          margin-left: 10
+          height: 95
+        Panel
+          id: statsPanel
+          anchors.top: planeCreature.top
+          anchors.left: separator.right
+          margin-top: -5
+          margin-left: 7
+          size: 62 70
+          visible: false
+          UIWidget
+            id: iconhealth
+            anchors.top: parent.top
+            anchors.left: parent.left
+            image-source: /images/game/cyclopedia/icons/monster-icon-hitpoints
+            tooltip: Hit Points
+          Label
+            id: health
+            font: $var-cip-font
+            anchors.top: prev.top
+            anchors.left: prev.right
+            !text: tr('?')
+            margin-top: -4
+            margin-left: 5
+            text-auto-resize: true
+            color: $var-text-cip-color
+
+          UIWidget
+            id: iconexperience
+            anchors.top: iconhealth.bottom
+            anchors.left: parent.left
+            margin-top: 7
+            image-source: /images/game/cyclopedia/icons/monster-icon-experience
+            tooltip: Experience
+
+          Label
+            id: experience
+            font: $var-cip-font
+            anchors.bottom: iconexperience.bottom
+            anchors.left: prev.right
+            !text: tr('?')
+            margin-bottom: -3
+            margin-left: 5
+            text-auto-resize: true
+            color: $var-text-cip-color
+
+          UIWidget
+            id: iconspeed
+            anchors.top: iconexperience.bottom
+            anchors.left: parent.left
+            margin-top: 7
+            image-source: /images/game/cyclopedia/icons/monster-icon-speed
+            tooltip: Speed
+          Label
+            id: speed
+            font: $var-cip-font
+            anchors.bottom: iconspeed.bottom
+            anchors.left: prev.right
+            !text: tr('?')
+            margin-bottom: -3
+            margin-left: 5
+            text-auto-resize: true
+            color: $var-text-cip-color
+          UIWidget
+            id: iconarmor
+            anchors.top: iconspeed.bottom
+            anchors.left: parent.left
+            margin-top: 7
+            image-source: /images/game/cyclopedia/icons/monster-icon-armor
+            tooltip: Armor
+          Label
+            id: armor
+            font: $var-cip-font
+            anchors.bottom: iconarmor.bottom
+            anchors.left: prev.right
+            !text: tr('?')
+            margin-bottom: -3
+            margin-left: 5
+            text-auto-resize: true
+            color: $var-text-cip-color
+          UIWidget
+            id: iconmitigation
+            anchors.top: iconarmor.bottom
+            anchors.left: parent.left
+            margin-top: 7
+            image-source: /images/game/cyclopedia/icons/monster-icon-mitigation
+            tooltip: Mitigation
+          Label
+            id: mitigation
+            font: $var-cip-font
+            anchors.bottom: iconmitigation.bottom
+            anchors.left: prev.right
+            !text: tr('?')
+            margin-bottom: -3
+            margin-left: 5
+            text-auto-resize: true
+            color: $var-text-cip-color
+        
+        Panel
+          id: creatureCharmPanel
+          anchors.top: planeCreature.top
+          anchors.left: separator.right
+          margin-left: 5
+          margin-top: -10
+          size: 62 70
+          visible: true
+          UIWidget
+            id: charmBg
+            size: 42 46
+            image-source: /images/game/cyclopedia/ui/bestiary-charm-bg
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            margin-top: 3
+            margin-left: 7
+            image-border: 1
+            UIWidget
+              id: charmOpacity
+              anchors.fill: parent
+              margin: 2 2 2 2
+              image-source: /game_cyclopedia/images/ui/ditherpattern
+              phantom: true
+              visible: true
+            UIWidget
+              id: charmImage
+              size: 32 32
+              anchors.verticalCenter: parent.verticalCenter
+              anchors.left: parent.left
+              margin-left: 4
+
+          UIWidget
+            id: level0
+            size: 40 50
+            anchors.top: charmBg.top
+            anchors.left: charmBg.left
+            image-source: /images/game/cyclopedia/ui/backdrop_charmgrade1
+            phantom: true
+            margin-top: -2
+            margin-left: 1
+            phantom: true
+            visible: false
+
+        Button
+          id: creatureInfoButton
+          size: 60 15
+          anchors.top: statsPanel.bottom
+          anchors.left: statsPanel.left
+          margin-top: 7
+          margin-left: -2
+          image-source: /images/game/wiki/hunt-finder/charm-info-button
+          image-clip: 0 0 60 15
+          $pressed:
+            image-clip: 0 15 60 15
+          $hover !pressed:
+            image-clip: 0 0 60 15
+        
+        Panel
+          id: elements
+          anchors.top: parent.top
+          anchors.right: parent.right
+          margin-right: 10
+          margin-top: 10
+          size: 77 135
+          padding-top: 15
+          layout:
+            type: grid
+            cell-size: 76 9
+            cell-spacing: 5
+            num-columns: 1
+            num-lines: 8
+          ElementInfo
+          ElementInfo
+          ElementInfo
+          ElementInfo
+          ElementInfo
+          ElementInfo
+          ElementInfo
+          ElementInfo
+
+    FlatPanel
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 7
+      image-source: /game_cyclopedia/images/ui/panel-background
+      padding: 1 1 1 1
+      RealMinimap
+        id: minimap
+        anchors.fill: parent
+        min-zoom: -1
+        max-zoom: 5
+        @onHoverPosition: |
+          function(self, mapPos)
+              -- todo
+          end
+      Button
+        id: floorUp
+        size: 20 20
+        image-source: /images/game/minimap/floor_up
+        image-clip: 0 0 20 20
+        anchors.left: parent.left
+        anchors.bottom: next.top
+        margin-left: 5
+        margin-bottom: 2
+        $hover !pressed:
+          image-clip: 0 0 20 20
+        $pressed:
+          image-clip: 0 20 20 20
+
+      Button
+        id: floorDown
+        size: 20 20
+        image-source: /images/game/minimap/floor_down
+        image-clip: 0 0 20 20
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        margin-left: 5
+        margin-bottom: 25
+        $hover !pressed:
+          image-clip: 0 0 20 20
+        $pressed:
+          image-clip: 0 20 20 20
+    
+      Button
+        id: howToGetButton
+        height: 20
+        !text: tr('How To Get Here')
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.left: parent.left
+        font: $var-cip-font
+        color: $var-text-cip-color
+        image-source: /images/ui/buttons-blue
+        @onClick: modules.game_huntfinder.HuntFinder:showHowToGetHere()
+
+
+  Panel
+    id: rightPanel
+    anchors.top: prev.top
+    anchors.right: parent.right
+    anchors.left: prev.right
+    anchors.bottom: parent.bottom
+    margin-top: 5
+    margin-left: 5
+    UIWidget
+      id: huntInfoBg
+      size: 489 39
+      anchors.top: parent.top
+      anchors.left: parent.left
+      image-source: /images/game/wiki/hunt-finder/hunt-info-bg
+      margin-left: 2
+      Label
+        id: huntLevelLabel
+        anchors.top: parent.top
+        anchors.left: parent.left
+        !text: tr('Level')
+        font: $var-cip-font
+        color: $var-text-cip-color-grey
+        text-auto-resize: true
+        margin-top: 1
+        margin-left: 35
+      UIWidget
+        anchors.top: prev.bottom
+        anchors.left: prev.left
+        margin-top: 2
+        margin-left: -22
+        size: 86 16
+        Label
+          id: huntLevel
+          anchors.top: parent.top
+          anchors.left: parent.left
+          anchors.right: parent.right
+          !text: tr('100 +')
+          font: $var-cip-font
+          color: $var-text-cip-color
+          text-auto-resize: true
+          text-align: center
+          margin-top: 2
+
+      Label
+        id: huntXpLabel
+        anchors.top: huntLevelLabel.top
+        anchors.left: huntLevelLabel.right
+        !text: tr('Raw Exp')
+        font: $var-cip-font
+        color: $var-text-cip-color-grey
+        text-auto-resize: true
+        margin-left: 80
+      UIWidget
+        anchors.top: prev.bottom
+        anchors.left: prev.left
+        margin-top: 2
+        margin-left: -15
+        size: 86 16
+        Label
+          id: huntXpHour
+          anchors.top: parent.top
+          anchors.left: parent.left
+          anchors.right: parent.right
+          !text: tr('100 +')
+          font: $var-cip-font
+          color: $var-text-cip-color
+          text-auto-resize: true
+          text-align: center
+          margin-top: 2
+      
+      Label
+        id: huntLootLabel
+        anchors.top: huntXpLabel.top
+        anchors.left: huntXpLabel.right
+        !text: tr('Profit')
+        font: $var-cip-font
+        color: $var-text-cip-color-grey
+        text-auto-resize: true
+        margin-top: 1
+        margin-left: 80
+      UIWidget
+        anchors.top: prev.bottom
+        anchors.left: prev.left
+        margin-top: 2
+        margin-left: -22
+        size: 86 16
+        Label
+          id: huntLootHour
+          anchors.top: parent.top
+          anchors.left: parent.left
+          anchors.right: parent.right
+          !text: tr('100 +')
+          font: $var-cip-font
+          color: $var-text-cip-color
+          text-auto-resize: true
+          text-align: center
+          margin-top: 2
+
+      Label
+        id: huntLocationLabel
+        anchors.top: parent.top
+        anchors.right: parent.right
+        !text: tr('Location')
+        font: $var-cip-font
+        color: $var-text-cip-color-grey
+        text-auto-resize: true
+        margin-top: 1
+        margin-right: 40
+      Label
+        id: huntLocation
+        anchors.top: prev.bottom
+        anchors.left: prev.left
+        !text: tr('Some City')
+        font: $var-cip-font
+        color: $var-text-cip-color
+        text-auto-resize: true
+        margin-top: 5
+        margin-left: 2
+    
+    Panel
+      id: imbuesInfo
+      size: 235 100
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      margin-top: 7
+      margin-left: 2
+      image-source: /images/ui/t2pixel-up-frame-borderimage
+      image-border: 5
+      Label
+        id: imbuesLabel
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 1
+        !text: tr('Recommended Imbues')
+        font: $var-cip-font
+        color: $var-text-cip-color-grey
+        text-auto-resize: true
+      Panel
+        id: imbuiContentPanel
+        anchors.fill: parent
+        margin: 25 10 5 10
+        layout: 
+          type: grid
+          cell-size: 66 66
+          cell-spacing: 8
+          flow: true
+        ImbuiInfoSlot
+          id: slot0
+        ImbuiInfoSlot
+          id: slot1
+        ImbuiInfoSlot
+          id: slot2
+        ImbuiInfoSlot
+          id: slot3
+          visible: false
+      
+
+    Panel
+      id: trinketInfo
+      size: 111 100
+      anchors.top: prev.top
+      anchors.left: prev.right
+      margin-left: 12
+      image-source: /images/ui/t2pixel-up-frame-borderimage
+      image-border: 5
+      Label
+        id: trinketLabel
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 1
+        !text: tr('Trinket')
+        font: $var-cip-font
+        color: $var-text-cip-color-grey
+        text-auto-resize: true
+      BigItem
+        id: trinketItem
+        anchors.top: prev.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 8
+        draggable: false
+        tooltip-delayed: true
+        virtual-count: false
+        virtual: true
+    
+    Panel
+      id: suppliesInfo
+      height: 68
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: trinketInfo.right
+      margin-top: 7
+      margin-left: 2
+      image-source: /images/ui/t2pixel-up-frame-borderimage
+      image-border: 5
+      Label
+        id: suppliesLabel
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 1
+        !text: tr('Recommended Supplies')
+        font: $var-cip-font
+        color: $var-text-cip-color-grey
+        text-auto-resize: true
+      Panel
+        id: suppliesContentPanel
+        anchors.fill: parent
+        margin: 25 10 5 15
+        layout: 
+          type: grid
+          cell-size: 34 34
+          cell-spacing: 8
+          flow: true
+        @onSetup: |
+          for i = 1, 8 do
+            local widget = g_ui.createWidget("Item", self)
+            widget:setVirtual(true)
+            widget:setDraggable(false)
+            widget:setPriceable(true)
+            widget:setPriceOffset("1 1")
+          end
+
+    Panel
+      id: lootInfo
+      height: 68
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: equipmentsInfo.right
+      margin-top: 7
+      margin-left: 2
+      image-source: /images/ui/t2pixel-up-frame-borderimage
+      image-border: 5
+      Label
+        id: lootLabel
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 1
+        !text: tr('Valuable Drop')
+        font: $var-cip-font
+        color: $var-text-cip-color-grey
+        text-auto-resize: true
+      Panel
+        id: lootContentPanel
+        anchors.fill: parent
+        margin: 25 10 5 15
+        layout: 
+          type: grid
+          cell-size: 34 34
+          cell-spacing: 8
+          flow: true
+        
+        @onSetup: |
+          for i = 1, 11 do
+            local widget = g_ui.createWidget("Item", self)
+            widget:setVirtual(true)
+            widget:setDraggable(false)
+            widget:setPriceable(true)
+            widget:setPriceOffset("1 1")
+          end
+
+    FlatPanel
+      height: 22
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: equipmentsInfo.right
+      margin-left: 2
+      margin-top: 8
+      CheckBox
+        id: trackHuntOnMap
+        size: 12 12
+        !text: tr('Track the path on map')
+        font: $var-cip-font
+        text-auto-resize: true
+        color: $var-text-cip-color
+        text-offset: 14 -2
+        anchors.left: parent.left
+        anchors.top: parent.top
+        margin-top: 5
+        margin-left: 4
+        image-source: /images/ui/checkbox
+        image-clip: 0 0 12 12
+        @onSetup:
+
+      UIWidget
+        id: infoHighlight
+        size: 12 12
+        anchors.top: parent.top
+        anchors.right: parent.right
+        margin-right: 5
+        margin-top: 5
+        image-source: /images/skin/show-gui-help-grey
+        !tooltip: tr('If selected the hunt path will be displayed on the map.')
+
+    Panel
+      id: equipmentsInfo
+      size: 120 174
+      anchors.top: parent.top
+      anchors.left: trinketInfo.right
+      image-source: /images/ui/t2pixel-up-frame-borderimage
+      margin-left: 13
+      image-border: 18
+      margin-top: 45
+      Label
+        id: suppliesLabel
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 1
+        !text: tr('Equipments')
+        font: $var-cip-font
+        color: $var-text-cip-color-grey
+        text-auto-resize: true
+      Panel
+        id: equipmentsPanel
+        anchors.top: parent.top
+        anchors.left: parent.left
+        size: 106 142
+        margin-top: 18
+        Item
+          id: neck
+          anchors.top: parent.top
+          anchors.left: parent.left
+          image-source: /images/game/slots/neck
+          margin-top: 18
+          margin-right: 5
+          margin-left: 5
+          draggable: false
+        Item
+          id: leftHand
+          anchors.top: prev.bottom
+          anchors.horizontalCenter: prev.horizontalCenter
+          anchors.left: prev.left
+          image-source: /images/game/slots/left-hand
+          margin-top: 4
+          draggable: false
+        Item
+          id: finger
+          anchors.top: prev.bottom
+          anchors.horizontalCenter: prev.horizontalCenter
+          anchors.left: prev.left
+          image-source: /images/game/slots/finger
+          margin-top: 4
+          draggable: false
+        Item
+          id: head
+          anchors.top: parent.top
+          anchors.left: neck.right
+          image-source: /images/game/slots/head
+          margin-top: 4
+          margin-left: 4
+          draggable: false
+        Item
+          id: body
+          anchors.top: prev.bottom
+          anchors.horizontalCenter: prev.horizontalCenter
+          image-source: /images/game/slots/body
+          margin-top: 4
+          draggable: false
+        Item
+          id: leg
+          anchors.top: prev.bottom
+          anchors.horizontalCenter: prev.horizontalCenter
+          image-source: /images/game/slots/legs
+          margin-top: 4
+          draggable: false
+        Item
+          id: feet
+          anchors.top: prev.bottom
+          anchors.horizontalCenter: prev.horizontalCenter
+          image-source: /images/game/slots/feet
+          margin-top: 4
+          draggable: false
+        Item
+          id: backpack
+          anchors.top: neck.top
+          anchors.left: head.right
+          margin-left: 4
+          image-source: /images/game/slots/back
+          draggable: false
+        Item
+          id: rightHand
+          anchors.top: leftHand.top
+          anchors.left: body.right
+          image-source: /images/game/slots/right-hand
+          margin-left: 4
+          draggable: false
+        Item
+          id: ammo
+          anchors.top: prev.bottom
+          anchors.horizontalCenter: prev.horizontalCenter
+          image-source: /images/game/slots/ammo
+          margin-top: 4
+          draggable: false
+
+NewHeadlessWindow
+  id: huntFinderWindow
+  anchors.horizontalCenter: parent.horizontalCenter
+  size: 753 520
+  @onEscape: hide()
+  UIWidget
+    size: 145 56
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -33
+    image-source: /images/game/tutorial/backdrop_crestr
+    phantom: true
+  Panel
+    id: contentPanel
+    anchors.fill: parent
+    margin: 12 12 12 12
+    Panel
+      id: menuContent
+      height: 40
+      anchors.top: parent.top
+      anchors.right: parent.right
+      anchors.left: parent.left
+      image-source: /images/ui/2pixel-up-frame-borderimage
+      image-border: 30
+      margin-top: 15
+      Panel
+        id: tabContent
+        anchors.fill: parent
+        margin: 12 6 6 4
+        Label
+          id: searchLabel
+          anchors.top: parent.top
+          anchors.left: parent.left
+          margin-top: 4
+          margin-left: 10
+          !text: tr("Level Range:")
+          font: $var-cip-font
+          color: $var-text-cip-color
+          text-auto-resize: true
+        SpinBox
+          id: searchInputBox
+          size: 70 20
+          anchors.top: parent.top
+          anchors.left: prev.right
+          margin-left: 5
+          minimum: 1
+          maximum: 2001
+          value: 1
+          allow-modifier: true
+          @onValueChange: modules.game_huntfinder.HuntFinder:onLevelEdit(self:getValue())
+        VerticalSeparator
+          id: sep
+          anchors.top: parent.top
+          anchors.left: prev.right
+          margin-left: 12
+          height: 20
+        Label
+          id: searchLabel
+          anchors.top: parent.top
+          anchors.left: prev.right
+          margin-top: 4
+          margin-left: 9
+          !text: tr("Vocation:")
+          font: $var-cip-font
+          color: $var-text-cip-color
+          text-auto-resize: true
+        ComboBox
+          id: vocationBox
+          size: 88 20
+          anchors.top: parent.top
+          anchors.left: prev.right
+          margin-left: 5
+          color: $var-text-cip-color
+          @onSetup: |
+            self:addOption("Knight")
+            self:addOption("Paladin")
+            self:addOption("Sorcerer")
+            self:addOption("Druid")
+            self:addOption("Monk")
+          @onOptionChange: modules.game_huntfinder.HuntFinder:setVocation(self:getCurrentOption().text)
+        VerticalSeparator
+          id: sep
+          anchors.top: parent.top
+          anchors.left: prev.right
+          margin-left: 12
+          height: 20
+        Label
+          id: searchLabel
+          anchors.top: parent.top
+          anchors.left: prev.right
+          margin-top: 4
+          margin-left: 9
+          !text: tr("Team Size:")
+          font: $var-cip-font
+          color: $var-text-cip-color
+          text-auto-resize: true
+        ComboBox
+          id: teamSizeBox
+          size: 88 20
+          anchors.top: parent.top
+          anchors.left: prev.right
+          margin-left: 5
+          color: $var-text-cip-color
+          enabled: true
+          @onSetup: |
+            self:addOption("Solo")
+            self:addOption("Duo")
+            self:addOption("Party x4")
+            self:setCurrentOption("Solo")
+          @onOptionChange: modules.game_huntfinder.HuntFinder:setTeamSize(self:getCurrentOption().text)
+
+        VerticalSeparator
+          id: sep
+          anchors.top: parent.top
+          anchors.left: prev.right
+          margin-left: 12
+          height: 20
+
+        Label
+          id: searchLabel
+          anchors.top: parent.top
+          anchors.left: prev.right
+          margin-top: 4
+          margin-left: 9
+          !text: tr("Type:")
+          font: $var-cip-font
+          color: $var-text-cip-color
+          text-auto-resize: true
+          
+        ComboBox
+          id: filterBox
+          size: 105 20
+          anchors.top: parent.top
+          anchors.left: prev.right
+          margin-left: 5
+          color: $var-text-cip-color
+          @onSetup: |
+            self:addOption("Experience")
+            self:addOption("Loot")
+            self:addOption("XP/Loot")
+            self:setCurrentOption("Experience")
+          
+          @onOptionChange: modules.game_huntfinder.HuntFinder:setSortType(self:getCurrentOptionIndex())
+    Panel
+      id: mainPanel
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: separator.top
+      margin: 10 0 10 0
+
+      ListPanel
+        id: listPanel
+        visible: false
+      HuntInfoPanel
+        id: huntInfoPanel
+        visible: true
+
+    HorizontalSeparator
+      id: separator
+      anchors.bottom: next.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-bottom: 11
+    Button
+      id: closeButton
+      size: 43 20
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      !text: tr('Close')
+      @onClick: hide()
+    Button
+      id: backButton
+      size: 43 20
+      anchors.bottom: parent.bottom
+      anchors.right: prev.left
+      margin-right: 5
+      !text: tr('Back')
+      @onClick: modules.game_huntfinder.HuntFinder:showListPanel()
+
+    TextEdit
+      id: searchText
+      size: 166 22
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      font: $var-cip-font
+      color: $var-text-cip-color
+      padding-left: 4
+      padding-top: 4
+      !placeholder: tr('Type to search')
+      box-text-padding: 27
+      @onTextChange:
+      focusable: true
+      Button
+        id: searchIcon
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.right: parent.right
+        size: 20 20
+        margin-top: -2
+        margin-right: 1
+        image-source: /images/store/search-up
+        image-clip: 0 0 20 20
+        enabled: false
+        $hover !disabled:
+          image-clip: 0 0 20 20
+        $pressed:
+          image-clip: 0 20 20 20
+        $disabled:
+          image-clip: 0 40 20 20
+    Button
+      id: finderWiki
+      size: 80 22
+      anchors.bottom: parent.bottom
+      anchors.left: prev.right
+      margin-left: 10
+      !text: tr('Huntfinder Wiki')
+      @onClick: g_platform.openUrl("https://wiki.rubinot.com/pt-BR/huntfinder")
+    

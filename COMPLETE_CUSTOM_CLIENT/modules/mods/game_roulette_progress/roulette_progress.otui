@@ -1,0 +1,209 @@
+NewHeadlessWindow
+  id: rouletteProgressWindow
+  anchors.horizontalCenter: parent.horizontalCenter
+  size: 550 225
+  @onEscape: hide()
+  UIWidget
+    size: 145 56
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -33
+    image-source: /images/game/tutorial/backdrop_crestr
+    phantom: true
+  Panel
+    id: mainPanel
+    anchors.fill: parent
+    margin: 15 13 17 13
+    Label
+      id: infoLabel
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 15
+      !text: tr("Your progress guarantees a special bonus as you keep spinning.")
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-align: center
+      wrap: true
+      text-auto-resize: true
+      visible: true
+    Item
+      id: rewardItem0
+      size: 34 34
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      margin-left: 45
+      margin-top: 15
+      virtual: true
+      tooltip-delayed: true
+      UIWidget
+        id: coverItem0
+        size: 32 32
+        anchors.top: parent.top
+        anchors.left: parent.left
+        image-source: /images/ui/ditherpattern
+        phantom: true
+    Item
+      id: rewardItem1
+      size: 34 34
+      anchors.top: prev.top
+      anchors.left: prev.right
+      margin-left: 100
+      virtual: true
+      tooltip-delayed: true
+      UIWidget
+        id: coverItem1
+        size: 32 32
+        anchors.top: parent.top
+        anchors.left: parent.left
+        image-source: /images/ui/ditherpattern
+        phantom: true
+    Item
+      id: rewardItem2
+      size: 34 34
+      anchors.top: prev.top
+      anchors.left: prev.right
+      margin-left: 100
+      virtual: true
+      tooltip-delayed: true
+      UIWidget
+        id: coverItem2
+        size: 32 32
+        anchors.top: parent.top
+        anchors.left: parent.left
+        image-source: /images/ui/ditherpattern
+        phantom: true
+    Item
+      id: rewardItem3
+      size: 34 34
+      anchors.top: prev.top
+      anchors.left: prev.right
+      margin-left: 100
+      virtual: true
+      tooltip-delayed: true
+      UIWidget
+        id: coverItem3
+        size: 32 32
+        anchors.top: parent.top
+        anchors.left: parent.left
+        image-source: /images/ui/ditherpattern
+        phantom: true
+
+    UIWidget
+      id: rouletteProgressBg
+      height: 23
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      image-source: /images/ui/bosstiary-bg
+      margin-top: 20
+      image-border: 5
+      ProgressBarSD
+        id: rouletteProgress
+        anchors.fill: parent
+        margin: 1 1 1 1
+        image-source: /images/ui/bosstiary-progress
+        percent: 0
+
+    VerticalSeparator
+      id: left
+      size: 7 28
+      anchors.bottom: prev.bottom
+      anchors.left: prev.left
+      margin-bottom: -4
+      margin-left: 128
+      image-source: /images/ui/progress-separator
+
+    Label
+      id: progressLabel0
+      anchors.top: prev.bottom
+      anchors.left: prev.left
+      !text: tr('25')
+      margin-top: 5
+      margin-left: -6
+      font: $var-cip-font
+      color: $var-text-cip-color
+
+    VerticalSeparator
+      id: middle
+      size: 7 28
+      anchors.bottom: rouletteProgressBg.bottom
+      anchors.left: rouletteProgressBg.horizontalCenter
+      margin-bottom: -4
+      margin-left: -3
+      image-source: /images/ui/progress-separator
+
+    Label
+      id: progressLabel1
+      anchors.top: prev.bottom
+      anchors.left: prev.left
+      !text: tr('50')
+      margin-top: 5
+      margin-left: -6
+      font: $var-cip-font
+      color: $var-text-cip-color
+
+    VerticalSeparator
+      id: right
+      size: 7 28
+      anchors.bottom: rouletteProgressBg.bottom
+      anchors.right: rouletteProgressBg.right
+      margin-bottom: -4
+      margin-right: 128
+      image-source: /images/ui/progress-separator
+
+    Label
+      id: progressLabel2
+      anchors.top: prev.bottom
+      anchors.left: prev.left
+      !text: tr('75')
+      margin-top: 5
+      margin-left: -4
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-align: center
+
+    Label
+      id: progressLabel3
+      anchors.top: rouletteProgressBg.bottom
+      anchors.left: rouletteProgressBg.left
+      !text: tr('0')
+      margin-top: 7
+      margin-left: -2
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-align: center
+
+    Label
+      id: progressLabel4
+      anchors.top: rouletteProgressBg.bottom
+      anchors.right: rouletteProgressBg.right
+      text: 100
+      margin-top: 7
+      margin-right: -5
+      font: $var-cip-font
+      color: $var-text-cip-color
+      text-align: center
+
+    UIWidget
+      id: rouletteImage
+      anchors.top: rewardItem0.bottom
+      anchors.left: rewardItem0.left
+      size: 407 9
+      margin-top: 1
+      margin-left: 12
+      image-source: /images/ui/roullet-item-sep
+      phantom: true
+    
+    HorizontalSeparator
+      id: separator
+      anchors.bottom: next.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-bottom: 15
+    Button
+      id: close
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      !text: tr('Close')
+      size: 43 20
+      @onClick: modules.game_roulette_progress.hide()

@@ -1,0 +1,236 @@
+SoundWindow < Panel
+  id: sound
+  anchors.fill: parent
+  text-wrap: true
+  image-source: /images/ui/2pixel-up-frame-borderimage
+  image-border: 3
+  padding: 3
+
+  FlatPanel
+    size: 505 22
+    anchors.top: parent.top
+    anchors.right: parent.right
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 4
+    margin-right: 4
+
+    Label
+      id: masterVolumeLabel
+      !text: tr('Master Volume: 0 %% (off)')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-text-cip-color
+      anchors.left: parent.left
+      anchors.top: parent.top
+      margin-top: 3
+      margin-left: 4
+
+    HorizontalScrollBar
+      id: masterVolumeScrollBar
+      width: 175
+      anchors.top: prev.top
+      anchors.right: parent.right
+      step: 14
+      margin-right: 21
+      margin-top: 1
+      pixels-scroll: true
+
+      $!on:
+        width: 0
+
+  FlatPanel
+    size: 505 40
+    anchors.top: prev.bottom
+    anchors.right: parent.right
+    anchors.left: parent.left
+    margin-top: 10
+    margin-left: 4
+    margin-right: 4
+
+    Label
+      id: musicVolumeLabel
+      !text: tr('Music Volume: 50 %%')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      anchors.left: parent.left
+      anchors.top: parent.top
+      margin-top: 3
+      margin-left: 4
+
+    HorizontalScrollBar
+      id: musicVolumeScrollBar
+      width: 175
+      anchors.top: prev.top
+      anchors.right: parent.right
+      step: 14
+      margin-right: 21
+      margin-top: 1
+      pixels-scroll: true
+
+      $!on:
+        width: 0
+
+    CheckBox
+      id: anthemMusic
+      size: 12 12
+      !text: tr('Anthen')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 4
+
+  FlatPanel
+    size: 505 22
+    anchors.top: prev.bottom
+    anchors.right: parent.right
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 4
+    margin-right: 4
+
+    Label
+      id: ambienceVolumeLabel
+      !text: tr('Ambience Volume: 100 %%')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      anchors.left: parent.left
+      anchors.top: parent.top
+      margin-top: 3
+      margin-left: 4
+
+    HorizontalScrollBar
+      id: ambienceVolumeScrollBar
+      width: 175
+      anchors.top: prev.top
+      anchors.right: parent.right
+      step: 14
+      margin-right: 21
+      margin-top: 1
+      pixels-scroll: true
+
+      $!on:
+        width: 0
+
+  FlatPanel
+    size: 505 57
+    anchors.top: prev.bottom
+    anchors.right: parent.right
+    anchors.left: parent.left
+    margin-top: 10
+    margin-left: 4
+    margin-right: 4
+
+    Label
+      id: itemVolumeLabel
+      !text: tr('Item Volume: 100 %%')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      anchors.left: parent.left
+      anchors.top: parent.top
+      margin-top: 3
+      margin-left: 4
+
+    HorizontalScrollBar
+      id: itemVolumeScrollBar
+      width: 175
+      anchors.top: prev.top
+      anchors.right: parent.right
+      step: 14
+      margin-right: 21
+      margin-top: 3
+      pixels-scroll: true
+
+      $!on:
+        width: 0
+
+    CheckBox
+      id: foodBeverages
+      size: 12 12
+      !text: tr('Food and Beverages')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 4
+
+    CheckBox
+      id: moveItemMusic
+      size: 12 12
+      !text: tr('Move Item')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 4
+
+  FlatPanel
+    size: 505 22
+    anchors.top: prev.bottom
+    anchors.right: parent.right
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 4
+    margin-right: 4
+
+    Label
+      id: eventVolumeLabel
+      !text: tr('Event Volume: 100 %%')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      anchors.left: parent.left
+      anchors.top: parent.top
+      margin-top: 3
+      margin-left: 4
+
+    HorizontalScrollBar
+      id: eventVolumeScrollBar
+      width: 175
+      anchors.top: prev.top
+      anchors.right: parent.right
+      step: 14
+      margin-right: 21
+      margin-top: 1
+      pixels-scroll: true
+
+      $!on:
+        width: 0
+
+    UIWidget
+      size: 12 12
+      anchors.top: parent.top
+      anchors.right: parent.right
+      margin-right: 5
+      margin-top: 4
+      image-source: /images/skin/show-gui-help-grey
+      !tooltip: tr('Use this setting to change the volume of sound played on special \noccasions such as level advancements or winning achievements.')
+
+  Button
+    id: resetButton
+    size: 43 20
+    !text: tr('Reset')
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 4
+    margin-right: 4
+    enabled: false

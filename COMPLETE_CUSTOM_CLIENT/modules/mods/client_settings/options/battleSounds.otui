@@ -1,0 +1,312 @@
+BattleSoundsWindow < Panel
+  id: battleSounds
+  anchors.fill: parent
+  text-wrap: true
+  image-source: /images/ui/2pixel-up-frame-borderimage
+  image-border: 3
+  padding: 3
+  Label
+    id: warningVolumeLabel
+    height: 25
+    !text: tr('The sound is currently deactivated.\nIncrease the master volume in the Options menu "Sound".')
+    font: $var-cip-font
+    text-auto-resize: true
+    color: #ff9854
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-top: 3
+    margin-left: 4
+  FlatPanel
+    size: 505 108
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 4
+    margin-right: 4
+
+    Label
+      id: ownBattleVolumeLabel
+      !text: tr('Own Battle Sounds: 100 %%')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      anchors.left: parent.left
+      anchors.top: parent.top
+      margin-top: 3
+      margin-left: 4
+
+    HorizontalScrollBar
+      id: ownBattleVolumeScrollBar
+      width: 175
+      anchors.top: prev.top
+      anchors.right: parent.right
+      step: 14
+      margin-right: 4
+      margin-top: 2
+      pixels-scroll: true
+
+      $!on:
+        width: 0
+
+    CheckBox
+      id: ownSpellSound
+      size: 12 12
+      !text: tr('Spells')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 7
+      margin-left: 4
+
+    CheckBox
+      id: ownAttackSound
+      size: 12 12
+      !text: tr('Attack')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 20
+    CheckBox
+      id: ownHealingSound
+      size: 12 12
+      !text: tr('Healing')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 20
+    CheckBox
+      id: ownSupportSound
+      size: 12 12
+      !text: tr('Support')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 20
+    CheckBox
+      id: ownWeaponsSound
+      size: 12 12
+      !text: tr('Weapons')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 4
+
+  FlatPanel
+    size: 505 108
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 4
+    margin-right: 4
+
+    Label
+      id: otherBattleVolumeLabel
+      !text: tr('Other Players: 100 %%')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      anchors.left: parent.left
+      anchors.top: parent.top
+      margin-top: 3
+      margin-left: 4
+
+    HorizontalScrollBar
+      id: otherBattleVolumeScrollBar
+      width: 175
+      anchors.top: prev.top
+      anchors.right: parent.right
+      step: 14
+      margin-right: 4
+      margin-top: 2
+      pixels-scroll: true
+
+      $!on:
+        width: 0
+
+    CheckBox
+      id: otherSpellSound
+      size: 12 12
+      !text: tr('Spells')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 7
+      margin-left: 4
+
+    CheckBox
+      id: otherAttackSound
+      size: 12 12
+      !text: tr('Attack')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 20
+    CheckBox
+      id: otherHealingSound
+      size: 12 12
+      !text: tr('Healing')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 20
+    CheckBox
+      id: otherSupportSound
+      size: 12 12
+      !text: tr('Support')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 20
+    CheckBox
+      id: otherWeaponsSound
+      size: 12 12
+      !text: tr('Weapons')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 4
+
+  FlatPanel
+    size: 505 74
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 4
+    margin-right: 4
+
+    Label
+      id: creatureBattleVolumeLabel
+      !text: tr('Creatures: 100 %%')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      anchors.left: parent.left
+      anchors.top: parent.top
+      margin-top: 3
+      margin-left: 4
+
+    HorizontalScrollBar
+      id: creatureBattleVolumeScrollBar
+      width: 175
+      anchors.top: prev.top
+      anchors.right: parent.right
+      step: 14
+      margin-right: 4
+      margin-top: 2
+      pixels-scroll: true
+
+      $!on:
+        width: 0
+
+    CheckBox
+      id: creatureNoiseSound
+      size: 12 12
+      !text: tr('Creature Noises')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 7
+      margin-left: 4
+
+    CheckBox
+      id: creatureDeathSound
+      size: 12 12
+      !text: tr('Death')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 4
+
+    CheckBox
+      id: creatureSpellSound
+      size: 12 12
+      !text: tr('Attack and Spells')
+      font: $var-cip-font
+      text-auto-resize: true
+      color: $var-cip-inactive-color
+      text-offset: 14 -2
+      anchors.left: parent.left
+      anchors.top: prev.bottom
+      image-source: /images/ui/checkbox
+      image-clip: 0 0 12 12
+      margin-top: 5
+      margin-left: 4
+
+  Button
+    id: resetButton
+    size: 43 20
+    !text: tr('Reset')
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 4
+    margin-right: 4
+    enabled: false

@@ -1,0 +1,6 @@
+Module
+  name: game_roulette_progress
+  sandboxed: true
+  scripts: [ roulette_progress ]
+  @onLoad: init()
+  @onUnload: terminate()
