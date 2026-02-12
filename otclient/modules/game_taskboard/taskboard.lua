@@ -15,13 +15,10 @@ function toggle()
 end
 
 local function onGameStart()
-  TaskBoardStore.resetServerState(true)
   TaskBoardProtocol.sendAction('open', {})
 end
 
 local function onGameEnd()
-  TaskBoardStore.resetServerState(false)
-
   if window then
     window:setVisible(false)
   end

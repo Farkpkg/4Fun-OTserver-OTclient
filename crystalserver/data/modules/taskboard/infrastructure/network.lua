@@ -64,10 +64,6 @@ local function dispatchAction(player, action, payload)
         return TaskBoardService.buy(playerId, payload.offerId)
     end
 
-    if action == TaskBoardConstants.ACTION.CLAIM_BOUNTY then
-        return TaskBoardService.claimBounty(playerId, payload.bountyId)
-    end
-
     return nil
 end
 

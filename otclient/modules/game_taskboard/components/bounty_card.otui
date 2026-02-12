@@ -1,32 +1,32 @@
 TaskBoardBountyCard < Panel
-  height: 230
+  height: 220
   image-source: /images/ui/panel_flat
   image-border: 1
 
-  Creature
-    id: monsterPreview
-    size: 64 64
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.top: parent.top
-    margin-top: 12
-
   Label
     id: title
-    anchors.top: monsterPreview.bottom
+    anchors.top: parent.top
     anchors.left: parent.left
     anchors.right: parent.right
     margin-top: 8
     text-align: center
     text: Bounty Target
 
+  Item
+    id: icon
+    size: 40 40
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: title.bottom
+    margin-top: 10
+
   RectangleProgressBar
     id: progressBar
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.bottom: progressText.top
-    margin-left: 10
-    margin-right: 10
-    margin-bottom: 6
+    margin-left: 8
+    margin-right: 8
+    margin-bottom: 8
     minimum: 0
     maximum: 100
     value: 0
@@ -35,32 +35,16 @@ TaskBoardBountyCard < Panel
     id: progressText
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.bottom: actionButton.top
-    margin-bottom: 6
+    anchors.bottom: rewardPreview.top
+    margin-bottom: 4
     text-align: center
     text: 0 / 0
 
-  Button
-    id: actionButton
+  Label
+    id: rewardPreview
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.bottom: parent.bottom
-    margin-left: 10
-    margin-right: 10
-    margin-bottom: 10
-    height: 22
-    text: Track
-
-  Label
-    id: completedOverlay
-    anchors.centerIn: parent
+    margin-bottom: 8
     text-align: center
-    text: Completed
-    visible: false
-
-  Label
-    id: blockedOverlay
-    anchors.centerIn: parent
-    text-align: center
-    text: Select a difficulty to start.
-    visible: false
+    text: Reward Preview

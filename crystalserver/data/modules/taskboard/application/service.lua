@@ -57,7 +57,6 @@ local function buildSyncPayload(playerId)
         multiplier = cache.multiplier or 1.0,
         rerollState = cache.rerollState,
         shopPurchases = cache.shopPurchases or {},
-        shopOffers = TaskBoardShopService.getOffers(playerId),
         playerId = playerId,
     }
 end
@@ -152,16 +151,6 @@ end
 
 function TaskBoardService.deliver(playerId, itemId)
     local result = TaskBoardWeeklyService.deliverItem(playerId, itemId)
-    return {
-        sync = nil,
-        deltas = result.events or {},
-        error = result.error,
-    }
-end
-
-
-function TaskBoardService.claimBounty(playerId, bountyId)
-    local result = TaskBoardBountyService.claimBounty(playerId, bountyId)
     return {
         sync = nil,
         deltas = result.events or {},
