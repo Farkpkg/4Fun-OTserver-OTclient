@@ -1,0 +1,50 @@
+TaskBoardBountyCard < Panel
+  height: 220
+  image-source: /images/ui/panel_flat
+  image-border: 1
+
+  Label
+    id: title
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    text-align: center
+    text: Bounty Target
+
+  Item
+    id: icon
+    size: 40 40
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: title.bottom
+    margin-top: 10
+
+  RectangleProgressBar
+    id: progressBar
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: progressText.top
+    margin-left: 8
+    margin-right: 8
+    margin-bottom: 8
+    minimum: 0
+    maximum: 100
+    value: 0
+
+  Label
+    id: progressText
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: rewardPreview.top
+    margin-bottom: 4
+    text-align: center
+    text: 0 / 0
+
+  Label
+    id: rewardPreview
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-bottom: 8
+    text-align: center
+    text: Reward Preview
