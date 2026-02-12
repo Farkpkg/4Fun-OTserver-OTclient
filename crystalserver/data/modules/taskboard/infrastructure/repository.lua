@@ -71,7 +71,7 @@ end
 
 function TaskBoardRepository.ensureTables()
     db.query(string.format([[CREATE TABLE IF NOT EXISTS `%s` (
-        `player_id` INT UNSIGNED NOT NULL,
+        `player_id` INT(11) NOT NULL,
         `week_key` VARCHAR(16) NOT NULL DEFAULT '',
         `board_state` VARCHAR(32) NOT NULL DEFAULT 'WAITING_DIFFICULTY',
         `difficulty` VARCHAR(32) NOT NULL DEFAULT '',
@@ -85,7 +85,7 @@ function TaskBoardRepository.ensureTables()
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;]], TABLE_PLAYERS))
 
     db.query(string.format([[CREATE TABLE IF NOT EXISTS `%s` (
-        `player_id` INT UNSIGNED NOT NULL,
+        `player_id` INT(11) NOT NULL,
         `task_id` VARCHAR(96) NOT NULL,
         `week_key` VARCHAR(16) NOT NULL DEFAULT '',
         `scope` VARCHAR(16) NOT NULL,
