@@ -1,9 +1,0 @@
-Module
-  name: game_taskboard
-  description: Task Board interface
-  author: crystal
-  sandboxed: true
-  dependencies: [ client_styles ]
-  scripts: [ taskboard, taskboard_controller, taskboard_viewmodel, state_store, protocol ]
-  @onLoad: init()
-  @onUnload: terminate()

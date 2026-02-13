@@ -29,34 +29,6 @@ local PANEL_CONSTANTS = {
 
 local optionsShrink = false
 
-
-local function ensureButtonIntegratedInOptions(button)
-    if not button or button:isDestroyed() then
-        return
-    end
-
-    local id = button:getId()
-    if not id then
-        return
-    end
-
-    if not buttonConfigs[id] then
-        buttonConfigs[id] = {
-            visible = button:isVisible(),
-            tooltip = button:getTooltip() or id
-        }
-    else
-        buttonConfigs[id].tooltip = button:getTooltip() or id
-        if buttonConfigs[id].visible == nil then
-            buttonConfigs[id].visible = button:isVisible()
-        end
-    end
-
-    if buttonConfigs[id].visible and not table.find(buttonOrder, id) then
-        table.insert(buttonOrder, id)
-    end
-end
-
 local function calculatePanelHeight(panel, max_icons_per_row)
     local icon_count = 0
     for _, icon in ipairs(panel:getChildren()) do
@@ -133,17 +105,25 @@ local function createButton_large(id, description, image, callback, special, fro
 
     storeAmount = storeAmount + 1
 
-    local button = ControlButtonFactory.create({
-        parent = panel,
-        id = id,
-        description = description,
-        image = image,
-        callback = callback,
-        front = front,
-        widgetClass = 'largeToggleButton',
-        optionsCategory = 'store',
-        imageClip = '0 0 108 20'
-    })
+    local button = panel:getChildById(id)
+    if not button then
+        button = g_ui.createWidget('largeToggleButton')
+        if front then
+            panel:insertChild(1, button)
+        else
+            panel:addChild(button)
+        end
+    end
+    button:setId(id)
+    button:setTooltip(description)
+    button:setImageSource(image)
+    button:setImageClip('0 0 108 20')
+    button.onMouseRelease = function(widget, mousePos, mouseButton)
+        if widget:containsPoint(mousePos) and mouseButton ~= MouseMidButton then
+            callback()
+            return true
+        end
+    end
 
     return button
 end
@@ -158,25 +138,30 @@ local function createButton(id, description, image, callback, special, front, in
         optionsAmount = optionsAmount + 1
     end
 
-    local button = ControlButtonFactory.create({
-        parent = panel,
-        id = id,
-        description = description,
-        image = image,
-        callback = callback,
-        front = front,
-        widgetClass = 'MainToggleButton',
-        optionsCategory = special and 'specials' or 'options',
-        index = index or 1000,
-        imageClip = '0 0 20 20',
-        requireOptionsRegistration = not special,
-        optionsState = buttonConfigs,
-        registerInOptions = function(controlButton)
-            if not special then
-                ensureButtonIntegratedInOptions(controlButton)
-            end
+    local button = panel:getChildById(id)
+    if not button then
+        button = g_ui.createWidget('MainToggleButton')
+        if front then
+            panel:insertChild(1, button)
+        else
+            panel:addChild(button)
         end
-    })
+    end
+
+    button:setId(id)
+    button:setTooltip(description)
+    button:setSize('20 20')
+    button:setImageSource(image)
+    button:setImageClip('0 0 20 20')
+    button.onMouseRelease = function(widget, mousePos, mouseButton)
+        if widget:containsPoint(mousePos) and mouseButton ~= MouseMidButton then
+            callback()
+            return true
+        end
+    end
+    if not button.index and type(index) == 'number' then
+        button.index = index or 1000
+    end
 
     refreshOptionsSizes()
     return button
@@ -608,8 +593,6 @@ function initControlButtons()
             else
                 button:setVisible(buttonConfigs[id].visible)
             end
-
-            validateControlButton(button)
         end
     end
 
@@ -633,42 +616,4 @@ function initControlButtons()
     updateAvailableButtonsList()
     reorderButtons()
     reloadMainPanelSizes()
-end
-
-
-function auditControlButtons()
-    if not optionsController or not optionsController.ui or not optionsController.ui.onPanel then
-        g_logger.error('[ControlButtonFactory.audit] options panel not initialized')
-        return false, { 'options panel not initialized' }
-    end
-
-    local report = {}
-    local optionsPanel = optionsController.ui.onPanel.options
-    if not optionsPanel then
-        g_logger.error('[ControlButtonFactory.audit] options panel is nil')
-        return false, { 'options panel is nil' }
-    end
-
-    for _, button in ipairs(optionsPanel:getChildren()) do
-        local ok, errors = validateControlButton(button)
-        if not ok then
-            if type(errors) == 'table' then
-                for _, message in ipairs(errors) do
-                    table.insert(report, string.format('%s: %s', button:getId() or '<no-id>', message))
-                end
-            else
-                table.insert(report, string.format('%s: validation failed', button:getId() or '<no-id>'))
-            end
-        end
-    end
-
-    if #report > 0 then
-        for _, message in ipairs(report) do
-            g_logger.error('[ControlButtonFactory.audit] ' .. message)
-        end
-        return false, report
-    end
-
-    g_logger.info('[ControlButtonFactory.audit] control button integrity check passed')
-    return true, report
 end

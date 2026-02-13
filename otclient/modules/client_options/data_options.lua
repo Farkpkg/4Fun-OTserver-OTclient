@@ -155,7 +155,6 @@ return {
     returnDisablesChat                = false,
     smartWalk                         = false,
     autoChaseOverride                 = true,
-    talkOnRightClick                  = false,
     moveStack                         = false,
     showStatusMessagesInConsole       = true,
     showEventMessagesInConsole        = true,
