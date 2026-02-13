@@ -28,6 +28,24 @@ local function normalizeSize(size)
     return nil
 end
 
+local function normalizeImageClip(clip)
+    if type(clip) == 'string' then
+        return clip
+    end
+
+    if type(clip) == 'table' then
+        local x = clip.x or clip[1]
+        local y = clip.y or clip[2]
+        local width = clip.width or clip[3]
+        local height = clip.height or clip[4]
+        if x ~= nil and y ~= nil and width ~= nil and height ~= nil then
+            return string.format('%d %d %d %d', x, y, width, height)
+        end
+    end
+
+    return nil
+end
+
 local function ensureCallback(config)
     if type(config.callback) == 'function' then
         return config.callback
@@ -74,9 +92,9 @@ function factory.validateControlButton(button, metadata)
         table.insert(errors, string.format('invalid size "%s" expected "%s"', actualSize, expectedSize))
     end
 
-    local expectedImageClip = metadata.imageClip or defaults.imageClip
-    local currentClip = button:getImageClip()
-    if expectedImageClip and currentClip and tostring(currentClip) ~= tostring(expectedImageClip) then
+    local expectedImageClip = normalizeImageClip(metadata.imageClip or defaults.imageClip)
+    local currentClip = normalizeImageClip(button:getImageClip())
+    if expectedImageClip and currentClip and currentClip ~= expectedImageClip then
         table.insert(errors, string.format('invalid image clip "%s" expected "%s"', tostring(currentClip), tostring(expectedImageClip)))
     end
 
@@ -158,7 +176,7 @@ function factory.create(config)
         description = config.description,
         index = button.index,
         size = normalizeSize(config.size) or defaults.size,
-        imageClip = config.imageClip or defaults.imageClip,
+        imageClip = normalizeImageClip(config.imageClip or defaults.imageClip),
         requireOptionsRegistration = config.requireOptionsRegistration,
         optionsState = config.optionsState
     }
