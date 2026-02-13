@@ -354,17 +354,14 @@ TaskBoardProgressPanel < Panel
       cell-size: 310 124
       flow: true
 
-MainWindow
-  id: taskBoardWindow
-  !text: tr('Task Board')
-  size: 980 620
-  visible: false
-  @onEscape: modules.game_taskboard.toggle()
+TaskBoardWindowContent < Panel
+  id: taskBoardWindowContent
+  anchors.fill: parent
+  margin: 8
 
   Panel
     id: mainPanel
     anchors.fill: parent
-    margin: 8
 
     Panel
       id: optionsTabBar
