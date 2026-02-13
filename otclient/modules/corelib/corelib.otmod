@@ -32,6 +32,7 @@ Module
     dofile 'json'
     dofile 'http'
     dofile 'objectpool'
+    dofile 'control_button_factory'
 
     Keybind.init()
   
