@@ -33,6 +33,7 @@ Module
     dofile 'http'
     dofile 'objectpool'
     dofile 'control_button_factory'
+    dofile 'window_factory'
 
     Keybind.init()
   
