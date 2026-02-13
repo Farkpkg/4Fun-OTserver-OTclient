@@ -23,5 +23,5 @@
 ## Boas práticas
 
 - Garanta que o bootstrap ocorre apenas em `onLogin`, `onExtendedOpcode`, `onStartup` ou eventos globais controlados.
-- Use apenas enums confirmados no core (ver `docs/ENUMS_MESSAGE_TYPES.md`).
+- Use apenas enums confirmados no core (ver `docs/server/enums-message-types.md`).
 - Trate TalkActions como camada de validação e feedback simples.

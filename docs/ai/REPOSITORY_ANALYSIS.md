@@ -265,7 +265,7 @@ From vcpkg + CMake:
 
 ## 10) Execution Readiness Plan (for future tasks)
 This checklist is now operationalized in repository artifacts:
-- `docs/EXECUTION_PLAYBOOK.md`
+- `docs/deployment/execution-playbook.md`
 - `docs/templates/TASK_EXECUTION_TEMPLATE.md`
 
 Operational steps remain:
