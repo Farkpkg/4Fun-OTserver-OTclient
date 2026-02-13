@@ -1,3 +1,5 @@
+<!-- REVIEW: Este documento referencia `COMPLETE_CUSTOM_CLIENT` (repositório externo não versionado neste projeto). Validar manualmente equivalência com `otclient/` atual antes de usar como fonte de verdade. -->
+
 # Task Board — Auditoria Completa (Reconstrução de Contexto)
 
 > Escopo desta etapa: **auditoria técnica apenas** (sem implementação funcional nova).
@@ -8,20 +10,20 @@
 Foi realizada varredura de todos os `.md` em `docs/` para reconstrução de contexto (incluindo `docs/wiki/*` e `docs/ai/*`).
 
 Documentos diretamente relevantes para este tema:
-- `docs/TaskBoard_Mapeamento_Inicial.md`
-- `docs/taskboard.md`
-- `docs/Weekly_Task_Board_Documentacao_Tecnica.md`
-- `docs/BattlePass_Documentacao_Tecnica.md`
+- `docs/client/taskboard-mapeamento-inicial.md`
+- `docs/client/taskboard-readme.md`
+- `docs/client/weekly-task-board-documentacao-tecnica.md`
+- `docs/client/battlepass-documentacao-tecnica.md`
 
 ### 1.2 Confirmação de documentação derivada
-- **COMPLETE_CUSTOM_CLIENT**: existe documentação derivada (ex.: `Weekly_Task_Board_Documentacao_Tecnica.md`, `BattlePass_Documentacao_Tecnica.md`).
+- **COMPLETE_CUSTOM_CLIENT**: existe documentação derivada (ex.: `weekly-task-board-documentacao-tecnica.md`, `battlepass-documentacao-tecnica.md`).
 - **Weekly Tasks**: existe documentação dedicada.
 - **Bounty Tasks**: existe documentação dedicada/embutida em TaskBoard docs.
 - **Battle Pass**: existe documentação dedicada.
 
 ### 1.3 Consistência com a conclusão anterior (“COMPLETE_CUSTOM_CLIENT não tem TaskBoard”)
 A conclusão anterior permanece consistente com a auditoria textual:
-- `TaskBoard_Mapeamento_Inicial.md` já declarava ausência de módulos explícitos `taskboard/weekly/bounty` no `COMPLETE_CUSTOM_CLIENT`.
+- `taskboard-mapeamento-inicial.md` já declarava ausência de módulos explícitos `taskboard/weekly/bounty` no `COMPLETE_CUSTOM_CLIENT`.
 - Nova busca textual no diretório também não encontrou ocorrências para `taskboard`, `game_taskboard`, `game_weeklytasks`, `bounty`.
 
 ---

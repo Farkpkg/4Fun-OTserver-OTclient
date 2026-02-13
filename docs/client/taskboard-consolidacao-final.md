@@ -1,3 +1,5 @@
+<!-- REVIEW: Este documento contém referências históricas de módulos legados (`game_weeklytasks`, `weekly_tasks.lua`) que não existem no snapshot atual. Tratar como contexto de migração, não como estado vigente. -->
+
 # TaskBoard — Consolidação Final (Sistema Único)
 
 ## Objetivo

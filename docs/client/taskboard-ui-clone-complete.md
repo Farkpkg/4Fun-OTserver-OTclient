@@ -1,3 +1,5 @@
+<!-- REVIEW: Este documento referencia `COMPLETE_CUSTOM_CLIENT` (repositório externo não versionado neste projeto). Validar manualmente equivalência com `otclient/` atual antes de usar como fonte de verdade. -->
+
 # TaskBoard UI Clone Complete
 
 ## Fonte oficial usada
