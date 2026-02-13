@@ -634,3 +634,41 @@ function initControlButtons()
     reorderButtons()
     reloadMainPanelSizes()
 end
+
+
+function auditControlButtons()
+    if not optionsController or not optionsController.ui or not optionsController.ui.onPanel then
+        g_logger.error('[ControlButtonFactory.audit] options panel not initialized')
+        return false, { 'options panel not initialized' }
+    end
+
+    local report = {}
+    local optionsPanel = optionsController.ui.onPanel.options
+    if not optionsPanel then
+        g_logger.error('[ControlButtonFactory.audit] options panel is nil')
+        return false, { 'options panel is nil' }
+    end
+
+    for _, button in ipairs(optionsPanel:getChildren()) do
+        local ok, errors = validateControlButton(button)
+        if not ok then
+            if type(errors) == 'table' then
+                for _, message in ipairs(errors) do
+                    table.insert(report, string.format('%s: %s', button:getId() or '<no-id>', message))
+                end
+            else
+                table.insert(report, string.format('%s: validation failed', button:getId() or '<no-id>'))
+            end
+        end
+    end
+
+    if #report > 0 then
+        for _, message in ipairs(report) do
+            g_logger.error('[ControlButtonFactory.audit] ' .. message)
+        end
+        return false, report
+    end
+
+    g_logger.info('[ControlButtonFactory.audit] control button integrity check passed')
+    return true, report
+end
