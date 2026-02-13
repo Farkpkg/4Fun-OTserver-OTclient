@@ -17,6 +17,12 @@ end
 
 local MAX_PAYLOAD_SIZE = 32 * 1024
 
+local function trace(message)
+    if type(traceDebug) == "function" then
+        traceDebug(message)
+    end
+end
+
 function TaskBoardNetwork.sendSync(player, payload)
     local encoded = TaskBoardSerializer.encode({
         type = "sync",
@@ -28,7 +34,7 @@ function TaskBoardNetwork.sendSync(player, payload)
     end
 
     player:sendExtendedOpcode(TaskBoardConstants.OP_CODE_TASKBOARD, encoded)
-    traceDebug(string.format("[taskboard] sync bytes=%d", #encoded))
+    trace(string.format("[taskboard] sync bytes=%d", #encoded))
     return true
 end
 
@@ -43,7 +49,7 @@ function TaskBoardNetwork.sendDelta(player, delta)
     end
 
     player:sendExtendedOpcode(TaskBoardConstants.OP_CODE_TASKBOARD, encoded)
-    traceDebug(string.format("[taskboard] delta bytes=%d", #encoded))
+    trace(string.format("[taskboard] delta bytes=%d", #encoded))
     return true
 end
 
@@ -204,7 +210,7 @@ function TaskBoardNetwork.onExtendedOpcode(player, opcode, buffer)
         TaskBoardNetwork.sendSync(player, result.sync)
     end
 
-    traceDebug(string.format("[taskboard] emit player=%d action=%s deltas=%d", playerId, tostring(action), #deltas))
+    trace(string.format("[taskboard] emit player=%d action=%s deltas=%d", playerId, tostring(action), #deltas))
 
     for index, delta in ipairs(deltas) do
         if type(delta) == "table" then
@@ -216,7 +222,7 @@ function TaskBoardNetwork.onExtendedOpcode(player, opcode, buffer)
 
     if result.error then
         player:sendCancelMessage(string.format("TaskBoard: %s", tostring(result.error)))
-        traceDebug(string.format("[taskboard] reject action=%s player=%d reason=%s", tostring(action), playerId, tostring(result.error)))
+        trace(string.format("[taskboard] reject action=%s player=%d reason=%s", tostring(action), playerId, tostring(result.error)))
     end
 
     return true
