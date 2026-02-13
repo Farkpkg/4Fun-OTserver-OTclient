@@ -181,6 +181,12 @@ function TaskBoardNetwork.onExtendedOpcode(player, opcode, buffer)
         return false
     end
 
+    local playerId = playerActionKey(player)
+    if not canProcessAction(playerId, action) then
+        player:sendCancelMessage("TaskBoard: TOO_MANY_REQUESTS")
+        return false
+    end
+
     local result = dispatchAction(player, action, payload)
     if type(result) ~= "table" then
         player:sendCancelMessage("TaskBoard: INTERNAL_DISPATCH_ERROR")
