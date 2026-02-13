@@ -3,17 +3,18 @@ TaskBoardRepository = TaskBoardRepository or {}
 local TABLE_PLAYERS = "player_taskboard_state"
 local TABLE_TASKS = "player_taskboard_tasks"
 
+local basePath = _G.TaskBoardBasePath or string.format("%s/modules/taskboard", configManager.getString(configKeys.DATA_DIRECTORY))
+
+if not TaskBoardJsonProvider then
+    dofile(basePath .. "/infrastructure/json_provider.lua")
+end
+
 local function getJsonLib()
-    if type(json) == "table" and type(json.encode) == "function" and type(json.decode) == "function" then
-        return json
+    if not TaskBoardJsonProvider or type(TaskBoardJsonProvider.get) ~= "function" then
+        return nil
     end
 
-    local ok, jsonLib = pcall(require, "json")
-    if ok and type(jsonLib) == "table" and type(jsonLib.encode) == "function" and type(jsonLib.decode) == "function" then
-        return jsonLib
-    end
-
-    return nil
+    return TaskBoardJsonProvider.get()
 end
 
 local function encodeJson(value)
