@@ -144,7 +144,6 @@ local function renderRewardTrack()
   if refs.multiplierState then
     refs.multiplierState:setText(string.format('x%.1f', (board.multiplier and board.multiplier.value) or 1.0))
   end
-  applyRewardStepToSlot(slot, step, laneName)
 end
 
 local function renderShop()
