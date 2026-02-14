@@ -116,3 +116,6 @@ O objeto dono (`AttachableObject`) mantém vetor de efeitos e aplica eventos Lua
 7. **Rede**: servidor envia lista no snapshot e updates incrementais para espectadores.
 
 Nos demais arquivos desta pasta, cada etapa é detalhada em profundidade.
+
+## Complemento baseado na Wiki oficial
+- Ver também: `docs/attached-effects/tutorial-attached-effects.md` (conceitos, exemplos Lua servidor, requisitos de protocolo e boas práticas).
