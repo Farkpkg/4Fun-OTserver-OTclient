@@ -39,6 +39,7 @@ VCPKG_PATH=$VCPKG_PATH/vcpkg/scripts/buildsystems/vcpkg.cmake
 BUILD_TYPE=${2:-"linux-release"}
 ARCHITECTURE=$(uname -m)
 ARCHITECTUREVALUE=0
+VALID_BUILD_TYPES=("linux-release" "linux-debug" "linux-test")
 
 # Function to print information messages
 info() {
@@ -60,6 +61,18 @@ check_architecture() {
 	else
 		info "Detected x86_64 architecture: $ARCHITECTURE"
 	fi
+}
+
+validate_build_type() {
+	for valid_type in "${VALID_BUILD_TYPES[@]}"; do
+		if [[ "$BUILD_TYPE" == "$valid_type" ]]; then
+			return 0
+		fi
+	done
+
+	echo -e "\033[31m[ERROR]\033[0m Invalid build type: $BUILD_TYPE"
+	echo -e "\033[33m[INFO]\033[0m Valid options: ${VALID_BUILD_TYPES[*]}"
+	exit 1
 }
 
 # Function to configure Crystal Server
@@ -202,6 +215,7 @@ main() {
 	echo ""
 	
 	check_command "cmake"
+	validate_build_type
 	check_architecture
 	echo ""
 	setup_crystalserver
