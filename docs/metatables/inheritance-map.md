@@ -1,0 +1,86 @@
+# Mapa de herança e __index chain
+
+## Cadeias C++ principais
+- AnimatedText
+- AttachableObject
+  - Thing
+    - Creature
+      - Monster
+      - Npc
+      - Player
+        - LocalPlayer
+    - Effect
+    - Item
+    - Missile
+  - Tile
+- AttachedEffect
+- Config
+- Connection
+- Container
+- CreatureType
+- Event
+  - ScheduledEvent
+- House
+- InputMessage
+- ItemType
+- LoginHttp
+- LuaObject
+- Module
+- OutputMessage
+- PainterShaderProgram
+- Paperdoll
+- ParticleEffectType
+- Protocol
+  - ProtocolGame
+- Server
+- ShaderProgram
+- SoundChannel
+- SoundEffect
+- SoundSource
+  - CombinedSoundSource
+  - StreamSoundSource
+- Spawn
+- StaticText
+- ThingType
+- Town
+- UILayout
+  - UIAnchorLayout
+    - UIMapAnchorLayout
+  - UIBoxLayout
+    - UIHorizontalLayout
+    - UIVerticalLayout
+  - UIGridLayout
+- UIWidget
+  - UICreature
+  - UIEffect
+  - UIGraph
+  - UIItem
+  - UIMap
+  - UIMinimap
+  - UIMissile
+  - UIParticles
+  - UIProgressRect
+  - UIQrCode
+  - UISprite
+  - UITextEdit
+- WebConnection
+
+## Cadeias Lua puras relevantes
+- ObjectPool -> (sem base explícita)
+- PartyHuntAnalyser -> (sem base explícita)
+- BossCooldown -> (sem base explícita)
+- HuntingAnalyser -> (sem base explícita)
+- DropTrackerAnalyser -> (sem base explícita)
+- SupplyAnalyser -> (sem base explícita)
+- ControllerAnalyser -> (sem base explícita)
+- LootAnalyser -> (sem base explícita)
+- ImpactAnalyser -> (sem base explícita)
+- InputAnalyser -> (sem base explícita)
+- XPAnalyser -> (sem base explícita)
+- WheelOfDestiny -> (sem base explícita)
+- Workshop -> (sem base explícita)
+- Circle -> (sem base explícita)
+- GemAtelier -> (sem base explícita)
+- LoadedPlayer -> (sem base explícita)
+- MarketHistory -> (sem base explícita)
+- MarketOwnOffers -> (sem base explícita)
