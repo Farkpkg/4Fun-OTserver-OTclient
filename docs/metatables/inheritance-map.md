@@ -1,0 +1,97 @@
+# Mapa de herança e cadeia __index
+
+## Árvores C++
+- AnimatedText
+- AttachableObject
+  - Thing
+    - Creature
+      - Monster
+      - Npc
+      - Player
+        - LocalPlayer
+    - Effect
+    - Item
+    - Missile
+  - Tile
+- AttachedEffect
+- Config
+- Connection
+- Container
+- CreatureType
+- Event
+  - ScheduledEvent
+- House
+- InputMessage
+- ItemType
+- LoginHttp
+- LuaObject
+- Module
+- OutputMessage
+- PainterShaderProgram
+- Paperdoll
+- ParticleEffectType
+- Protocol
+  - ProtocolGame
+- Server
+- ShaderProgram
+- SoundChannel
+- SoundEffect
+- SoundSource
+  - CombinedSoundSource
+  - StreamSoundSource
+- Spawn
+- StaticText
+- ThingType
+- Town
+- UILayout
+  - UIAnchorLayout
+    - UIMapAnchorLayout
+  - UIBoxLayout
+    - UIHorizontalLayout
+    - UIVerticalLayout
+  - UIGridLayout
+- UIWidget
+  - UICreature
+  - UIEffect
+  - UIGraph
+  - UIItem
+  - UIMap
+  - UIMinimap
+  - UIMissile
+  - UIParticles
+  - UIProgressRect
+  - UIQrCode
+  - UISprite
+  - UITextEdit
+- WebConnection
+
+## Relações Lua
+- BossCooldown -> (prototipal/dinâmica) [confiança: média]
+- Circle -> (prototipal/dinâmica) [confiança: média]
+- ControllerAnalyser -> (prototipal/dinâmica) [confiança: média]
+- DropTrackerAnalyser -> (prototipal/dinâmica) [confiança: média]
+- GemAtelier -> (prototipal/dinâmica) [confiança: média]
+- HuntingAnalyser -> (prototipal/dinâmica) [confiança: média]
+- ImpactAnalyser -> (prototipal/dinâmica) [confiança: média]
+- InputAnalyser -> (prototipal/dinâmica) [confiança: média]
+- LoadedPlayer -> (prototipal/dinâmica) [confiança: média]
+- LootAnalyser -> (prototipal/dinâmica) [confiança: média]
+- MarketHistory -> (prototipal/dinâmica) [confiança: média]
+- MarketOwnOffers -> (prototipal/dinâmica) [confiança: média]
+- ObjectPool -> (prototipal/dinâmica) [confiança: média]
+- PartyHuntAnalyser -> (prototipal/dinâmica) [confiança: média]
+- SupplyAnalyser -> (prototipal/dinâmica) [confiança: média]
+- WheelNode -> (prototipal/dinâmica) [confiança: média]
+- WheelOfDestiny -> (prototipal/dinâmica) [confiança: média]
+- Workshop -> (prototipal/dinâmica) [confiança: média]
+- XPAnalyser -> (prototipal/dinâmica) [confiança: média]
+
+## Relações inferidas dinamicamente
+- `otclient/modules/game_battle/battle.lua:18` getmetatable-alias [confiança: média]
+- `otclient/modules/game_battle/battle.lua:23` setmetatable-alias-meta [confiança: média]
+- `otclient/modules/game_battle/battle.lua:443` setmetatable-inline [confiança: média]
+- `otclient/modules/corelib/util.lua:62` getmetatable-alias [confiança: média]
+- `otclient/modules/corelib/table.lua:241` getmetatable-alias [confiança: média]
+- `otclient/modules/corelib/ui/uiwidget.lua:547` setmetatable-inline [confiança: média]
+- `otclient/modules/corelib/ui/uiwidget.lua:583` setmetatable-inline [confiança: média]
+- `otclient/modules/corelib/ui/uiwidget.lua:600` setmetatable-inline [confiança: média]
