@@ -9,6 +9,7 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
 ## BossCooldown
 - Tipo: Pure Lua metatable
 - Categoria: custom
@@ -174,21 +175,199 @@
 ## AnimatedText
 - Tipo: C++ userdata binding
 - Categoria: game
+=======
+## AnimatedText
+- Tipo: C++ userdata binding
+- Categoria: custom
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 - Base(s): -
 - Métodos membro: getColor, getOffset, getText
 - Métodos estáticos: -
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
 ## AttachableObject
 - Tipo: C++ userdata binding
 - Categoria: game
 - Base(s): -
 - Métodos membro: attachEffect, attachParticleEffect, attachWidget, clearAttachedEffects, clearAttachedParticlesEffect, detachEffect, detachEffectById, detachParticleEffectByName, detachWidget, detachWidgetById, getAttachedEffectById, getAttachedEffects, getAttachedWidgetById, getAttachedWidgets
+=======
+## BossCooldown
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## Circle
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## ControllerAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## DropTrackerAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## GemAtelier
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## HuntingAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## ImpactAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## InputAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## LootAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## MarketHistory
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## MarketOwnOffers
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## Paperdoll
+- Tipo: C++ userdata binding
+- Categoria: custom
+- Base(s): -
+- Métodos membro: canDrawOnUI, clone, getBodyColor, getFeetColor, getHeadColor, getId, getLegsColor, getSpeed, hasAddon, removeAddon, reset, setAddon, setAddons, setBodyColor, setCanDrawOnUI, setColor, setColorByOutfit, setDirOffset, setFeetColor, setHeadColor, setLegsColor, setMountDirOffset, setMountOffset, setMountOnTopByDir, setOffset, setOnTop, setOnTopByDir, setOnlyAddon, setOpacity, setPriority, setShader, setShowOnMount, setSizeFactor, setSpeed, setUseMountPattern
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 - Métodos estáticos: -
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
+=======
+## PartyHuntAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## Spawn
+- Tipo: C++ userdata binding
+- Categoria: custom
+- Base(s): -
+- Métodos membro: addCreature, getCenterPos, getCreatures, getRadius, removeCreature, setCenterPos, setRadius
+- Métodos estáticos: create
+- Fields bindados: -
+- Metamétodos: __index, __newindex, __eq, __gc
+
+## StaticText
+- Tipo: C++ userdata binding
+- Categoria: custom
+- Base(s): -
+- Métodos membro: addMessage, getColor, setColor, setFont, setText
+- Métodos estáticos: create
+- Fields bindados: -
+- Metamétodos: __index, __newindex, __eq, __gc
+
+## SupplyAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## WheelOfDestiny
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## Workshop
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+## XPAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 ## AttachedEffect
 - Tipo: C++ userdata binding
 - Categoria: game
@@ -297,6 +476,7 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
 ## Paperdoll
 - Tipo: C++ userdata binding
 - Categoria: game
@@ -306,6 +486,8 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+=======
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 ## Player
 - Tipo: C++ userdata binding
 - Categoria: game
@@ -315,6 +497,7 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
 ## Spawn
 - Tipo: C++ userdata binding
 - Categoria: game
@@ -330,6 +513,14 @@
 - Base(s): -
 - Métodos membro: addMessage, getColor, setColor, setFont, setText
 - Métodos estáticos: create
+=======
+## SoundEffect
+- Tipo: C++ userdata binding
+- Categoria: game
+- Base(s): -
+- Métodos membro: setPreset
+- Métodos estáticos: -
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
@@ -639,6 +830,18 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
+=======
+## AttachableObject
+- Tipo: C++ userdata binding
+- Categoria: utils
+- Base(s): -
+- Métodos membro: attachEffect, attachParticleEffect, attachWidget, clearAttachedEffects, clearAttachedParticlesEffect, detachEffect, detachEffectById, detachParticleEffectByName, detachWidget, detachWidgetById, getAttachedEffectById, getAttachedEffects, getAttachedWidgetById, getAttachedWidgets
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index, __newindex, __eq, __gc
+
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 ## CombinedSoundSource
 - Tipo: C++ userdata binding
 - Categoria: utils
@@ -666,6 +869,18 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
+=======
+## LoadedPlayer
+- Tipo: Pure Lua metatable
+- Categoria: utils
+- Base(s): -
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index
+
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 ## LuaObject
 - Tipo: C++ userdata binding
 - Categoria: utils
@@ -688,9 +903,15 @@
 - Tipo: Pure Lua metatable
 - Categoria: utils
 - Base(s): -
+<<<<<<< HEAD
 - Métodos públicos: clear, get, new, release
 - Métodos internos: -
 - Campos observados: pool
+=======
+- Métodos membro: -
+- Métodos estáticos: -
+- Fields bindados: -
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 - Metamétodos: __index
 
 ## ScheduledEvent
@@ -711,6 +932,7 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
 ## SoundEffect
 - Tipo: C++ userdata binding
 - Categoria: utils
@@ -720,6 +942,8 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+=======
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 ## SoundSource
 - Tipo: C++ userdata binding
 - Categoria: utils

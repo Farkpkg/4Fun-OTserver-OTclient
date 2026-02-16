@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 # Mapa de herança e cadeia __index
 
 ## Árvores C++
+=======
+# Mapa de herança e __index chain
+
+## Cadeias C++ principais
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 - AnimatedText
 - AttachableObject
   - Thing
@@ -65,6 +71,7 @@
   - UITextEdit
 - WebConnection
 
+<<<<<<< HEAD
 ## Relações Lua
 - BossCooldown -> (prototipal/dinâmica) [confiança: média]
 - Circle -> (prototipal/dinâmica) [confiança: média]
@@ -95,3 +102,24 @@
 - `otclient/modules/corelib/ui/uiwidget.lua:547` setmetatable-inline [confiança: média]
 - `otclient/modules/corelib/ui/uiwidget.lua:583` setmetatable-inline [confiança: média]
 - `otclient/modules/corelib/ui/uiwidget.lua:600` setmetatable-inline [confiança: média]
+=======
+## Cadeias Lua puras relevantes
+- ObjectPool -> (sem base explícita)
+- PartyHuntAnalyser -> (sem base explícita)
+- BossCooldown -> (sem base explícita)
+- HuntingAnalyser -> (sem base explícita)
+- DropTrackerAnalyser -> (sem base explícita)
+- SupplyAnalyser -> (sem base explícita)
+- ControllerAnalyser -> (sem base explícita)
+- LootAnalyser -> (sem base explícita)
+- ImpactAnalyser -> (sem base explícita)
+- InputAnalyser -> (sem base explícita)
+- XPAnalyser -> (sem base explícita)
+- WheelOfDestiny -> (sem base explícita)
+- Workshop -> (sem base explícita)
+- Circle -> (sem base explícita)
+- GemAtelier -> (sem base explícita)
+- LoadedPlayer -> (sem base explícita)
+- MarketHistory -> (sem base explícita)
+- MarketOwnOffers -> (sem base explícita)
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2

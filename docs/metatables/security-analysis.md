@@ -1,5 +1,6 @@
 # Security Analysis de Metatables
 
+<<<<<<< HEAD
 ## Matriz de risco por metatable
 | Metatable | Risco | Motivo | Evidência |
 |---|---|---|---|
@@ -104,3 +105,16 @@
 - `otclient/modules/corelib/ui/uiwidget.lua:600` [inline-__index] `setmetatable(e, { __index = base })`
 - `otclient/modules/modulelib/controller.lua:91` [setmetatable-id] `setmetatable(obj, self)`
 - `otclient/modules/modulelib/eventcontroller.lua:22` [setmetatable-id] `setmetatable(obj, self)`
+=======
+## Riscos mapeados
+1. **Override global de métodos de classe**: tabelas de classe são globais e mutáveis em runtime.
+2. **`__index` fallback complexo**: sequência `fieldmethods -> campos dinâmicos -> methods` pode mascarar bugs de digitação.
+3. **Eventos por convenção (`on*`)**: qualquer chave começando com `on` vira evento marcado em `m_events`.
+4. **Metatables Lua anônimas**: usos `setmetatable(obj, { __index = base })` dificultam auditoria central.
+5. **Código potencialmente morto**: classes registradas sem consumo Lua explícito devem ser auditadas por telemetria/grep de uso.
+
+## Hardening recomendado
+- Travar classes críticas com proxies readonly em produção.
+- Validar nomes de eventos aceitáveis em `__newindex`.
+- Inserir lint para detectar escrita acidental em métodos globais.
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
