@@ -9,15 +9,190 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
+## BossCooldown
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: checkTicks, create, getCooldown, hasCooldown, reset, setupCooldown, updateWindow
+- Métodos internos: -
+- Campos observados: lastTick, search, sort
+- Metamétodos: __index
+
+## Circle
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: divideIntoSlices, inArea, isPointInSlice, new
+- Métodos internos: -
+- Campos observados: _centerX, _centerY, _radius
+- Metamétodos: __index
+
+## ControllerAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: startEvent
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## DropTrackerAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: checkMonsterKilled, checkTracker, create, isInDropTracker, loadConfigJson, managerDropItem, removeAllItems, removeItem, reset, saveConfigJson, sendDropedItems, showItemContextMenu, tryAddingMonsterDrop, updateWindow
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## GemAtelier
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: configurePages, createGemInformation, getDamageAndHealing, getEffectiveLevel, getEquipedGem, getFilledVesselCount, getGemCountByDomain, getGemDataById, getGemDomainById, isGemEquipped, isVesselAvailable, managePage, manageVessel, matchGemText, onClickVessel, onDestroyGem, onHoverGem, onLockGem, onModRedirect, onRevealGem, onSearchChange, onSelectGem, onSortAffinity, onSortQuality, onSwitchDomain, onUnlockGem, redirectToGem, resetFields, setGemUpgradeImage, setupGemSlot, setupGemWidget, setupModAvailable, setupVesselPanel, showGemRevelation, showGems, showLockedOnly
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## HuntingAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: addDealDamage, addHealing, addLootedItems, addMonsterKilled, addRawXPGain, addSuppliesItems, addXpGain, checkBalance, clipboardData, create, getBalance, getDamage, getDamageHour, getDamageTicks, getHealing, getHealingHour, getHealingTicks, getKilledMonsters, getLaunchTime, getLoot, getLootedItems, getRawXPGain, getSession, getStartExp, getSupplies, getSuppliesItems, getXpGain, getXpHour, loadConfigJson, reset, saveConfigJson, saveToFile, saveToJson, setBalance, setDamage, setDamageHour, setDamageTicks, setHealing, setHealingHour, setHealingTicks, setKilledMonsters, setLaunchTime, setLoot, setLootedItems, setRawXPGain, setSession, setShowBaseXp, setStartExp, setSupplies, setSuppliesItems, setXpGain, setXpHour, setupStartExp, updateLootedItemValue, updateWindow
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## ImpactAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: addDealDamage, addHealing, checkAnchos, create, damageTypeIsVisible, gaugeDPSIsVisible, gaugeHPSIsVisible, getAllTimeHightDps, graphDPSIsVisible, graphHPSIsVisible, loadConfigJson, openTargetConfig, reset, saveConfigJson, setAllTimeHightDps, setAllTimeHightHps, setDPSGauge, setDPSGraph, setDamageType, setHPSGauge, setHPSGraph, toggleSessionMode, updateGraphics, updateMinuteData, updateWindow
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## InputAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: addInputDamage, checkAnchos, checkDPS, clipboardData, create, damageGraphIsVisible, damageSourceIsVisible, damageTypesIsVisible, loadConfigJson, reset, saveConfigJson, setDamageGraph, setDamageSource, setDamageTypes, toggleDamageSource, toggleSessionMode, updateMinuteData, updateWindow
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## LoadedPlayer
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: getId, getName, getVocation, isLoaded, setId, setName, setVocation
+- Métodos internos: -
+- Campos observados: playerId, playerName, playerVocation
+- Metamétodos: __index
+
+## LootAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: addLootedItems, checkBalance, checkLootHour, create, gaugeIsVisible, getTarget, graphIsVisible, openTargetConfig, reset, setLootPerHourGauge, setLootPerHourGraph, setTarget, updateBasePriceFromLootedItems, updateBasicUI, updateGraph, updateGraphics, updateWindow
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## MarketHistory
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: onBottomListValueChange, onParseMarketHistory, onSelectHistoryChild, onTopListValueChange
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## MarketOwnOffers
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: cancelMarketOffer, onBottomListValueChange, onParseMyOffers, onSelectMyOffersChild, onTopListValueChange
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## PartyHuntAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: clipboardData, create, lootSplitter, onPartyAnalyzer, reset, startEvent, updateWindow
+- Métodos internos: -
+- Campos observados: lastUpdateTime, updateScheduled
+- Metamétodos: __index
+
+## SupplyAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: addSuppliesItems, checkBalance, checkDecrease, checkSupplyHour, create, decreaseWidget, gaugeIsVisible, getItemCount, getTarget, graphIsVisible, openTargetConfig, reset, setSupplyPerHourGauge, setSupplyPerHourGraph, setTarget, updateBasicUI, updateGraph, updateGraphics, updateWidget, updateWindow
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## WheelNode
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: new
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: -
+
+## WheelOfDestiny
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: canAddPoints, canRemovePoints, changePresetName, checkApplyButton, checkFilledVessels, checkManagerPointsButtons, configureConviction, configureConvictionPerk, configureDedication, configureDedicationPerk, configureEquippedGems, configurePassives, configurePresets, configureRevelationPerks, configureSummary, configureVessels, create, createPreset, deletePreset, determinateCurrentPreset, generateInternalPreset, getExportCode, getSliceIndex, insertPoint, insertUnlockedThe, isLit, isLitFull, loadWheelPresets, onCancelConfig, onChangeGemButton, onConfirmCreatePreset, onConfirmRenamePreset, onCreate, onDeletePreset, onDestinyWheel, onEditCode, onEditName, onExportConfig, onExportPreset, onGemVesselClick, onImportConfig, onImportPreset, onMouseMove, onMouseRelease, onNewPresetSelectionChange, onPreparePresetClick, onPresetClick, onPresetNameChange, onRemoveClick, onRenamePreset, onWheelClick, onWheelPassiveClick, removePoint, removeUnlockedThe, resetPassiveFocus, saveWheelPresets, setupPointsTooltip, showNewPreset, updateCurrentPreset, validadeImportCode
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## Workshop
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: createFragments, getBonusDescription, getBonusValue, getDataByBonus, getEquippedGemBonus, getFragmentList, getGemInformationByBonus, getSideBonusDescription, getSortList, getUpgradeBonus, onSearchChange, onSelectChild, onUpgradeModification, searchModifications, setCurrentPage, showFragmentList
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## XPAnalyser
+- Tipo: Pure Lua metatable
+- Categoria: custom
+- Base(s): -
+- Métodos públicos: addRawXPGain, addXpGain, checkAnchos, checkExpHour, create, forceUpdateUI, gaugeIsVisible, getTarget, graphIsVisible, loadConfigJson, openTargetConfig, rawXPIsVisible, reset, saveConfigJson, setGaugeVisible, setGraphVisible, setRawXPVisible, setupLevel, setupStartExp, updateBasicUI, updateCalculations, updateExpensiveUI, updateGraph, updateGraphics, updateNextLevel, updateTooltip, updateWindow
+- Métodos internos: -
+- Campos observados: -
+- Metamétodos: __index
+
+## AnimatedText
+- Tipo: C++ userdata binding
+- Categoria: game
+=======
 ## AnimatedText
 - Tipo: C++ userdata binding
 - Categoria: custom
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 - Base(s): -
 - Métodos membro: getColor, getOffset, getText
 - Métodos estáticos: -
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
+## AttachableObject
+- Tipo: C++ userdata binding
+- Categoria: game
+- Base(s): -
+- Métodos membro: attachEffect, attachParticleEffect, attachWidget, clearAttachedEffects, clearAttachedParticlesEffect, detachEffect, detachEffectById, detachParticleEffectByName, detachWidget, detachWidgetById, getAttachedEffectById, getAttachedEffects, getAttachedWidgetById, getAttachedWidgets
+=======
 ## BossCooldown
 - Tipo: Pure Lua metatable
 - Categoria: custom
@@ -122,10 +297,13 @@
 - Categoria: custom
 - Base(s): -
 - Métodos membro: canDrawOnUI, clone, getBodyColor, getFeetColor, getHeadColor, getId, getLegsColor, getSpeed, hasAddon, removeAddon, reset, setAddon, setAddons, setBodyColor, setCanDrawOnUI, setColor, setColorByOutfit, setDirOffset, setFeetColor, setHeadColor, setLegsColor, setMountDirOffset, setMountOffset, setMountOnTopByDir, setOffset, setOnTop, setOnTopByDir, setOnlyAddon, setOpacity, setPriority, setShader, setShowOnMount, setSizeFactor, setSpeed, setUseMountPattern
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 - Métodos estáticos: -
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
+=======
 ## PartyHuntAnalyser
 - Tipo: Pure Lua metatable
 - Categoria: custom
@@ -189,6 +367,7 @@
 - Fields bindados: -
 - Metamétodos: __index
 
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 ## AttachedEffect
 - Tipo: C++ userdata binding
 - Categoria: game
@@ -297,6 +476,18 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
+## Paperdoll
+- Tipo: C++ userdata binding
+- Categoria: game
+- Base(s): -
+- Métodos membro: canDrawOnUI, clone, getBodyColor, getFeetColor, getHeadColor, getId, getLegsColor, getSpeed, hasAddon, removeAddon, reset, setAddon, setAddons, setBodyColor, setCanDrawOnUI, setColor, setColorByOutfit, setDirOffset, setFeetColor, setHeadColor, setLegsColor, setMountDirOffset, setMountOffset, setMountOnTopByDir, setOffset, setOnTop, setOnTopByDir, setOnlyAddon, setOpacity, setPriority, setShader, setShowOnMount, setSizeFactor, setSpeed, setUseMountPattern
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index, __newindex, __eq, __gc
+
+=======
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 ## Player
 - Tipo: C++ userdata binding
 - Categoria: game
@@ -306,12 +497,30 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
+## Spawn
+- Tipo: C++ userdata binding
+- Categoria: game
+- Base(s): -
+- Métodos membro: addCreature, getCenterPos, getCreatures, getRadius, removeCreature, setCenterPos, setRadius
+- Métodos estáticos: create
+- Fields bindados: -
+- Metamétodos: __index, __newindex, __eq, __gc
+
+## StaticText
+- Tipo: C++ userdata binding
+- Categoria: game
+- Base(s): -
+- Métodos membro: addMessage, getColor, setColor, setFont, setText
+- Métodos estáticos: create
+=======
 ## SoundEffect
 - Tipo: C++ userdata binding
 - Categoria: game
 - Base(s): -
 - Métodos membro: setPreset
 - Métodos estáticos: -
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
@@ -621,6 +830,8 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
+=======
 ## AttachableObject
 - Tipo: C++ userdata binding
 - Categoria: utils
@@ -630,6 +841,7 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 ## CombinedSoundSource
 - Tipo: C++ userdata binding
 - Categoria: utils
@@ -657,6 +869,8 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
+=======
 ## LoadedPlayer
 - Tipo: Pure Lua metatable
 - Categoria: utils
@@ -666,6 +880,7 @@
 - Fields bindados: -
 - Metamétodos: __index
 
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 ## LuaObject
 - Tipo: C++ userdata binding
 - Categoria: utils
@@ -688,9 +903,15 @@
 - Tipo: Pure Lua metatable
 - Categoria: utils
 - Base(s): -
+<<<<<<< HEAD
+- Métodos públicos: clear, get, new, release
+- Métodos internos: -
+- Campos observados: pool
+=======
 - Métodos membro: -
 - Métodos estáticos: -
 - Fields bindados: -
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 - Metamétodos: __index
 
 ## ScheduledEvent
@@ -711,6 +932,18 @@
 - Fields bindados: -
 - Metamétodos: __index, __newindex, __eq, __gc
 
+<<<<<<< HEAD
+## SoundEffect
+- Tipo: C++ userdata binding
+- Categoria: utils
+- Base(s): -
+- Métodos membro: setPreset
+- Métodos estáticos: -
+- Fields bindados: -
+- Metamétodos: __index, __newindex, __eq, __gc
+
+=======
+>>>>>>> fb0a891c4e31294aecbebf8077e3a2701eb748b2
 ## SoundSource
 - Tipo: C++ userdata binding
 - Categoria: utils
