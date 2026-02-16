@@ -1,3 +1,9 @@
+---
+title: Api Reference
+tags: [prey]
+date: 2026-02-16
+---
+
 # PREY — API Reference (cliente + servidor)
 
 ## Cliente Lua/API exposta

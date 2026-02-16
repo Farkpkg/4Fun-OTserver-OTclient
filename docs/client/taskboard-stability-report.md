@@ -1,3 +1,9 @@
+---
+title: Taskboard Stability Report
+tags: [client]
+date: 2026-02-16
+---
+
 # TaskBoard — Stability Report (Hardening Final)
 
 ## Persistência — Estado Atual

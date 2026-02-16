@@ -1,3 +1,9 @@
+---
+title: Assets
+tags: [cyclopedia]
+date: 2026-02-16
+---
+
 # Assets da Cyclopedia
 
 ## 1) Localizações principais

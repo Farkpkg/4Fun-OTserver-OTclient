@@ -1,3 +1,9 @@
+---
+title: Performance Analysis
+tags: [attached-effects]
+date: 2026-02-16
+---
+
 # Análise de performance
 
 ## Custos por frame

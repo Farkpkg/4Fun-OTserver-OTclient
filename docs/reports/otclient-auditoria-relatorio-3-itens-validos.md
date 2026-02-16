@@ -1,3 +1,9 @@
+---
+title: Otclient Auditoria Relatorio 3 Itens Validos
+tags: [reports]
+date: 2026-02-16
+---
+
 # RELATÓRIO 3 – Itens válidos
 
 Total: **803** itens.

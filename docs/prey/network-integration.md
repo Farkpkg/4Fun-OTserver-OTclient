@@ -1,3 +1,9 @@
+---
+title: Network Integration
+tags: [prey]
+date: 2026-02-16
+---
+
 # PREY — Integração de Rede (ProtocolGame / NetworkMessage)
 
 ## Opcodes envolvidos

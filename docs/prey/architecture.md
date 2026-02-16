@@ -1,3 +1,9 @@
+---
+title: Architecture
+tags: [prey]
+date: 2026-02-16
+---
+
 # Arquitetura Interna do PREY
 
 ## 1) Estrutura interna

@@ -1,3 +1,9 @@
+---
+title: Tutorial Attached Effects
+tags: [attached-effects]
+date: 2026-02-16
+---
+
 # Tutorial Técnico — Attached Effects (OTClient + OTServer)
 
 > Este documento **complementa** a documentação existente com base no conteúdo consolidado da Wiki **"Tutorial Attached Effects"**, adotado aqui como fonte oficial para operação do sistema.

@@ -1,3 +1,9 @@
+---
+title: Creature Integration
+tags: [prey]
+date: 2026-02-16
+---
+
 # PREY — Integração com Creature / Combat
 
 ## Aplicação real de bônus (não apenas visual)

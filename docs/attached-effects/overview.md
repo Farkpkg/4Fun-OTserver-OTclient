@@ -1,3 +1,9 @@
+---
+title: Overview
+tags: [attached-effects]
+date: 2026-02-16
+---
+
 # AttachedEffects — Visão geral técnica completa
 
 ## Escopo auditado

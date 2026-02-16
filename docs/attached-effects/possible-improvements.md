@@ -1,3 +1,9 @@
+---
+title: Possible Improvements
+tags: [attached-effects]
+date: 2026-02-16
+---
+
 # Possíveis melhorias e refatorações
 
 ## 1) Consistência de API Lua

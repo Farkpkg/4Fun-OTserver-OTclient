@@ -1,3 +1,9 @@
+---
+title: Notes And Limitations
+tags: [html-css-integration]
+date: 2026-02-16
+---
+
 # Notes and limitations
 
 ## Diagrama textual (mapa de dependências)

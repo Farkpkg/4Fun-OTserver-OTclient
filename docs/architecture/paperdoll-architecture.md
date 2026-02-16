@@ -1,3 +1,9 @@
+---
+title: Paperdoll Architecture
+tags: [architecture]
+date: 2026-02-16
+---
+
 # Arquitetura do sistema Paperdoll (CrystalServer + OTClient)
 
 ## 1) Visão de componentes

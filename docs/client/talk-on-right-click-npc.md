@@ -1,3 +1,9 @@
+---
+title: Talk On Right Click Npc
+tags: [client]
+date: 2026-02-16
+---
+
 # Talk on Right Click (NPC)
 
 ## Resumo

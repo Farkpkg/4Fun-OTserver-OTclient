@@ -1,3 +1,9 @@
+---
+title: Inheritance Map
+tags: [metatables]
+date: 2026-02-16
+---
+
 <<<<<<< HEAD
 # Mapa de herança e cadeia __index
 

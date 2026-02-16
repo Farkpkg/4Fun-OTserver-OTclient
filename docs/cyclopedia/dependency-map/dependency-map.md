@@ -1,3 +1,9 @@
+---
+title: Dependency Map
+tags: [cyclopedia]
+date: 2026-02-16
+---
+
 # Dependency Map — Cyclopedia
 
 ## Diagrama textual (solicitado)

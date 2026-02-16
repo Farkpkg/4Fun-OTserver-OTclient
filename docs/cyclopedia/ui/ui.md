@@ -1,3 +1,9 @@
+---
+title: Ui
+tags: [cyclopedia]
+date: 2026-02-16
+---
+
 # UI da Cyclopedia
 
 ## 1) Construção do módulo

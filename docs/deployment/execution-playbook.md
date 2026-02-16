@@ -1,3 +1,9 @@
+---
+title: Execution Playbook
+tags: [deployment]
+date: 2026-02-16
+---
+
 # Open Tibia Execution Playbook (Canary + OTClient Redemption/otcv8)
 
 Este playbook operacionaliza o **Step 10** com foco no stack deste projeto.

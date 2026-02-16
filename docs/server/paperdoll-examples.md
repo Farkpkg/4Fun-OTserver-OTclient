@@ -1,3 +1,9 @@
+---
+title: Paperdoll Examples
+tags: [server]
+date: 2026-02-16
+---
+
 # Exemplos de implementação: CrystalServer (Lua) + OTClient (Lua)
 
 > **Nota**: os exemplos abaixo são templates práticos e podem exigir ajuste fino para API exata da sua base Canary/Crystal e fork de OTClient.

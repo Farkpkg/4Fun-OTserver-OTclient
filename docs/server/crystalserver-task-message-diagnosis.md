@@ -1,3 +1,9 @@
+---
+title: Crystalserver Task Message Diagnosis
+tags: [server]
+date: 2026-02-16
+---
+
 # Diagnóstico do erro de `sendTextMessage` no `!task`
 
 ## Contexto

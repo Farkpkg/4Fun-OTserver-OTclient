@@ -1,3 +1,9 @@
+---
+title: Api Reference
+tags: [attached-effects]
+date: 2026-02-16
+---
+
 # API de AttachedEffects
 
 ## Cliente C++ exposto em Lua

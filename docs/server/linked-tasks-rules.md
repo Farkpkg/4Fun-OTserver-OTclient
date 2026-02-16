@@ -1,3 +1,9 @@
+---
+title: Linked Tasks Rules
+tags: [server]
+date: 2026-02-16
+---
+
 # Linked Tasks - Rules and flows
 
 This document describes the runtime flows and safety guarantees for the Linked Tasks system (server + client).

@@ -1,3 +1,9 @@
+---
+title: Query Selectors
+tags: [html-css-integration]
+date: 2026-02-16
+---
+
 # Query selectors
 
 ## API disponível

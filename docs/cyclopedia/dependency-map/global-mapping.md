@@ -1,3 +1,9 @@
+---
+title: Global Mapping
+tags: [cyclopedia]
+date: 2026-02-16
+---
+
 # Etapa 1 — Mapeamento Global (arquivos, classes, enums, IDs)
 
 ## 1) Arquivos/módulos diretamente relacionados

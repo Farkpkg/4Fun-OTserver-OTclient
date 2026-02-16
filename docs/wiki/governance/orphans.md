@@ -1,4 +1,10 @@
-[Wiki](../README.md) > [Governança](README.md) > Órfãos
+---
+title: Orphans
+tags: [wiki]
+date: 2026-02-16
+---
+
+[Wiki](../index.md) > [Governança](index.md) > Órfãos
 
 # Relatório de órfãos (snapshot)
 

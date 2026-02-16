@@ -1,3 +1,9 @@
+---
+title: Monsters
+tags: [cyclopedia]
+date: 2026-02-16
+---
+
 # Cyclopedia Monsters/Creatures (Bestiary + Bosstiary)
 
 ## 1) Arquitetura e estruturas de dados

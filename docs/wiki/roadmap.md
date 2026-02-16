@@ -1,4 +1,10 @@
-[Wiki](README.md) > Roadmap
+---
+title: Roadmap
+tags: [wiki]
+date: 2026-02-16
+---
+
+[Wiki](index.md) > Roadmap
 
 # Roadmap da documentação
 

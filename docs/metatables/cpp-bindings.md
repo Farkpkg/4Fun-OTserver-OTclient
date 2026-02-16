@@ -1,3 +1,9 @@
+---
+title: Cpp Bindings
+tags: [metatables]
+date: 2026-02-16
+---
+
 # Bindings C++ ↔ Lua
 
 <<<<<<< HEAD

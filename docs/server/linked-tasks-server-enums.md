@@ -1,3 +1,9 @@
+---
+title: Linked Tasks Server Enums
+tags: [server]
+date: 2026-02-16
+---
+
 # Linked Tasks - Server enums
 
 This document lists the enums/constants that the Linked Tasks system relies on for protocol and runtime validation. When values are not exposed in the Lua layer, prefer the constant names and refer to the Canary/Crystal server core for the numeric values.

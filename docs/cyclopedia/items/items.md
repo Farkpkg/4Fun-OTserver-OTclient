@@ -1,3 +1,9 @@
+---
+title: Items
+tags: [cyclopedia]
+date: 2026-02-16
+---
+
 # Cyclopedia Items
 
 ## 1) Arquitetura

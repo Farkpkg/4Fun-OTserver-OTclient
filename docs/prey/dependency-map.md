@@ -1,3 +1,9 @@
+---
+title: Dependency Map
+tags: [prey]
+date: 2026-02-16
+---
+
 # PREY — Dependency Map
 
 ## Mapa textual de dependências

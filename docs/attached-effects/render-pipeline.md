@@ -1,3 +1,9 @@
+---
+title: Render Pipeline
+tags: [attached-effects]
+date: 2026-02-16
+---
+
 # Pipeline de renderização dos AttachedEffects
 
 ## Ponto de inserção no pipeline

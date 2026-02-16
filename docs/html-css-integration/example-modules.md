@@ -1,3 +1,9 @@
+---
+title: Example Modules
+tags: [html-css-integration]
+date: 2026-02-16
+---
+
 # Example modules (casos de uso reais)
 
 ## 1) Quest Log

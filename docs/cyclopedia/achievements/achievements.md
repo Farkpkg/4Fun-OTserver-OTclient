@@ -1,3 +1,9 @@
+---
+title: Achievements
+tags: [cyclopedia]
+date: 2026-02-16
+---
+
 # Achievements / Quests na Cyclopedia
 
 ## 1) Achievements

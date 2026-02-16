@@ -1,3 +1,9 @@
+---
+title: Docs Reorganization Report
+tags: [reports]
+date: 2026-02-16
+---
+
 # Relatório de Reorganização de `/docs`
 
 ## Escopo executado

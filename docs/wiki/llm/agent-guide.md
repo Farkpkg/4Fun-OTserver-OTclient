@@ -1,4 +1,10 @@
-[Wiki](../README.md) > Guia para agentes/LLMs
+---
+title: Agent Guide
+tags: [wiki]
+date: 2026-02-16
+---
+
+[Wiki](../index.md) > Guia para agentes/LLMs
 
 # Guia para agentes e LLMs
 
