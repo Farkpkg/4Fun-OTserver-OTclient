@@ -1,3 +1,9 @@
+---
+title: Render Pipeline
+tags: [architecture]
+date: 2026-02-16
+---
+
 # Render Pipeline (Wings/Aura/Shaders/Effects)
 
 ## Ordem macro

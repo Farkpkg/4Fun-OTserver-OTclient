@@ -1,3 +1,9 @@
+---
+title: Talkaction Rules
+tags: [server]
+date: 2026-02-16
+---
+
 # TalkAction rules (Crystal Server)
 
 ## O que TalkAction pode fazer

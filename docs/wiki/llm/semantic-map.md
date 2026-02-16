@@ -1,4 +1,10 @@
-[Wiki](../README.md) > Mapa semântico (LLM)
+---
+title: Semantic Map
+tags: [wiki]
+date: 2026-02-16
+---
+
+[Wiki](../index.md) > Mapa semântico (LLM)
 
 # Semantic Map (LLM)
 

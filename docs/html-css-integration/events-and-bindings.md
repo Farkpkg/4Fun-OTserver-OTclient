@@ -1,3 +1,9 @@
+---
+title: Events And Bindings
+tags: [html-css-integration]
+date: 2026-02-16
+---
+
 # Events and bindings
 
 ## Bindings `*` (reactividade)

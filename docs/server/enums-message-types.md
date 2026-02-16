@@ -1,3 +1,9 @@
+---
+title: Enums Message Types
+tags: [server]
+date: 2026-02-16
+---
+
 # MessageTypes (Crystal Server core)
 
 Fonte: `crystalserver/src/utils/utils_definitions.hpp` (enum `MessageClasses`).

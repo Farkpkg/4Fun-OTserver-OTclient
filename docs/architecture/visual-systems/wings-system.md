@@ -1,3 +1,9 @@
+---
+title: Wings System
+tags: [architecture]
+date: 2026-02-16
+---
+
 # Wings System
 
 ## 1) Arquitetura

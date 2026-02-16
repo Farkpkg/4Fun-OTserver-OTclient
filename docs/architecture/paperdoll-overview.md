@@ -1,3 +1,9 @@
+---
+title: Paperdoll Overview
+tags: [architecture]
+date: 2026-02-16
+---
+
 # Paperdoll para OTClient + CrystalServer (Canary): visão geral e objetivos
 
 ## 1) Definição funcional

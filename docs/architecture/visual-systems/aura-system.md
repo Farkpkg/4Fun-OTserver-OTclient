@@ -1,3 +1,9 @@
+---
+title: Aura System
+tags: [architecture]
+date: 2026-02-16
+---
+
 # Aura System
 
 ## Arquitetura interna

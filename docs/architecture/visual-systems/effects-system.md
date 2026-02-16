@@ -1,3 +1,9 @@
+---
+title: Effects System
+tags: [architecture]
+date: 2026-02-16
+---
+
 # Effects System (Attached + Magic + Particles)
 
 ## 1) AttachedEffect

@@ -1,3 +1,9 @@
+---
+title: Security Analysis
+tags: [metatables]
+date: 2026-02-16
+---
+
 # Security Analysis de Metatables
 
 <<<<<<< HEAD

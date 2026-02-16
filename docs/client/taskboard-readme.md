@@ -1,3 +1,9 @@
+---
+title: Taskboard Readme
+tags: [client]
+date: 2026-02-16
+---
+
 # TaskBoard — Documentação Técnica Oficial
 
 > Status: **implementado e funcional (v1)** com sync/delta, camadas servidor/cliente, UI reativa e hardening inicial.

@@ -1,3 +1,9 @@
+---
+title: Performance
+tags: [html-css-integration]
+date: 2026-02-16
+---
+
 # Performance
 
 ## Custos principais do pipeline

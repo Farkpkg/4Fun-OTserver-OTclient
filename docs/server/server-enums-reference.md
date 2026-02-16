@@ -1,3 +1,9 @@
+---
+title: Server Enums Reference
+tags: [server]
+date: 2026-02-16
+---
+
 # Crystal Server enums (C++ source)
 
 This document lists the enums used by the Crystal Server / Canary core and exposed to Lua/protocol. Values are extracted from C++ sources.

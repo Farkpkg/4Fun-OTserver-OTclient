@@ -1,3 +1,9 @@
+---
+title: Taskboard Clone Validation
+tags: [client]
+date: 2026-02-16
+---
+
 # TaskBoard Clone Validation
 
 ## Checklist de fidelidade 1:1 (experiência)

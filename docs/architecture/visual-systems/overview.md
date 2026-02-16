@@ -1,3 +1,9 @@
+---
+title: Overview
+tags: [architecture]
+date: 2026-02-16
+---
+
 # Tibia4Fun Visual Systems — Overview
 
 ## Escopo analisado

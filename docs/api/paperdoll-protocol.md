@@ -1,3 +1,9 @@
+---
+title: Paperdoll Protocol
+tags: [api]
+date: 2026-02-16
+---
+
 # Protocolo de sincronização Paperdoll (ExtendedOpcode)
 
 ## 1) Estratégia de transporte

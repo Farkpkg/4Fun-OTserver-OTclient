@@ -1,3 +1,9 @@
+---
+title: Paperdoll Tests
+tags: [server]
+date: 2026-02-16
+---
+
 # Testes e casos de uso do sistema Paperdoll
 
 ## 1) Cenários funcionais essenciais

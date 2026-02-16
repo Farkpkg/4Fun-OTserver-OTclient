@@ -1,3 +1,9 @@
+---
+title: Image Asset Map
+tags: [internal]
+date: 2026-02-16
+---
+
 # Image Asset Map (engenharia reversa do sistema visual)
 
 ## 1) Estrutura global de `/images`

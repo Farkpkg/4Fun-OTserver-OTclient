@@ -1,3 +1,9 @@
+---
+title: Network
+tags: [cyclopedia]
+date: 2026-02-16
+---
+
 # Cyclopedia Network / Protocol / Hooks
 
 ## 1) Requests públicos (Lua -> C++ -> protocol)

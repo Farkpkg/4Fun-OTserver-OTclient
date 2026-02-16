@@ -1,4 +1,10 @@
-[Wiki](../README.md) > [Governança](README.md) > Automação
+---
+title: Automation
+tags: [wiki]
+date: 2026-02-16
+---
+
+[Wiki](../index.md) > [Governança](index.md) > Automação
 
 # Automação de atualização da wiki
 

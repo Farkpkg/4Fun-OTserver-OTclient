@@ -1,3 +1,9 @@
+---
+title: Window Visual Contract
+tags: [internal]
+date: 2026-02-16
+---
+
 # Window Visual Contract (padrão universal)
 
 ## 1) Hierarquia estrutural obrigatória

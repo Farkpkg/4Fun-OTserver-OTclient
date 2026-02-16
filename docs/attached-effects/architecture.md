@@ -1,3 +1,9 @@
+---
+title: Architecture
+tags: [attached-effects]
+date: 2026-02-16
+---
+
 # Arquitetura interna do AttachedEffects
 
 ## 1) O que é um `AttachedEffect`

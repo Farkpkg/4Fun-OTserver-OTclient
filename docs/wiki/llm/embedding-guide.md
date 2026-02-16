@@ -1,4 +1,10 @@
-[Wiki](../README.md) > Guia de embeddings
+---
+title: Embedding Guide
+tags: [wiki]
+date: 2026-02-16
+---
+
+[Wiki](../index.md) > Guia de embeddings
 
 # Guia de embeddings (corpus da wiki)
 

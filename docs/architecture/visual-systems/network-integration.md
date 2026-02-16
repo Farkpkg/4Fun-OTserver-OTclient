@@ -1,3 +1,9 @@
+---
+title: Network Integration
+tags: [architecture]
+date: 2026-02-16
+---
+
 # Network Integration
 
 ## Cadeia server -> client

@@ -1,3 +1,9 @@
+---
+title: Hooking Guide
+tags: [metatables]
+date: 2026-02-16
+---
+
 # Hooking Guide de Metatables
 
 <<<<<<< HEAD

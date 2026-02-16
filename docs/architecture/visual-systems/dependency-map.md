@@ -1,3 +1,9 @@
+---
+title: Dependency Map
+tags: [architecture]
+date: 2026-02-16
+---
+
 # Dependency Map
 
 ## Diagrama textual solicitado

@@ -1,3 +1,9 @@
+---
+title: Spells
+tags: [cyclopedia]
+date: 2026-02-16
+---
+
 # Spells / Runes / Potions (integração com Cyclopedia)
 
 ## Visão geral

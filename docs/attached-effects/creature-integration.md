@@ -1,3 +1,9 @@
+---
+title: Creature Integration
+tags: [attached-effects]
+date: 2026-02-16
+---
+
 # Integração com Creature
 
 ## 1) Armazenamento

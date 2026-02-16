@@ -1,3 +1,9 @@
+---
+title: Dependency Map
+tags: [attached-effects]
+date: 2026-02-16
+---
+
 # Mapa de dependências
 
 ## Grafo principal

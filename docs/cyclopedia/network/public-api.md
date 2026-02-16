@@ -1,3 +1,9 @@
+---
+title: Public Api
+tags: [cyclopedia]
+date: 2026-02-16
+---
+
 # API pública relevante da Cyclopedia
 
 ## 1) Funções para abrir a Cyclopedia

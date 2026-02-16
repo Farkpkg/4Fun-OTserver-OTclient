@@ -1,3 +1,9 @@
+---
+title: Linked Tasks Getting Started
+tags: [server]
+date: 2026-02-16
+---
+
 # Linked Tasks: como começar a usar no jogo (OTClient + CrystalServer)
 
 Este guia é um passo a passo **prático** para subir o sistema de Linked Tasks e também explica o erro de log ao usar `!task`.

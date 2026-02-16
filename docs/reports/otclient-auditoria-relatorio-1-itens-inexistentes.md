@@ -1,3 +1,9 @@
+---
+title: Otclient Auditoria Relatorio 1 Itens Inexistentes
+tags: [reports]
+date: 2026-02-16
+---
+
 # RELATÓRIO 1 – Itens inexistentes
 
 Total: **2611** itens.
@@ -2432,7 +2438,7 @@ Total: **2611** itens.
 | symbol | `docs/wiki/README.md` | `docs/wiki/governance/README.md` | 33 | não encontrado no OTClient atual |
 | symbol | `docs/wiki/INDICES.md` | `docs/wiki/governance/README.md` | 34 | não encontrado no OTClient atual |
 | symbol | `docs/wiki/roadmap.md` | `docs/wiki/governance/README.md` | 35 | não encontrado no OTClient atual |
-| symbol | `[Wiki](../README.md) > Seção` | `docs/wiki/governance/README.md` | 43 | não encontrado no OTClient atual |
+| symbol | `[Wiki](../index.md) > Seção` | `docs/wiki/governance/README.md` | 43 | não encontrado no OTClient atual |
 | symbol | `docs/wiki/governance/orphans.md` | `docs/wiki/governance/README.md` | 53 | não encontrado no OTClient atual |
 | symbol | `docs/wiki/governance/automation.md` | `docs/wiki/governance/README.md` | 57 | não encontrado no OTClient atual |
 | symbol | `tools/` | `docs/wiki/governance/automation.md` | 9 | não encontrado no OTClient atual |

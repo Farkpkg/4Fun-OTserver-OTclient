@@ -1,3 +1,9 @@
+---
+title: Api Reference
+tags: [html-css-integration]
+date: 2026-02-16
+---
+
 # API reference
 
 ## g_html (singleton)

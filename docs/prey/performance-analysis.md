@@ -1,3 +1,9 @@
+---
+title: Performance Analysis
+tags: [prey]
+date: 2026-02-16
+---
+
 # PREY — Análise de Performance
 
 ## Pontos de custo relevantes

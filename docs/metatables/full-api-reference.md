@@ -1,3 +1,9 @@
+---
+title: Full Api Reference
+tags: [metatables]
+date: 2026-02-16
+---
+
 # Full API Reference (metatables)
 
 ## Server

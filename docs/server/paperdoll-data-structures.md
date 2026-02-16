@@ -1,3 +1,9 @@
+---
+title: Paperdoll Data Structures
+tags: [server]
+date: 2026-02-16
+---
+
 # Paperdoll: estruturas de dados (XML, DB, protocolo)
 
 ## 1) Arquivo `paperdoll.xml` (catálogo cosmético)

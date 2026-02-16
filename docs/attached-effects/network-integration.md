@@ -1,3 +1,9 @@
+---
+title: Network Integration
+tags: [attached-effects]
+date: 2026-02-16
+---
+
 # Integração de rede (Protocol)
 
 ## Cliente — opcodes consumidos

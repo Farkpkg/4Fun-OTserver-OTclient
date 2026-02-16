@@ -1,3 +1,9 @@
+---
+title: Render Behavior
+tags: [prey]
+date: 2026-02-16
+---
+
 # PREY — Comportamento de Renderização
 
 ## Pipeline visual

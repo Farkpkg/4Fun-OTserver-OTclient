@@ -1,3 +1,9 @@
+---
+title: Shader System
+tags: [architecture]
+date: 2026-02-16
+---
+
 # Shader System
 
 ## Arquitetura
