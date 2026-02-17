@@ -13,8 +13,8 @@ HelperTracker < MiniWindow
       anchors.top: parent.top
       anchors.left: parent.left
       !text: tr('General Helper')
-      font: verdana-11px-rounded
-      color: #c0c0c0
+      font: $var-cip-font
+      color: $var-text-cip-color
       text-auto-resize: true
     UIWidget
       id: hierarchy
@@ -33,8 +33,8 @@ HelperTracker < MiniWindow
       !text: tr('Inactive')
       margin-top: -3
       margin-left: 5
-      font: verdana-11px-rounded
-      color: #d33c3c
+      font: $var-cip-font
+      color: $var-text-cip-store-red
       text-auto-resize: true
       tooltip-delayed: true
 
@@ -44,8 +44,8 @@ HelperTracker < MiniWindow
       anchors.left: parent.left
       margin-top: 3
       !text: tr('Target Helper')
-      font: verdana-11px-rounded
-      color: #c0c0c0
+      font: $var-cip-font
+      color: $var-text-cip-color
       text-auto-resize: true
     UIWidget
       id: hierarchy
@@ -64,8 +64,8 @@ HelperTracker < MiniWindow
       !text: tr('Inactive')
       margin-top: -3
       margin-left: 5
-      font: verdana-11px-rounded
-      color: #d33c3c
+      font: $var-cip-font
+      color: $var-text-cip-store-red
       text-auto-resize: true
       tooltip-delayed: true
 
@@ -75,8 +75,8 @@ HelperTracker < MiniWindow
       anchors.left: parent.left
       margin-top: 3
       !text: tr('Shooter Helper')
-      font: verdana-11px-rounded
-      color: #c0c0c0
+      font: $var-cip-font
+      color: $var-text-cip-color
       text-auto-resize: true
     UIWidget
       id: hierarchy
@@ -95,8 +95,8 @@ HelperTracker < MiniWindow
       !text: tr('Inactive')
       margin-top: -3
       margin-left: 5
-      font: verdana-11px-rounded
-      color: #d33c3c
+      font: $var-cip-font
+      color: $var-text-cip-store-red
       text-auto-resize: true
       tooltip-delayed: true
 
@@ -106,8 +106,8 @@ HelperTracker < MiniWindow
       anchors.left: parent.left
       margin-top: 3
       !text: tr('Shooter Preset')
-      font: verdana-11px-rounded
-      color: #c0c0c0
+      font: $var-cip-font
+      color: $var-text-cip-color
       text-auto-resize: true
     UIWidget
       id: hierarchy
@@ -126,8 +126,8 @@ HelperTracker < MiniWindow
       !text: tr('No data yet')
       margin-top: -3
       margin-left: 5
-      font: verdana-11px-rounded
-      color: #44ad25
+      font: $var-cip-font
+      color: $var-text-cip-color-green
       text-auto-resize: true
       tooltip-delayed: true
 
@@ -139,7 +139,7 @@ HelperTracker < MiniWindow
       !text: tr('Open Helper')
       margin-top: 5
       margin-left: 24
-      @onClick: modules.game_rtc_helper:show(true)
+      @onClick: modules.game_helper:show(true)
 
   UIWidget
     id: miniborder
@@ -203,7 +203,7 @@ HelperRules < NewHeadlessWindow
       !text: tr('Next')
       size: 43 20
       enabled: false
-      @onClick: modules.game_rtc_helper:onHelperTermConditionNext()
+      @onClick: modules.game_helper:onHelperTermConditionNext()
     Button
       id: close
       anchors.bottom: parent.bottom
@@ -211,7 +211,7 @@ HelperRules < NewHeadlessWindow
       margin-right: 5
       !text: tr('Close')
       size: 43 20
-      @onClick: modules.game_rtc_helper.closeTerms()
+      @onClick: modules.game_helper.closeTerms()
     CheckBox
       id: termCondition
       width: 100
@@ -221,17 +221,17 @@ HelperRules < NewHeadlessWindow
       !text: tr('I agree with RubinOT Terms and Conditions.')
       !tooltip: tr('I have read and I agree to the Extended RubinOT Service Agreement and the RubinOT Privacy Policy.')
       margin-bottom: 5
-      font: verdana-11px-rounded
-      color: #c0c0c0
+      font: $var-cip-font
+      color: $var-text-cip-color
       text-auto-resize: true
-      @onCheckChange: modules.game_rtc_helper.onHelperTermCondition(self:getId(), self:isChecked())
+      @onCheckChange: modules.game_helper.onHelperTermCondition(self:getId(), self:isChecked())
 
 
 PlayerName < Label
   focusable: true
   height: 15
-  font: verdana-11px-rounded
-  color: #d2d2d2
+  font: $var-cip-font
+  color: $var-text-cip-color-grey
 
   $focus:
     background-color: #484848
@@ -275,8 +275,8 @@ HealingPanel < Panel
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 2
       !text: tr('Auto Healing Helper')
-      font: verdana-11px-rounded
-      color: #d2d2d2
+      font: $var-cip-font
+      color: $var-text-cip-color-grey
       text-auto-resize: true
 
     Panel
@@ -292,8 +292,8 @@ HealingPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Spell Healing')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
 
       UIButton
@@ -338,8 +338,8 @@ HealingPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('80%%')
-          font: verdana-11px-rounded
-          color: #c0c0c0
+          font: $var-cip-font
+          color: $var-text-cip-color
           text-auto-resize: true
 
       UIButton
@@ -410,8 +410,8 @@ HealingPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('80%%')
-          font: verdana-11px-rounded
-          color: #c0c0c0
+          font: $var-cip-font
+          color: $var-text-cip-color
           text-auto-resize: true
 
       UIButton
@@ -482,8 +482,8 @@ HealingPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('80%%')
-          font: verdana-11px-rounded
-          color: #c0c0c0
+          font: $var-cip-font
+          color: $var-text-cip-color
           text-auto-resize: true
 
       UIButton
@@ -534,8 +534,8 @@ HealingPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Potion Healing')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
 
       UIButton
@@ -581,8 +581,8 @@ HealingPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('50%%')
-          font: verdana-11px-rounded
-          color: #c0c0c0
+          font: $var-cip-font
+          color: $var-text-cip-color
           text-auto-resize: true
 
       UIButton
@@ -656,8 +656,8 @@ HealingPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('50%%')
-          font: verdana-11px-rounded
-          color: #c0c0c0
+          font: $var-cip-font
+          color: $var-text-cip-color
           text-auto-resize: true
 
       UIButton
@@ -732,8 +732,8 @@ HealingPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('50%%')
-          font: verdana-11px-rounded
-          color: #c0c0c0
+          font: $var-cip-font
+          color: $var-text-cip-color
           text-auto-resize: true
 
       UIButton
@@ -781,8 +781,8 @@ HealingPanel < Panel
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 1
       !text: tr('Friend Healing Helper')
-      font: verdana-11px-rounded
-      color: #d2d2d2
+      font: $var-cip-font
+      color: $var-text-cip-color-grey
       text-auto-resize: true
     Panel
       id: firstPanel
@@ -797,8 +797,8 @@ HealingPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Select a Friend')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
       UIWidget
         size: 12 12
@@ -847,8 +847,8 @@ HealingPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Heal Friend List')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
       UICreature
         id: friendButton0
@@ -864,7 +864,7 @@ HealingPanel < Panel
           image-clip: 34 0 34 34
         $hover !pressed:
           image-clip: 0 0 34 34
-        @onClick: modules.game_rtc_helper.onAddPartyMember(self)
+        @onClick: modules.game_helper.onAddPartyMember(self)
       CheckBox
         id: enableSio0
         width: 100
@@ -872,11 +872,11 @@ HealingPanel < Panel
         anchors.left: friendButton0.right
         !text: tr('Enable')
         margin-left: 5
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-offset: 13 -3
         change-cursor-image: false
-        @onCheckChange: modules.game_rtc_helper.onEnableSio(self, self:isChecked())
+        @onCheckChange: modules.game_helper.onEnableSio(self, self:isChecked())
         $hover !disabled:
           color: #c0c0c0
       ComboBox
@@ -886,8 +886,8 @@ HealingPanel < Panel
         anchors.left: friendButton0.right
         margin-top: 2
         margin-left: 5
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateFriendHealingPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateFriendHealingPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           for i = 10, 100, 10 do
             if i == 100 then
@@ -917,7 +917,7 @@ HealingPanel < Panel
           image-clip: 34 0 34 34
         $hover !pressed:
           image-clip: 0 0 34 34
-        @onClick: modules.game_rtc_helper.onAddPartyMember(self)
+        @onClick: modules.game_helper.onAddPartyMember(self)
       CheckBox
         id: enableSio1
         width: 100
@@ -925,11 +925,11 @@ HealingPanel < Panel
         anchors.left: friendButton1.right
         !text: tr('Enable')
         margin-left: 5
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-offset: 13 -3
         change-cursor-image: false
-        @onCheckChange: modules.game_rtc_helper.onEnableSio(self, self:isChecked())
+        @onCheckChange: modules.game_helper.onEnableSio(self, self:isChecked())
         $hover !disabled:
         color: #c0c0c0
 
@@ -940,8 +940,8 @@ HealingPanel < Panel
         anchors.left: friendButton1.right
         margin-top: 2
         margin-left: 5
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateFriendHealingPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateFriendHealingPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           for i = 10, 100, 10 do
             if i == 100 then
@@ -976,8 +976,8 @@ HealingPanel < Panel
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 1
       !text: tr('Exura Gran Sio Helper')
-      font: verdana-11px-rounded
-      color: #d2d2d2
+      font: $var-cip-font
+      color: $var-text-cip-color-grey
       text-auto-resize: true
     Panel
       id: firstPanel
@@ -992,8 +992,8 @@ HealingPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Select a Friend')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
       UIWidget
         size: 12 12
@@ -1042,8 +1042,8 @@ HealingPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Heal Friend List')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
       UICreature
         id: friendButton0
@@ -1059,7 +1059,7 @@ HealingPanel < Panel
           image-clip: 34 0 34 34
         $hover !pressed:
           image-clip: 0 0 34 34
-        @onClick: modules.game_rtc_helper.onAddPartyGranSioMember(self)
+        @onClick: modules.game_helper.onAddPartyGranSioMember(self)
       CheckBox
         id: enableSio0
         width: 100
@@ -1067,11 +1067,11 @@ HealingPanel < Panel
         anchors.left: friendButton0.right
         !text: tr('Enable')
         margin-left: 5
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-offset: 13 -3
         change-cursor-image: false
-        @onCheckChange: modules.game_rtc_helper.onEnableGranSio(self, self:isChecked())
+        @onCheckChange: modules.game_helper.onEnableGranSio(self, self:isChecked())
         $hover !disabled:
           color: #c0c0c0
       ComboBox
@@ -1081,8 +1081,8 @@ HealingPanel < Panel
         anchors.left: friendButton0.right
         margin-top: 2
         margin-left: 5
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateGranSioPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateGranSioPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           for i = 10, 100, 10 do
             if i == 100 then
@@ -1112,7 +1112,7 @@ HealingPanel < Panel
           image-clip: 34 0 34 34
         $hover !pressed:
           image-clip: 0 0 34 34
-        @onClick: modules.game_rtc_helper.onAddPartyGranSioMember(self)
+        @onClick: modules.game_helper.onAddPartyGranSioMember(self)
       CheckBox
         id: enableSio1
         width: 100
@@ -1120,11 +1120,11 @@ HealingPanel < Panel
         anchors.left: friendButton1.right
         !text: tr('Enable')
         margin-left: 5
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-offset: 13 -3
         change-cursor-image: false
-        @onCheckChange: modules.game_rtc_helper.onEnableGranSio(self, self:isChecked())
+        @onCheckChange: modules.game_helper.onEnableGranSio(self, self:isChecked())
         $hover !disabled:
         color: #c0c0c0
 
@@ -1135,8 +1135,8 @@ HealingPanel < Panel
         anchors.left: friendButton1.right
         margin-top: 2
         margin-left: 5
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateGranSioPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateGranSioPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           for i = 10, 100, 10 do
             if i == 100 then
@@ -1170,8 +1170,8 @@ ToolsPanel < Panel
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 1
       !text: tr('Tools Helper')
-      font: verdana-11px-rounded
-      color: #d2d2d2
+      font: $var-cip-font
+      color: $var-text-cip-color-grey
       text-auto-resize: true
     Panel
       id: firstPanel
@@ -1184,8 +1184,8 @@ ToolsPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Mana Training')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
       UIButton
         id: spellTrainingButton0
@@ -1204,13 +1204,13 @@ ToolsPanel < Panel
         anchors.left: spellTrainingButton0.right
         !text: tr('Enable')
         margin-left: 5
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-offset: 13 -3
         change-cursor-image: false
         $hover !disabled:
           color: #c0c0c0
-        @onCheckChange: modules.game_rtc_helper.onEnableTraining(self:getId(), self:isChecked())
+        @onCheckChange: modules.game_helper.onEnableTraining(self:getId(), self:isChecked())
 
       ComboBox
         id: spellTrainingPercent0
@@ -1219,7 +1219,7 @@ ToolsPanel < Panel
         anchors.left: spellTrainingButton0.right
         margin-top: 2
         margin-left: 5
-        color: #c0c0c0
+        color: $var-text-cip-color
         @onOptionChange: updateTrainingPercent('spellTrainingButton0', self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           for i = 10, 100, 10 do
@@ -1245,8 +1245,8 @@ ToolsPanel < Panel
         anchors.top: prev.bottom
         anchors.left: parent.left
         !text: tr('Exercise Training')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
         margin-top: 5
       UIButton
@@ -1267,8 +1267,8 @@ ToolsPanel < Panel
         anchors.left: autoTrainingItem.right
         !text: tr('Enable')
         margin-left: 5
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-offset: 13 -3
         @onCheckChange: checkExerciseEvent()
         change-cursor-image: false
@@ -1281,7 +1281,7 @@ ToolsPanel < Panel
         anchors.left: spellTrainingButton0.right
         margin-top: 2
         margin-left: 5
-        color: #c0c0c0
+        color: $var-text-cip-color
         enabled: false
         @onSetup: |
           self:addOption("")
@@ -1312,8 +1312,8 @@ ToolsPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Auto Haste')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
       UIButton
         id: hasteButton0
@@ -1332,8 +1332,8 @@ ToolsPanel < Panel
         anchors.left: hasteButton0.right
         !text: tr('Enable')
         margin-left: 5
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-offset: 13 -3
         @onCheckChange: toggleAutoHaste(self:isChecked())
         change-cursor-image: false
@@ -1347,8 +1347,8 @@ ToolsPanel < Panel
         !text: tr('PZ Cast')
         margin-left: 5
         margin-top: 5
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-offset: 13 -3
         @onCheckChange: toggleAutoHastePz(self:isChecked())
         change-cursor-image: false
@@ -1365,8 +1365,8 @@ ToolsPanel < Panel
         anchors.top: prev.bottom
         anchors.left: parent.left
         !text: tr('Others Tools')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
         margin-top: 5
       UIWidget
@@ -1385,11 +1385,11 @@ ToolsPanel < Panel
         !text: tr('Change Gold')
         margin-top: 7
         margin-left: 2
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-offset: 13 -3
         change-cursor-image: false
-        @onCheckChange: modules.game_rtc_helper.toogleChangeGold(self:isChecked())
+        @onCheckChange: modules.game_helper.toogleChangeGold(self:isChecked())
         $hover !disabled:
           color: #c0c0c0
         !tooltip: tr('The gold exchange will only work if the gold container is open.')
@@ -1402,8 +1402,8 @@ ToolsPanel < Panel
         !text: tr('Auto Eat Food')
         margin-top: 7
         margin-left: 2
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-offset: 13 -3
         @onCheckChange: toggleAutoEat(self:isChecked())
         change-cursor-image: false
@@ -1417,8 +1417,8 @@ ToolsPanel < Panel
         !text: tr('Auto Reconnect')
         margin-top: 7
         margin-left: 2
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-offset: 13 -3
         text-auto-resize: true
         @onCheckChange: toggleReconnect(self:isChecked())
@@ -1444,8 +1444,8 @@ ShooterPanel < Panel
       margin-left: 2
       margin-top: 3
       !text: tr('Presets:')
-      font: verdana-11px-rounded
-      color: #c0c0c0
+      font: $var-cip-font
+      color: $var-text-cip-color
       text-auto-resize: true
     ComboBox
       id: presets
@@ -1453,7 +1453,7 @@ ShooterPanel < Panel
       anchors.top: prev.bottom
       anchors.left: prev.left
       margin-top: 7
-      color: #c0c0c0
+      color: $var-text-cip-color
       text-offset: -20 0
       @onOptionChange: toggleShooterPreset(self)
     UIButton
@@ -1499,8 +1499,8 @@ ShooterPanel < Panel
       anchors.top: parent.top
       anchors.right: parent.right
       !text: tr('Rename Preset')
-      font: verdana-11px-rounded
-      color: #c0c0c0
+      font: $var-cip-font
+      color: $var-text-cip-color
       margin-top: 2
       margin-right: 5
       !tooltip: tr('Rename the current preset.')
@@ -1511,8 +1511,8 @@ ShooterPanel < Panel
       anchors.top: presets.top
       anchors.right: parent.right
       !text: tr('New Preset')
-      font: verdana-11px-rounded
-      color: #c0c0c0
+      font: $var-cip-font
+      color: $var-text-cip-color
       image-source: /images/ui/buttons-blue
       margin-right: 5
       !tooltip: tr('Create a new preset.')
@@ -1533,8 +1533,8 @@ ShooterPanel < Panel
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 1
       !text: tr('Spell Shooter Helper')
-      font: verdana-11px-rounded
-      color: #d2d2d2
+      font: $var-cip-font
+      color: $var-text-cip-color-grey
       text-auto-resize: true
     Panel
       id: firstPanel
@@ -1548,8 +1548,8 @@ ShooterPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Spell')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
       VerticalSeparator
         id: sep0
@@ -1564,8 +1564,8 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 7
         !text: tr('Mana %%')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
       VerticalSeparator
         id: sep1
@@ -1580,8 +1580,8 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 7
         !text: tr('Creatures')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
       VerticalSeparator
         id: sep2
@@ -1596,8 +1596,8 @@ ShooterPanel < Panel
         anchors.left: sep2.right
         margin-left: 5
         !text: tr('Priority')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
 
       UIButton
@@ -1641,8 +1641,8 @@ ShooterPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('80%%')
-          font: verdana-11px-rounded
-          color: #c0c0c0
+          font: $var-cip-font
+          color: $var-text-cip-color
           text-auto-resize: true
           phantom: true
       UIButton
@@ -1667,8 +1667,8 @@ ShooterPanel < Panel
         anchors.top: prev.top
         anchors.left: prev.right
         margin-left: 18
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1+")
           self:addOption("2+")
@@ -1699,8 +1699,8 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 14
         font: Icon-VBold-11px
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1st")
           self:addOption("2nd")
@@ -1752,8 +1752,8 @@ ShooterPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('80%%')
-          font: verdana-11px-rounded
-          color: #c0c0c0
+          font: $var-cip-font
+          color: $var-text-cip-color
           text-auto-resize: true
           phantom: true
       UIButton
@@ -1778,8 +1778,8 @@ ShooterPanel < Panel
         anchors.top: prev.top
         anchors.left: prev.right
         margin-left: 18
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1+")
           self:addOption("2+")
@@ -1810,8 +1810,8 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 14
         font: Icon-VBold-11px
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1st")
           self:addOption("2nd")
@@ -1863,8 +1863,8 @@ ShooterPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('80%%')
-          font: verdana-11px-rounded
-          color: #c0c0c0
+          font: $var-cip-font
+          color: $var-text-cip-color
           text-auto-resize: true
           phantom: true
       UIButton
@@ -1889,8 +1889,8 @@ ShooterPanel < Panel
         anchors.top: prev.top
         anchors.left: prev.right
         margin-left: 18
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1+")
           self:addOption("2+")
@@ -1921,8 +1921,8 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 14
         font: Icon-VBold-11px
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1st")
           self:addOption("2nd")
@@ -1980,8 +1980,8 @@ ShooterPanel < Panel
             anchors.horizontalCenter: parent.horizontalCenter
             margin-top: 4
             !text: tr('80%%')
-            font: verdana-11px-rounded
-            color: #c0c0c0
+            font: $var-cip-font
+            color: $var-text-cip-color
             text-auto-resize: true
             phantom: true
         UIButton
@@ -2006,8 +2006,8 @@ ShooterPanel < Panel
           anchors.top: prev.top
           anchors.left: prev.right
           margin-left: 18
-          color: #c0c0c0
-          @onOptionChange: modules.game_rtc_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+          color: $var-text-cip-color
+          @onOptionChange: modules.game_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
           @onSetup: |
             self:addOption("1+")
             self:addOption("2+")
@@ -2038,8 +2038,8 @@ ShooterPanel < Panel
           anchors.left: prev.right
           margin-left: 14
           font: Icon-VBold-11px
-          color: #c0c0c0
-          @onOptionChange: modules.game_rtc_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+          color: $var-text-cip-color
+          @onOptionChange: modules.game_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
           @onSetup: |
             self:addOption("1st")
             self:addOption("2nd")
@@ -2097,8 +2097,8 @@ ShooterPanel < Panel
             anchors.horizontalCenter: parent.horizontalCenter
             margin-top: 4
             !text: tr('80%%')
-            font: verdana-11px-rounded
-            color: #c0c0c0
+            font: $var-cip-font
+            color: $var-text-cip-color
             text-auto-resize: true
             phantom: true
         UIButton
@@ -2123,8 +2123,8 @@ ShooterPanel < Panel
           anchors.top: prev.top
           anchors.left: prev.right
           margin-left: 18
-          color: #c0c0c0
-          @onOptionChange: modules.game_rtc_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+          color: $var-text-cip-color
+          @onOptionChange: modules.game_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
           @onSetup: |
             self:addOption("1+")
             self:addOption("2+")
@@ -2155,8 +2155,8 @@ ShooterPanel < Panel
           anchors.left: prev.right
           margin-left: 14
           font: Icon-VBold-11px
-          color: #c0c0c0
-          @onOptionChange: modules.game_rtc_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+          color: $var-text-cip-color
+          @onOptionChange: modules.game_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
           @onSetup: |
             self:addOption("1st")
             self:addOption("2nd")
@@ -2182,8 +2182,8 @@ ShooterPanel < Panel
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 1
       !text: tr('Rune Shooter Helper')
-      font: verdana-11px-rounded
-      color: #d2d2d2
+      font: $var-cip-font
+      color: $var-text-cip-color-grey
       text-auto-resize: true
     Panel
       id: firstPanel
@@ -2197,8 +2197,8 @@ ShooterPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Rune')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
       VerticalSeparator
         id: sep0
@@ -2213,8 +2213,8 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 7
         !text: tr('Creatures')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
       VerticalSeparator
         id: sep1
@@ -2229,8 +2229,8 @@ ShooterPanel < Panel
         anchors.left: sep1.right
         margin-left: 7
         !text: tr('Priority')
-        font: verdana-11px-rounded
-        color: #c0c0c0
+        font: $var-cip-font
+        color: $var-text-cip-color
         text-auto-resize: true
       UIButton
         id: runeShooterButton0
@@ -2249,8 +2249,8 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 19
         margin-top: 3
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateRuneShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateRuneShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1+")
           self:addOption("2+")
@@ -2281,8 +2281,8 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 17
         font: Icon-VBold-11px
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateRuneShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateRuneShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1st")
           self:addOption("2nd")
@@ -2317,8 +2317,8 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 19
         margin-top: 3
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateRuneShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateRuneShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1+")
           self:addOption("2+")
@@ -2349,8 +2349,8 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 17
         font: Icon-VBold-11px
-        color: #c0c0c0
-        @onOptionChange: modules.game_rtc_helper.updateRuneShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        color: $var-text-cip-color
+        @onOptionChange: modules.game_helper.updateRuneShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1st")
           self:addOption("2nd")
@@ -2385,8 +2385,8 @@ ShooterPanel < Panel
       !text: tr('Auto Target')
       margin-left: 2
       margin-top: 7
-      font: verdana-11px-rounded
-      color: #c0c0c0
+      font: $var-cip-font
+      color: $var-text-cip-color
       text-offset: 13 -3
       @onCheckChange: toggleAutoTarget(self)
       change-cursor-image: false
@@ -2399,9 +2399,9 @@ ShooterPanel < Panel
       anchors.left: prev.right
       margin-left: 7
       margin-top: -1
-      color: #c0c0c0
+      color: $var-text-cip-color
       text-offset: -20 0
-      @onOptionChange: modules.game_rtc_helper.updateAutoTargetMode(self:getCurrentOption().text)
+      @onOptionChange: modules.game_helper.updateAutoTargetMode(self:getCurrentOption().text)
       @onSetup: |
         self:addOption("A")
         self:addOption("B")
@@ -2446,8 +2446,8 @@ ShooterPanel < Panel
       !text: tr('Enable Shooter Helper')
       margin-left: 2
       margin-top: 8
-      font: verdana-11px-rounded
-      color: #c0c0c0
+      font: $var-cip-font
+      color: $var-text-cip-color
       text-offset: 13 -3
       @onCheckChange: toggleMagicShooter(self)
       change-cursor-image: false
@@ -2481,7 +2481,7 @@ ShooterPanel < Panel
       margin-right: 32
       image-source: /images/ui/buttons-blue
       !text: tr('Set Key (Target/Shooter)')
-      color: #ffffff
+      color: $var-text-cip-color-white
       @onClick: manageHotkeys("Enable/Disable Target and Magic Shooter")
     UIWidget
       size: 12 12
@@ -2631,8 +2631,8 @@ NewHeadlessWindow
       anchors.left: parent.left
       margin-bottom: 8
       !text: tr('Helper Status:')
-      font: verdana-11px-rounded
-      color: #c0c0c0
+      font: $var-cip-font
+      color: $var-text-cip-color
       text-auto-resize: true
 
     Label
@@ -2640,8 +2640,8 @@ NewHeadlessWindow
       anchors.top: prev.bottom
       anchors.left: parent.left
       !text: tr('Status')
-      font: verdana-11px-rounded
-      color: #c0c0c0
+      font: $var-cip-font
+      color: $var-text-cip-color
       text-auto-resize: true
 
     UIButton
