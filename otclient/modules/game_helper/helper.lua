@@ -2108,7 +2108,7 @@ function toggleMagicShooter(widget, message)
   helperConfig.magicShooterEnabled = widget:isChecked()
   modules.game_textmessage.displayGameMessage(message and message or string.format("RTCaster is %s.", (helperConfig.magicShooterEnabled and "enabled" or "disabled")))
   shooterTracker:setText(helperConfig.magicShooterEnabled and "Active" or "Inactive")
-  shooterTracker:setColor(helperConfig.magicShooterEnabled and "$var-text-cip-color-green" or "$var-text-cip-store-red")
+  shooterTracker:setColor(helperConfig.magicShooterEnabled and "#00EB00" or "#D92B2B")
 end
 
 function isAutoTargetActive()
@@ -2128,7 +2128,7 @@ function toggleAutoTarget(widget)
   end
   modules.game_textmessage.displayGameMessage(string.format("Auto Target is %s.", (helperConfig.autoTargetEnabled and "enabled" or "disabled")))
   targetTracker:setText(helperConfig.autoTargetEnabled and "Active" or "Inactive")
-  targetTracker:setColor(helperConfig.autoTargetEnabled and "$var-text-cip-color-green" or "$var-text-cip-store-red")
+  targetTracker:setColor(helperConfig.autoTargetEnabled and "#00EB00" or "#D92B2B")
 end
 
 function toggleShooterPreset(widget, hideMessage)
@@ -3552,14 +3552,14 @@ function botStatus()
     helperStatus:setImageSource("/images/store/icon-yes")
     helperStatusLabel:setText("Enabled")
     helperTrackerStatus:setText("Active")
-    helperTrackerStatus:setColor("$var-text-cip-color-green")
+    helperTrackerStatus:setColor("#00EB00")
     helperStatus:setTooltip(" - Helper Status: Enabled\n\nYou can Enable or Disable the helper using\nthe default hotkey (Pause Break).\n\nAlso you can change the hotkey on settings.")
     modules.game_textmessage.displayFailureMessage(tr('Helper Status: Enabled'))
   else
     helperStatus:setImageSource("/images/store/icon-no")
     helperTrackerStatus:setText("Inactive")
     helperStatusLabel:setText("Disabled")
-    helperTrackerStatus:setColor("$var-text-cip-store-red")
+    helperTrackerStatus:setColor("#D92B2B")
     helperStatus:setTooltip(" - Helper Status: Disabled\n\nYou can Enable or Disable the helper using\nthe default hotkey (Pause Break).\n\nAlso you can change the hotkey on settings.")
     modules.game_textmessage.displayFailureMessage(tr('Helper Status: Disabled'))
   end
@@ -3610,13 +3610,13 @@ function botStatus()
   local shooterTracker = helperTracker:recursiveGetChildById("shooterStatus")
   if shooterTracker then
     shooterTracker:setText(helperConfig.magicShooterEnabled and "Active" or "Inactive")
-    shooterTracker:setColor(helperConfig.magicShooterEnabled and "$var-text-cip-color-green" or "$var-text-cip-store-red")
+    shooterTracker:setColor(helperConfig.magicShooterEnabled and "#00EB00" or "#D92B2B")
   end
 
   local targetTracker = helperTracker:recursiveGetChildById("targetStatus")
   if targetTracker then
     targetTracker:setText(helperConfig.autoTargetEnabled and "Active" or "Inactive")
-    targetTracker:setColor(helperConfig.autoTargetEnabled and "$var-text-cip-color-green" or "$var-text-cip-store-red")
+    targetTracker:setColor(helperConfig.autoTargetEnabled and "#00EB00" or "#D92B2B")
   end
 
   local currentPresetLabel = helperTracker:recursiveGetChildById("currentPresetName")
@@ -3951,8 +3951,8 @@ function createHelperRules()
 
     local label = g_ui.createWidget('UILabel', rulesTextList)
     label:setText(longText)
-    label:setColor('$var-text-cip-color')
-    label:setFont('$var-cip-font')
+    label:setColor('#D7D7D7')
+    label:setFont('cipsoftFont')
     label:setTextWrap(true)
     label:setTextAutoResize(true)
     label:setMarginRight(10)
