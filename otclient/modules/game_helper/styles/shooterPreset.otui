@@ -2,8 +2,8 @@ NewMainWindow
   id: window
   anchors.horizontalCenter: parent.horizontalCenter
   !text: tr('Add shooter preset')
-  font: $var-cip-font
-  color: $var-text-cip-color-grey
+  font: verdana-11px-monochrome
+  color: #6D6D6D
   size: 360 121
   @onClose:
   @onEscape: self:hide()

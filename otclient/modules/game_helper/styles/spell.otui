@@ -6,15 +6,15 @@ SpellPreview < UICheckBox
   text-offset: 38 2
   image-source:
   change-cursor-image: false
-  font: $var-cip-font
-  color: $var-text-cip-color
+  font: verdana-11px-monochrome
+  color: #D7D7D7
 
   $hover !disabled:
     color: #ffffff
 
   $!checked:
     background-color: alpha
-    color: $var-text-cip-color
+    color: #D7D7D7
 
   $checked:
     background-color: #585858
@@ -62,8 +62,8 @@ SpellPreview < UICheckBox
     margin-top: 12
     margin-left: 6
     !text: tr('Level: 0')
-    font: $var-cip-font
-    color: $var-text-cip-color
+    font: verdana-11px-monochrome
+    color: #D7D7D7
     text-auto-resize: true
     visible: false
 
@@ -116,8 +116,8 @@ NewMainWindow
       margin-left: 1
       !placeholder: tr('Type to search')
       padding: 2
-      font: $var-cip-font
-      placeholder-color: $var-cip-inactive-color
+      font: verdana-11px-monochrome
+      placeholder-color: #484848
       @onTextChange: modules.game_helper.onSearchTextChange(self:getText())
     Button
       id: clearButton
@@ -160,12 +160,12 @@ NewMainWindow
         anchors.right: parent.right
         margin-left: 5
         text: Only show learnt spells
-        font: $var-cip-font
-        color: $var-text-cip-color
+        font: verdana-11px-monochrome
+        color: #D7D7D7
         checked: true
         change-cursor-image: false
         $hover !disabled:
-          color: $var-text-cip-color
+          color: #D7D7D7
 
     Label
       id: paramLabel
@@ -173,14 +173,14 @@ NewMainWindow
       margin-top: 7
       anchors.left: parent.left
       text: Parameter:
-      font: $var-cip-font
-      color: $var-text-cip-color
+      font: verdana-11px-monochrome
+      color: #D7D7D7
       text-auto-resize: true
       text-offset: -2 0
       on: false
 
       $on:
-        color: $var-text-cip-color
+        color: #D7D7D7
 
       $!on:
         color: #707070
