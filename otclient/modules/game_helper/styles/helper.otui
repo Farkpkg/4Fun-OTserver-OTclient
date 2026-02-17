@@ -139,7 +139,7 @@ HelperTracker < MiniWindow
       !text: tr('Open Helper')
       margin-top: 5
       margin-left: 24
-      @onClick: modules.game_rtc_helper:show(true)
+      @onClick: modules.game_helper:show(true)
 
   UIWidget
     id: miniborder
@@ -203,7 +203,7 @@ HelperRules < NewHeadlessWindow
       !text: tr('Next')
       size: 43 20
       enabled: false
-      @onClick: modules.game_rtc_helper:onHelperTermConditionNext()
+      @onClick: modules.game_helper:onHelperTermConditionNext()
     Button
       id: close
       anchors.bottom: parent.bottom
@@ -211,7 +211,7 @@ HelperRules < NewHeadlessWindow
       margin-right: 5
       !text: tr('Close')
       size: 43 20
-      @onClick: modules.game_rtc_helper.closeTerms()
+      @onClick: modules.game_helper.closeTerms()
     CheckBox
       id: termCondition
       width: 100
@@ -224,7 +224,7 @@ HelperRules < NewHeadlessWindow
       font: $var-cip-font
       color: $var-text-cip-color
       text-auto-resize: true
-      @onCheckChange: modules.game_rtc_helper.onHelperTermCondition(self:getId(), self:isChecked())
+      @onCheckChange: modules.game_helper.onHelperTermCondition(self:getId(), self:isChecked())
 
 
 PlayerName < Label
@@ -864,7 +864,7 @@ HealingPanel < Panel
           image-clip: 34 0 34 34
         $hover !pressed:
           image-clip: 0 0 34 34
-        @onClick: modules.game_rtc_helper.onAddPartyMember(self)
+        @onClick: modules.game_helper.onAddPartyMember(self)
       CheckBox
         id: enableSio0
         width: 100
@@ -876,7 +876,7 @@ HealingPanel < Panel
         color: $var-text-cip-color
         text-offset: 13 -3
         change-cursor-image: false
-        @onCheckChange: modules.game_rtc_helper.onEnableSio(self, self:isChecked())
+        @onCheckChange: modules.game_helper.onEnableSio(self, self:isChecked())
         $hover !disabled:
           color: #c0c0c0
       ComboBox
@@ -887,7 +887,7 @@ HealingPanel < Panel
         margin-top: 2
         margin-left: 5
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateFriendHealingPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateFriendHealingPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           for i = 10, 100, 10 do
             if i == 100 then
@@ -917,7 +917,7 @@ HealingPanel < Panel
           image-clip: 34 0 34 34
         $hover !pressed:
           image-clip: 0 0 34 34
-        @onClick: modules.game_rtc_helper.onAddPartyMember(self)
+        @onClick: modules.game_helper.onAddPartyMember(self)
       CheckBox
         id: enableSio1
         width: 100
@@ -929,7 +929,7 @@ HealingPanel < Panel
         color: $var-text-cip-color
         text-offset: 13 -3
         change-cursor-image: false
-        @onCheckChange: modules.game_rtc_helper.onEnableSio(self, self:isChecked())
+        @onCheckChange: modules.game_helper.onEnableSio(self, self:isChecked())
         $hover !disabled:
         color: #c0c0c0
 
@@ -941,7 +941,7 @@ HealingPanel < Panel
         margin-top: 2
         margin-left: 5
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateFriendHealingPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateFriendHealingPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           for i = 10, 100, 10 do
             if i == 100 then
@@ -1059,7 +1059,7 @@ HealingPanel < Panel
           image-clip: 34 0 34 34
         $hover !pressed:
           image-clip: 0 0 34 34
-        @onClick: modules.game_rtc_helper.onAddPartyGranSioMember(self)
+        @onClick: modules.game_helper.onAddPartyGranSioMember(self)
       CheckBox
         id: enableSio0
         width: 100
@@ -1071,7 +1071,7 @@ HealingPanel < Panel
         color: $var-text-cip-color
         text-offset: 13 -3
         change-cursor-image: false
-        @onCheckChange: modules.game_rtc_helper.onEnableGranSio(self, self:isChecked())
+        @onCheckChange: modules.game_helper.onEnableGranSio(self, self:isChecked())
         $hover !disabled:
           color: #c0c0c0
       ComboBox
@@ -1082,7 +1082,7 @@ HealingPanel < Panel
         margin-top: 2
         margin-left: 5
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateGranSioPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateGranSioPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           for i = 10, 100, 10 do
             if i == 100 then
@@ -1112,7 +1112,7 @@ HealingPanel < Panel
           image-clip: 34 0 34 34
         $hover !pressed:
           image-clip: 0 0 34 34
-        @onClick: modules.game_rtc_helper.onAddPartyGranSioMember(self)
+        @onClick: modules.game_helper.onAddPartyGranSioMember(self)
       CheckBox
         id: enableSio1
         width: 100
@@ -1124,7 +1124,7 @@ HealingPanel < Panel
         color: $var-text-cip-color
         text-offset: 13 -3
         change-cursor-image: false
-        @onCheckChange: modules.game_rtc_helper.onEnableGranSio(self, self:isChecked())
+        @onCheckChange: modules.game_helper.onEnableGranSio(self, self:isChecked())
         $hover !disabled:
         color: #c0c0c0
 
@@ -1136,7 +1136,7 @@ HealingPanel < Panel
         margin-top: 2
         margin-left: 5
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateGranSioPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateGranSioPercent(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           for i = 10, 100, 10 do
             if i == 100 then
@@ -1210,7 +1210,7 @@ ToolsPanel < Panel
         change-cursor-image: false
         $hover !disabled:
           color: #c0c0c0
-        @onCheckChange: modules.game_rtc_helper.onEnableTraining(self:getId(), self:isChecked())
+        @onCheckChange: modules.game_helper.onEnableTraining(self:getId(), self:isChecked())
 
       ComboBox
         id: spellTrainingPercent0
@@ -1389,7 +1389,7 @@ ToolsPanel < Panel
         color: $var-text-cip-color
         text-offset: 13 -3
         change-cursor-image: false
-        @onCheckChange: modules.game_rtc_helper.toogleChangeGold(self:isChecked())
+        @onCheckChange: modules.game_helper.toogleChangeGold(self:isChecked())
         $hover !disabled:
           color: #c0c0c0
         !tooltip: tr('The gold exchange will only work if the gold container is open.')
@@ -1668,7 +1668,7 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 18
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1+")
           self:addOption("2+")
@@ -1700,7 +1700,7 @@ ShooterPanel < Panel
         margin-left: 14
         font: Icon-VBold-11px
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1st")
           self:addOption("2nd")
@@ -1779,7 +1779,7 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 18
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1+")
           self:addOption("2+")
@@ -1811,7 +1811,7 @@ ShooterPanel < Panel
         margin-left: 14
         font: Icon-VBold-11px
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1st")
           self:addOption("2nd")
@@ -1890,7 +1890,7 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 18
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1+")
           self:addOption("2+")
@@ -1922,7 +1922,7 @@ ShooterPanel < Panel
         margin-left: 14
         font: Icon-VBold-11px
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1st")
           self:addOption("2nd")
@@ -2007,7 +2007,7 @@ ShooterPanel < Panel
           anchors.left: prev.right
           margin-left: 18
           color: $var-text-cip-color
-          @onOptionChange: modules.game_rtc_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+          @onOptionChange: modules.game_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
           @onSetup: |
             self:addOption("1+")
             self:addOption("2+")
@@ -2039,7 +2039,7 @@ ShooterPanel < Panel
           margin-left: 14
           font: Icon-VBold-11px
           color: $var-text-cip-color
-          @onOptionChange: modules.game_rtc_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+          @onOptionChange: modules.game_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
           @onSetup: |
             self:addOption("1st")
             self:addOption("2nd")
@@ -2124,7 +2124,7 @@ ShooterPanel < Panel
           anchors.left: prev.right
           margin-left: 18
           color: $var-text-cip-color
-          @onOptionChange: modules.game_rtc_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+          @onOptionChange: modules.game_helper.updateMagicShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
           @onSetup: |
             self:addOption("1+")
             self:addOption("2+")
@@ -2156,7 +2156,7 @@ ShooterPanel < Panel
           margin-left: 14
           font: Icon-VBold-11px
           color: $var-text-cip-color
-          @onOptionChange: modules.game_rtc_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+          @onOptionChange: modules.game_helper.updateMagicShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
           @onSetup: |
             self:addOption("1st")
             self:addOption("2nd")
@@ -2250,7 +2250,7 @@ ShooterPanel < Panel
         margin-left: 19
         margin-top: 3
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateRuneShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateRuneShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1+")
           self:addOption("2+")
@@ -2282,7 +2282,7 @@ ShooterPanel < Panel
         margin-left: 17
         font: Icon-VBold-11px
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateRuneShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateRuneShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1st")
           self:addOption("2nd")
@@ -2318,7 +2318,7 @@ ShooterPanel < Panel
         margin-left: 19
         margin-top: 3
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateRuneShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateRuneShooterCreatures(self:getId(), self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1+")
           self:addOption("2+")
@@ -2350,7 +2350,7 @@ ShooterPanel < Panel
         margin-left: 17
         font: Icon-VBold-11px
         color: $var-text-cip-color
-        @onOptionChange: modules.game_rtc_helper.updateRuneShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
+        @onOptionChange: modules.game_helper.updateRuneShooterPriority(self:getId():match("%d+"), self:getCurrentOption().text:match("%d+"))
         @onSetup: |
           self:addOption("1st")
           self:addOption("2nd")
@@ -2401,7 +2401,7 @@ ShooterPanel < Panel
       margin-top: -1
       color: $var-text-cip-color
       text-offset: -20 0
-      @onOptionChange: modules.game_rtc_helper.updateAutoTargetMode(self:getCurrentOption().text)
+      @onOptionChange: modules.game_helper.updateAutoTargetMode(self:getCurrentOption().text)
       @onSetup: |
         self:addOption("A")
         self:addOption("B")

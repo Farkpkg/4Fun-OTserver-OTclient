@@ -118,7 +118,7 @@ NewMainWindow
       padding: 2
       font: $var-cip-font
       placeholder-color: $var-cip-inactive-color
-      @onTextChange: modules.game_rtc_helper.onSearchTextChange(self:getText())
+      @onTextChange: modules.game_helper.onSearchTextChange(self:getText())
     Button
       id: clearButton
       anchors.top: prev.top
@@ -128,7 +128,7 @@ NewMainWindow
       size: 18 18
       image-source: /images/store/button-erase-small-up
       image-clip: 0 0 18 18
-      @onClick: modules.game_rtc_helper.onClearSearchText()
+      @onClick: modules.game_helper.onClearSearchText()
       $pressed:
         image-source: /images/store/button-erase-small-down
         image-clip: 0 0 18 18
