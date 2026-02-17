@@ -5,7 +5,9 @@ BestiaryProgressive.config = {
 	goalsByRaceId = {
 		-- [3] = 50, -- Bear
 	},
-	goalsByName = {},
+	goalsByName = {
+		bear = 50,
+	},
 }
 
 local BESTIARY_MESSAGE = MESSAGE_STATUS or MESSAGE_EVENT_ADVANCE or MESSAGE_LOGIN
