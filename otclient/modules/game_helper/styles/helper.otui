@@ -13,7 +13,7 @@ HelperTracker < MiniWindow
       anchors.top: parent.top
       anchors.left: parent.left
       !text: tr('General Helper')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D7D7D7
       text-auto-resize: true
     UIWidget
@@ -33,7 +33,7 @@ HelperTracker < MiniWindow
       !text: tr('Inactive')
       margin-top: -3
       margin-left: 5
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D92B2B
       text-auto-resize: true
       tooltip-delayed: true
@@ -44,7 +44,7 @@ HelperTracker < MiniWindow
       anchors.left: parent.left
       margin-top: 3
       !text: tr('Target Helper')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D7D7D7
       text-auto-resize: true
     UIWidget
@@ -64,7 +64,7 @@ HelperTracker < MiniWindow
       !text: tr('Inactive')
       margin-top: -3
       margin-left: 5
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D92B2B
       text-auto-resize: true
       tooltip-delayed: true
@@ -75,7 +75,7 @@ HelperTracker < MiniWindow
       anchors.left: parent.left
       margin-top: 3
       !text: tr('Shooter Helper')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D7D7D7
       text-auto-resize: true
     UIWidget
@@ -95,7 +95,7 @@ HelperTracker < MiniWindow
       !text: tr('Inactive')
       margin-top: -3
       margin-left: 5
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D92B2B
       text-auto-resize: true
       tooltip-delayed: true
@@ -106,7 +106,7 @@ HelperTracker < MiniWindow
       anchors.left: parent.left
       margin-top: 3
       !text: tr('Shooter Preset')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D7D7D7
       text-auto-resize: true
     UIWidget
@@ -126,7 +126,7 @@ HelperTracker < MiniWindow
       !text: tr('No data yet')
       margin-top: -3
       margin-left: 5
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #00EB00
       text-auto-resize: true
       tooltip-delayed: true
@@ -221,7 +221,7 @@ HelperRules < NewHeadlessWindow
       !text: tr('I agree with RubinOT Terms and Conditions.')
       !tooltip: tr('I have read and I agree to the Extended RubinOT Service Agreement and the RubinOT Privacy Policy.')
       margin-bottom: 5
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D7D7D7
       text-auto-resize: true
       @onCheckChange: modules.game_helper.onHelperTermCondition(self:getId(), self:isChecked())
@@ -230,7 +230,7 @@ HelperRules < NewHeadlessWindow
 PlayerName < Label
   focusable: true
   height: 15
-  font: cipsoftFont
+  font: verdana-11px-monochrome
   color: #6D6D6D
 
   $focus:
@@ -275,7 +275,7 @@ HealingPanel < Panel
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 2
       !text: tr('Auto Healing Helper')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #6D6D6D
       text-auto-resize: true
 
@@ -292,7 +292,7 @@ HealingPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Spell Healing')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
 
@@ -338,7 +338,7 @@ HealingPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('80%%')
-          font: cipsoftFont
+          font: verdana-11px-monochrome
           color: #D7D7D7
           text-auto-resize: true
 
@@ -410,7 +410,7 @@ HealingPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('80%%')
-          font: cipsoftFont
+          font: verdana-11px-monochrome
           color: #D7D7D7
           text-auto-resize: true
 
@@ -482,7 +482,7 @@ HealingPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('80%%')
-          font: cipsoftFont
+          font: verdana-11px-monochrome
           color: #D7D7D7
           text-auto-resize: true
 
@@ -534,7 +534,7 @@ HealingPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Potion Healing')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
 
@@ -581,7 +581,7 @@ HealingPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('50%%')
-          font: cipsoftFont
+          font: verdana-11px-monochrome
           color: #D7D7D7
           text-auto-resize: true
 
@@ -656,7 +656,7 @@ HealingPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('50%%')
-          font: cipsoftFont
+          font: verdana-11px-monochrome
           color: #D7D7D7
           text-auto-resize: true
 
@@ -732,7 +732,7 @@ HealingPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('50%%')
-          font: cipsoftFont
+          font: verdana-11px-monochrome
           color: #D7D7D7
           text-auto-resize: true
 
@@ -781,7 +781,7 @@ HealingPanel < Panel
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 1
       !text: tr('Friend Healing Helper')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #6D6D6D
       text-auto-resize: true
     Panel
@@ -797,7 +797,7 @@ HealingPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Select a Friend')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
       UIWidget
@@ -847,7 +847,7 @@ HealingPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Heal Friend List')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
       UICreature
@@ -872,7 +872,7 @@ HealingPanel < Panel
         anchors.left: friendButton0.right
         !text: tr('Enable')
         margin-left: 5
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-offset: 13 -3
         change-cursor-image: false
@@ -925,7 +925,7 @@ HealingPanel < Panel
         anchors.left: friendButton1.right
         !text: tr('Enable')
         margin-left: 5
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-offset: 13 -3
         change-cursor-image: false
@@ -976,7 +976,7 @@ HealingPanel < Panel
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 1
       !text: tr('Exura Gran Sio Helper')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #6D6D6D
       text-auto-resize: true
     Panel
@@ -992,7 +992,7 @@ HealingPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Select a Friend')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
       UIWidget
@@ -1042,7 +1042,7 @@ HealingPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Heal Friend List')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
       UICreature
@@ -1067,7 +1067,7 @@ HealingPanel < Panel
         anchors.left: friendButton0.right
         !text: tr('Enable')
         margin-left: 5
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-offset: 13 -3
         change-cursor-image: false
@@ -1120,7 +1120,7 @@ HealingPanel < Panel
         anchors.left: friendButton1.right
         !text: tr('Enable')
         margin-left: 5
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-offset: 13 -3
         change-cursor-image: false
@@ -1170,7 +1170,7 @@ ToolsPanel < Panel
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 1
       !text: tr('Tools Helper')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #6D6D6D
       text-auto-resize: true
     Panel
@@ -1184,7 +1184,7 @@ ToolsPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Mana Training')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
       UIButton
@@ -1204,7 +1204,7 @@ ToolsPanel < Panel
         anchors.left: spellTrainingButton0.right
         !text: tr('Enable')
         margin-left: 5
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-offset: 13 -3
         change-cursor-image: false
@@ -1245,7 +1245,7 @@ ToolsPanel < Panel
         anchors.top: prev.bottom
         anchors.left: parent.left
         !text: tr('Exercise Training')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
         margin-top: 5
@@ -1267,7 +1267,7 @@ ToolsPanel < Panel
         anchors.left: autoTrainingItem.right
         !text: tr('Enable')
         margin-left: 5
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-offset: 13 -3
         @onCheckChange: checkExerciseEvent()
@@ -1312,7 +1312,7 @@ ToolsPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Auto Haste')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
       UIButton
@@ -1332,7 +1332,7 @@ ToolsPanel < Panel
         anchors.left: hasteButton0.right
         !text: tr('Enable')
         margin-left: 5
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-offset: 13 -3
         @onCheckChange: toggleAutoHaste(self:isChecked())
@@ -1347,7 +1347,7 @@ ToolsPanel < Panel
         !text: tr('PZ Cast')
         margin-left: 5
         margin-top: 5
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-offset: 13 -3
         @onCheckChange: toggleAutoHastePz(self:isChecked())
@@ -1365,7 +1365,7 @@ ToolsPanel < Panel
         anchors.top: prev.bottom
         anchors.left: parent.left
         !text: tr('Others Tools')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
         margin-top: 5
@@ -1385,7 +1385,7 @@ ToolsPanel < Panel
         !text: tr('Change Gold')
         margin-top: 7
         margin-left: 2
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-offset: 13 -3
         change-cursor-image: false
@@ -1402,7 +1402,7 @@ ToolsPanel < Panel
         !text: tr('Auto Eat Food')
         margin-top: 7
         margin-left: 2
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-offset: 13 -3
         @onCheckChange: toggleAutoEat(self:isChecked())
@@ -1417,7 +1417,7 @@ ToolsPanel < Panel
         !text: tr('Auto Reconnect')
         margin-top: 7
         margin-left: 2
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-offset: 13 -3
         text-auto-resize: true
@@ -1444,7 +1444,7 @@ ShooterPanel < Panel
       margin-left: 2
       margin-top: 3
       !text: tr('Presets:')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D7D7D7
       text-auto-resize: true
     ComboBox
@@ -1499,7 +1499,7 @@ ShooterPanel < Panel
       anchors.top: parent.top
       anchors.right: parent.right
       !text: tr('Rename Preset')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D7D7D7
       margin-top: 2
       margin-right: 5
@@ -1511,7 +1511,7 @@ ShooterPanel < Panel
       anchors.top: presets.top
       anchors.right: parent.right
       !text: tr('New Preset')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D7D7D7
       image-source: /images/ui/buttons-blue
       margin-right: 5
@@ -1533,7 +1533,7 @@ ShooterPanel < Panel
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 1
       !text: tr('Spell Shooter Helper')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #6D6D6D
       text-auto-resize: true
     Panel
@@ -1548,7 +1548,7 @@ ShooterPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Spell')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
       VerticalSeparator
@@ -1564,7 +1564,7 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 7
         !text: tr('Mana %%')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
       VerticalSeparator
@@ -1580,7 +1580,7 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 7
         !text: tr('Creatures')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
       VerticalSeparator
@@ -1596,7 +1596,7 @@ ShooterPanel < Panel
         anchors.left: sep2.right
         margin-left: 5
         !text: tr('Priority')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
 
@@ -1641,7 +1641,7 @@ ShooterPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('80%%')
-          font: cipsoftFont
+          font: verdana-11px-monochrome
           color: #D7D7D7
           text-auto-resize: true
           phantom: true
@@ -1752,7 +1752,7 @@ ShooterPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('80%%')
-          font: cipsoftFont
+          font: verdana-11px-monochrome
           color: #D7D7D7
           text-auto-resize: true
           phantom: true
@@ -1863,7 +1863,7 @@ ShooterPanel < Panel
           anchors.horizontalCenter: parent.horizontalCenter
           margin-top: 4
           !text: tr('80%%')
-          font: cipsoftFont
+          font: verdana-11px-monochrome
           color: #D7D7D7
           text-auto-resize: true
           phantom: true
@@ -1980,7 +1980,7 @@ ShooterPanel < Panel
             anchors.horizontalCenter: parent.horizontalCenter
             margin-top: 4
             !text: tr('80%%')
-            font: cipsoftFont
+            font: verdana-11px-monochrome
             color: #D7D7D7
             text-auto-resize: true
             phantom: true
@@ -2097,7 +2097,7 @@ ShooterPanel < Panel
             anchors.horizontalCenter: parent.horizontalCenter
             margin-top: 4
             !text: tr('80%%')
-            font: cipsoftFont
+            font: verdana-11px-monochrome
             color: #D7D7D7
             text-auto-resize: true
             phantom: true
@@ -2182,7 +2182,7 @@ ShooterPanel < Panel
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 1
       !text: tr('Rune Shooter Helper')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #6D6D6D
       text-auto-resize: true
     Panel
@@ -2197,7 +2197,7 @@ ShooterPanel < Panel
         anchors.top: parent.top
         anchors.left: parent.left
         !text: tr('Rune')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
       VerticalSeparator
@@ -2213,7 +2213,7 @@ ShooterPanel < Panel
         anchors.left: prev.right
         margin-left: 7
         !text: tr('Creatures')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
       VerticalSeparator
@@ -2229,7 +2229,7 @@ ShooterPanel < Panel
         anchors.left: sep1.right
         margin-left: 7
         !text: tr('Priority')
-        font: cipsoftFont
+        font: verdana-11px-monochrome
         color: #D7D7D7
         text-auto-resize: true
       UIButton
@@ -2385,7 +2385,7 @@ ShooterPanel < Panel
       !text: tr('Auto Target')
       margin-left: 2
       margin-top: 7
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D7D7D7
       text-offset: 13 -3
       @onCheckChange: toggleAutoTarget(self)
@@ -2446,7 +2446,7 @@ ShooterPanel < Panel
       !text: tr('Enable Shooter Helper')
       margin-left: 2
       margin-top: 8
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D7D7D7
       text-offset: 13 -3
       @onCheckChange: toggleMagicShooter(self)
@@ -2631,7 +2631,7 @@ NewHeadlessWindow
       anchors.left: parent.left
       margin-bottom: 8
       !text: tr('Helper Status:')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D7D7D7
       text-auto-resize: true
 
@@ -2640,7 +2640,7 @@ NewHeadlessWindow
       anchors.top: prev.bottom
       anchors.left: parent.left
       !text: tr('Status')
-      font: cipsoftFont
+      font: verdana-11px-monochrome
       color: #D7D7D7
       text-auto-resize: true
 
