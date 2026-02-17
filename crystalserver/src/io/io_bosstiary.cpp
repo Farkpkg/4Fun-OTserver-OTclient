@@ -190,9 +190,28 @@ void IOBosstiary::addBosstiaryKill(const std::shared_ptr<Player> &player, const 
 	}
 
 	auto oldBossLevel = getBossCurrentLevel(player, bossId);
+	const uint32_t curCount = player->getBestiaryKillCount(bossId);
+	const uint32_t newCount = curCount + amount;
 	player->addBestiaryKillCount(bossId, amount);
 	player->refreshCyclopediaMonsterTracker(true);
 	auto newBossLevel = getBossCurrentLevel(player, bossId);
+
+	if (auto it = levelInfos.find(mtype->info.bosstiaryRace); it != levelInfos.end() && !it->second.empty()) {
+		const uint32_t requiredKills = it->second.back().kills;
+		const uint32_t progressCount = std::min(newCount, requiredKills);
+		const uint32_t remainingKills = (progressCount >= requiredKills) ? 0 : (requiredKills - progressCount);
+		std::ostringstream ss;
+		if (remainingKills == 0) {
+			if (curCount < requiredKills) {
+				ss << "Bosstiary completo: " << mtype->name << " [" << progressCount << "/" << requiredKills << "]!";
+			} else {
+				ss << "Bosstiary: " << mtype->name << " [" << progressCount << "/" << requiredKills << "] — Completo.";
+			}
+		} else {
+			ss << "Bosstiary: " << mtype->name << " [" << progressCount << "/" << requiredKills << "] — Faltam " << remainingKills << ".";
+		}
+		player->sendTextMessage(MESSAGE_STATUS, ss.str());
+	}
 	if (oldBossLevel == newBossLevel) {
 		return;
 	}

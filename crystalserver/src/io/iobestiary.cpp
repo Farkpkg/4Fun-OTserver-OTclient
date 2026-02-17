@@ -393,9 +393,26 @@ void IOBestiary::addBestiaryKill(const std::shared_ptr<Player> &player, const st
 		return;
 	}
 	uint32_t curCount = player->getBestiaryKillCount(raceid);
+	const uint32_t requiredKills = mtype->info.bestiaryToUnlock;
+	const uint32_t newCount = curCount + amount;
 	std::ostringstream ss;
 
 	player->addBestiaryKillCount(raceid, amount);
+
+	if (requiredKills > 0) {
+		const uint32_t progressCount = std::min(newCount, requiredKills);
+		const uint32_t remainingKills = (progressCount >= requiredKills) ? 0 : (requiredKills - progressCount);
+		if (remainingKills == 0) {
+			if (curCount < requiredKills) {
+				player->sendTextMessage(MESSAGE_STATUS, fmt::format("Bestiary completo: {} [{}/{}]!", mtype->name, progressCount, requiredKills));
+			} else {
+				player->sendTextMessage(MESSAGE_STATUS, fmt::format("Bestiary: {} [{}/{}] — Completo.", mtype->name, progressCount, requiredKills));
+			}
+		} else {
+			player->sendTextMessage(MESSAGE_STATUS,
+			                        fmt::format("Bestiary: {} [{}/{}] — Faltam {}.", mtype->name, progressCount, requiredKills, remainingKills));
+		}
+	}
 
 	if ((curCount == 0) || // Initial kill stage
 	    (curCount < mtype->info.bestiaryFirstUnlock && (curCount + amount) >= mtype->info.bestiaryFirstUnlock) || // First kill stage reached
