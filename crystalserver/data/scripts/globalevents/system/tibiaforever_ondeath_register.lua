@@ -1,4 +1,6 @@
 local registerEvents = {
+    -- Exemplo: "WeeklyTasksMonsterDeath", "LinkedTasksMonsterDeath"
+    -- Remova placeholders e preencha com eventos CreatureEvent válidos do seu datapack.
     "REGISTER-NAME",
     "REGISTER-NAME-TWO",
 }
@@ -8,6 +10,21 @@ local blockedNames = {
 }
 
 local tibiaForeverOnDeathStartup = GlobalEvent("TibiaForever-OnDeath-Startup")
+
+local function isPlaceholderEventName(eventName)
+    local normalized = tostring(eventName or ""):upper()
+    return normalized:find("REGISTER-NAME", 1, true) ~= nil
+end
+
+local function getValidRegisterEvents()
+    local valid = {}
+    for _, eventName in ipairs(registerEvents) do
+        if type(eventName) == "string" and eventName ~= "" and not isPlaceholderEventName(eventName) then
+            valid[#valid + 1] = eventName
+        end
+    end
+    return valid
+end
 
 local function isWindowsOS()
     return package.config:sub(1, 1) == "\\"
@@ -70,6 +87,12 @@ local function loadMonsterList(dataDirectory)
 end
 
 function tibiaForeverOnDeathStartup.onStartup()
+    local validEvents = getValidRegisterEvents()
+    if #validEvents == 0 then
+        logger.warn("[TibiaForever OnDeath Register] No valid event names configured in registerEvents. Placeholder names were ignored.")
+        return true
+    end
+
     local selectedDataPack = configManager.getString(configKeys.DATA_DIRECTORY)
     local monsters = loadMonsterList(selectedDataPack)
 
@@ -84,14 +107,14 @@ function tibiaForeverOnDeathStartup.onStartup()
             if not monsterType then
                 logger.error(string.format("[TibiaForever OnDeath Register] Monster with name %s is not a valid MonsterType.", monster))
             else
-                for _, eventName in ipairs(registerEvents) do
+                for _, eventName in ipairs(validEvents) do
                     monsterType:registerEvent(eventName)
                 end
             end
         end
     end
 
-    logger.info(string.format("[TibiaForever OnDeath Register] Events registered: %s", table.concat(registerEvents, ", ")))
+    logger.info(string.format("[TibiaForever OnDeath Register] Events registered: %s", table.concat(validEvents, ", ")))
     return true
 end
 
