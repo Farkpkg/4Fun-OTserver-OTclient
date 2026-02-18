@@ -179,7 +179,8 @@ Panel
         visible: false
 
     Label
-      !text: tr('Creature')
+      id: boostedCreatureName
+      !text: '?'
       anchors.horizontalCenter: prev.horizontalCenter
       anchors.top: prev.bottom
       margin-top: 3
@@ -208,7 +209,8 @@ Panel
         visible: false
 
     Label
-      !text: tr('Boss')
+      id: boostedBossName
+      !text: '?'
       anchors.horizontalCenter: prev.horizontalCenter
       anchors.top: prev.bottom
       margin-top: 3
