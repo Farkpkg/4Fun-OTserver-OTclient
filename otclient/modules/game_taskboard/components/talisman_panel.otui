@@ -1,0 +1,22 @@
+TaskBoardTalismanPanel < Panel
+  height: 78
+  image-source: /images/ui/panel_flat
+  image-border: 1
+
+  Label
+    id: title
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    text-align: center
+    text: Bounty Talisman
+
+  Label
+    id: details
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 8
+    text-align: center
+    text: Boost stats and bonuses will be shown here.

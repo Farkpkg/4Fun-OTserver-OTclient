@@ -171,7 +171,6 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 
 		// Load task hunting class
 		IOLoginDataLoad::loadPlayerTaskHuntingClass(player, result);
-		IOLoginDataLoad::loadPlayerHuntingTaskClass(player, result);
 
 		// Load instant spells list
 		IOLoginDataLoad::loadPlayerInstantSpellList(player, result);
@@ -188,8 +187,6 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 
 		// load bosstiary
 		IOLoginDataLoad::loadPlayerBosstiary(player, result);
-
-		player->initializeHuntingTasks();
 
 		IOLoginDataLoad::loadPlayerInitializeSystem(player);
 		IOLoginDataLoad::loadPlayerUpdateSystem(player);
@@ -269,10 +266,6 @@ bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 
 	if (!IOLoginDataSave::savePlayerTaskHuntingClass(player)) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerTaskHuntingClass] - Failed to save player task hunting class: " + player->getName());
-	}
-
-	if (!IOLoginDataSave::savePlayerHuntingTaskClass(player)) {
-		throw DatabaseException("[IOLoginDataSave::savePlayerHuntingTaskClass] - Failed to save player hunting task class: " + player->getName());
 	}
 
 	if (!IOLoginDataSave::savePlayerForgeHistory(player)) {

@@ -162,7 +162,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					npcHandler:say("A real tortoise egg ... I guess you are more accustomed to rescue some noblewoman in distress but you did something goodtoday.", npc, creature)
 					player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TortoiseEggNargorDoor, 2)
 					player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 16)
-					if player:getStorageValue(Storage.TheIceIslands.Questline) >= 9 then
+					if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) >= 9 then
 						player:addAchievement("Animal Activist")
 					end
 					npcHandler:setTopic(playerId, 0)

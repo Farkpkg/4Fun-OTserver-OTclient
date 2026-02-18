@@ -9115,18 +9115,6 @@ void ProtocolGame::parseExtendedOpcode(NetworkMessage &msg) {
 	g_game().parsePlayerExtendedOpcode(player->getID(), opcode, buffer);
 }
 
-void ProtocolGame::sendExtendedOpcode(uint8_t opcode, const std::string &buffer) {
-	if (!player || oldProtocol) {
-		return;
-	}
-
-	NetworkMessage msg;
-	msg.addByte(0x32);
-	msg.addByte(opcode);
-	msg.addString(buffer);
-	writeToOutputBuffer(msg);
-}
-
 // OTCv8
 void ProtocolGame::sendFeatures() {
 	if (otclientV8 == 0) {
@@ -9309,11 +9297,11 @@ void ProtocolGame::sendOpenStash() {
 
 	NetworkMessage msg;
 	msg.addByte(0x29);
-	StashItemList list = player->getStashItems();
+	const auto &list = player->getStashItems();
 	msg.add<uint16_t>(list.size());
-	for (auto item : list) {
-		msg.add<uint16_t>(item.first);
-		msg.add<uint32_t>(item.second);
+	for (const auto &[itemId, itemCount] : list) {
+		msg.add<uint16_t>(itemId);
+		msg.add<uint32_t>(itemCount);
 	}
 
 	writeToOutputBuffer(msg);

@@ -1,26 +1,16 @@
 BestiaryProgressive = BestiaryProgressive or {}
 
 BestiaryProgressive.config = {
-	-- Keep this list aligned with your external TibiaForever registrar script.
-	registerEvents = {
-		"BestiaryProgressiveMonsterDeath",
-		"REGISTER-NAME",
-		"REGISTER-NAME-TWO",
+	defaultRequiredKills = nil,
+	goalsByRaceId = {
+		-- [3] = 50, -- Bear
 	},
-	blockedNames = {
-		-- ["training monk"] = true,
+	goalsByName = {
+		bear = 50,
 	},
-	-- If true, startup registration is skipped and external registrar should handle monster:event binding.
-	useExternalRegistrar = true,
 }
 
 local BESTIARY_MESSAGE = MESSAGE_STATUS or MESSAGE_EVENT_ADVANCE or MESSAGE_LOGIN
-
-local BOSSTIARY_FINAL_KILLS_BY_RARITY = {
-	[0] = 300, -- Bane
-	[1] = 60, -- Archfoe
-	[2] = 5, -- Nemesis
-}
 
 local function normalizeMonsterName(name)
 	if not name then
@@ -60,27 +50,37 @@ local function getPlayerFromKiller(killer)
 	return nil
 end
 
-local function getBestiaryKillGain()
-	return math.max(configManager.getNumber(configKeys.BESTIARY_KILL_MULTIPLIER) or 1, 1)
-end
-
-local function getBosstiaryKillGain(monsterType)
-	local kills = math.max(configManager.getNumber(configKeys.BOSSTIARY_KILL_MULTIPLIER) or 1, 1)
-	local boostedBossName = Game.getBoostedBoss and Game.getBoostedBoss() or nil
-	if boostedBossName and normalizeMonsterName(boostedBossName) == normalizeMonsterName(monsterType:getName()) then
-		local bonus = math.max(configManager.getNumber(configKeys.BOOSTED_BOSS_KILL_BONUS) or 1, 1)
-		kills = kills * bonus
+function BestiaryProgressive.getRequiredKills(monsterType)
+	if not monsterType then
+		return nil
 	end
-	return kills
+
+	local raceId = monsterType:raceId()
+	local byRaceId = BestiaryProgressive.config.goalsByRaceId[raceId]
+	if byRaceId and byRaceId > 0 then
+		return byRaceId
+	end
+
+	local byName = BestiaryProgressive.config.goalsByName[normalizeMonsterName(monsterType:getName())]
+	if byName and byName > 0 then
+		return byName
+	end
+
+	local defaultRequiredKills = BestiaryProgressive.config.defaultRequiredKills
+	if defaultRequiredKills and defaultRequiredKills > 0 then
+		return defaultRequiredKills
+	end
+
+	return nil
 end
 
-local function getBestiaryStorageKey(raceId)
-	return string.format("bestiary.progressive.official.%d", raceId)
-end
+function BestiaryProgressive.getStorageKey(monsterType)
+	local raceId = monsterType:raceId()
+	if raceId and raceId > 0 then
+		return string.format("bestiary.progressive.%d", raceId)
+	end
 
-local function getBosstiaryRequiredKills(monsterType)
-	local rarity = monsterType:bossRaceId() or 0
-	return BOSSTIARY_FINAL_KILLS_BY_RARITY[rarity]
+	return "bestiary.progressive." .. normalizeMonsterName(monsterType:getName())
 end
 
 function BestiaryProgressive.onMonsterDeath(creature, killer, mostDamageKiller)
@@ -98,48 +98,16 @@ function BestiaryProgressive.onMonsterDeath(creature, killer, mostDamageKiller)
 		return false
 	end
 
-	local raceId = monsterType:raceId()
-	if not raceId or raceId <= 0 then
+	local requiredKills = BestiaryProgressive.getRequiredKills(monsterType)
+	if not requiredKills then
 		return false
 	end
 
 	local monsterName = getMonsterDisplayName(monsterType)
-	local isBossEntry = monsterType:bossRace() ~= nil
+	local storageKey = BestiaryProgressive.getStorageKey(monsterType)
+	local currentKills = player:kv():get(storageKey) or 0
+	local newKills = math.min(currentKills + 1, requiredKills)
 
-	if isBossEntry then
-		local requiredKills = getBosstiaryRequiredKills(monsterType)
-		if not requiredKills or requiredKills <= 0 then
-			return false
-		end
-
-		local officialKills = player:getBosstiaryKills(monsterType:getName()) or 0
-		local projectedKills = math.min(officialKills + getBosstiaryKillGain(monsterType), requiredKills)
-		local remainingKills = math.max(requiredKills - projectedKills, 0)
-		if remainingKills == 0 then
-			if officialKills < requiredKills then
-				player:sendTextMessage(BESTIARY_MESSAGE, string.format("Bosstiary completo: %s [%d/%d]!", monsterName, projectedKills, requiredKills))
-			else
-				player:sendTextMessage(BESTIARY_MESSAGE, string.format("Bosstiary: %s [%d/%d] — Completo.", monsterName, projectedKills, requiredKills))
-			end
-			return true
-		end
-
-		player:sendTextMessage(BESTIARY_MESSAGE, string.format("Bosstiary: %s [%d/%d] — Faltam %d.", monsterName, projectedKills, requiredKills, remainingKills))
-		return true
-	end
-
-	local requiredKills = monsterType:BestiarytoKill() or 0
-	if requiredKills <= 0 then
-		return false
-	end
-
-	local storageKey = getBestiaryStorageKey(raceId)
-	local currentKills = player:kv():get(storageKey)
-	if not currentKills then
-		currentKills = 0
-	end
-
-	local newKills = math.min(currentKills + getBestiaryKillGain(), requiredKills)
 	player:kv():set(storageKey, newKills)
 
 	local remainingKills = math.max(requiredKills - newKills, 0)
@@ -157,21 +125,29 @@ function BestiaryProgressive.onMonsterDeath(creature, killer, mostDamageKiller)
 end
 
 function BestiaryProgressive.registerMonsterDeathEvents()
-	if BestiaryProgressive.config.useExternalRegistrar then
-		logger.info("[BestiaryProgressive] External registrar enabled. Skipping internal onDeath startup registration.")
-		return
+	local registeredNames = {}
+
+	local function registerByName(monsterName)
+		local normalized = normalizeMonsterName(monsterName)
+		if normalized == "" or registeredNames[normalized] then
+			return
+		end
+
+		local monsterType = MonsterType(monsterName)
+		if not monsterType then
+			return
+		end
+
+		monsterType:registerEvent("BestiaryProgressiveMonsterDeath")
+		registeredNames[normalized] = true
 	end
 
-	local eventName = BestiaryProgressive.config.registerEvents[1] or "BestiaryProgressiveMonsterDeath"
-	local blockedNames = BestiaryProgressive.config.blockedNames or {}
-	local monsterTypes = Game.getMonsterTypes and Game.getMonsterTypes() or {}
+	local bestiaryList = Game.getBestiaryList and Game.getBestiaryList() or {}
+	for raceId in pairs(BestiaryProgressive.config.goalsByRaceId) do
+		registerByName(bestiaryList[raceId])
+	end
 
-	for _, monsterType in pairs(monsterTypes) do
-		if monsterType and monsterType:raceId() and monsterType:raceId() > 0 then
-			local normalizedName = normalizeMonsterName(monsterType:getName())
-			if not blockedNames[normalizedName] then
-				monsterType:registerEvent(eventName)
-			end
-		end
+	for monsterName in pairs(BestiaryProgressive.config.goalsByName) do
+		registerByName(monsterName)
 	end
 end
