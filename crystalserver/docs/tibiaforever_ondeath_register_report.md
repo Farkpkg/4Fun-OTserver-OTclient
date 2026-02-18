@@ -30,6 +30,5 @@ Prefixo padrão de log:
 - `[TibiaForever OnDeath Register]`
 
 ## Observações técnicas
-- O script foi renomeado para remover referências a `LeoTK`, conforme solicitado.
 - A rotina usa deduplicação de monstros para evitar múltiplos `registerEvent` no mesmo `MonsterType`.
 - O script suporta ambiente Linux e Windows para varredura de arquivos.
