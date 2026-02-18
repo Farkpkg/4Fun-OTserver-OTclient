@@ -171,6 +171,7 @@ end
 
 local function onGameEnd()
   if window then window:setVisible(false) end
+  if button then button:setOn(false) end
   state = {}
 end
 
@@ -181,6 +182,10 @@ function toggle()
     sendAction({ action = 'sync' })
     window:raise()
     window:focus()
+  end
+
+  if button then
+    button:setOn(window:isVisible())
   end
 end
 
@@ -194,7 +199,12 @@ function init()
   window.difficultyPage.btnExpert.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Expert' }) end
   window.difficultyPage.btnMaster.onClick = function() sendAction({ action = 'selectDifficulty', difficulty = 'Master' }) end
 
-  if modules.client_topmenu and modules.client_topmenu.addLeftGameButton then
+  if modules.game_mainpanel and modules.game_mainpanel.addToggleButton then
+    button = modules.game_mainpanel.addToggleButton('weeklyTasksButton', tr('Weekly Tasks'), '/images/options/button_weeklytasks', toggle, false, 45)
+    if button then
+      button:setOn(false)
+    end
+  elseif modules.client_topmenu and modules.client_topmenu.addLeftGameButton then
     button = modules.client_topmenu.addLeftGameButton('weeklyTasksButton', tr('Weekly Tasks'), '/images/topbuttons/questlog', toggle)
   end
 
