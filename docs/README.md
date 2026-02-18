@@ -19,4 +19,3 @@ Este diretório contém somente documentação validada contra o código atual d
 3. Para pipeline do server, siga `03-server/runtime-and-events.md`.
 4. Para integração Client/Server, use `05-protocols/extended-opcode.md`.
 5. Para persistência, use `06-database/mysql-and-migrations.md`.
-6. Para sistema de conquistas, use `04-systems/achievements.md`.

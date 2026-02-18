@@ -17,7 +17,6 @@ Foi executada auditoria completa do conteúdo anterior de `/docs` com critério 
   - `docs/05-protocols/extended-opcode.md`
   - `docs/06-database/mysql-and-migrations.md`
   - `docs/07-tools/development-workflow.md`
-  - `docs/04-systems/achievements.md`
 
 ## Fluxo de Execução
 1. Leitura dos documentos anteriores em `/docs` e comparação com estrutura real do repositório.
