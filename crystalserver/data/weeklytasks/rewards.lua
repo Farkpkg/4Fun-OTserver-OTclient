@@ -1,13 +1,19 @@
 WeeklyTaskRewards = {
     pointsPerTask = 10,
     soulSealsPerTask = 1,
-    baseExperiencePerLevel = 150,
+    -- Official-like fixed base XP by selected weekly difficulty.
+    baseExperienceByDifficulty = {
+        Beginner = 150000,
+        Adept = 350000,
+        Expert = 700000,
+        Master = 1200000,
+    },
     multiplierByCompletedTasks = {
         { min = 0, max = 3, value = 1.0 },
         { min = 4, max = 7, value = 1.3 },
         { min = 8, max = 11, value = 1.7 },
-        { min = 12, max = 15, value = 2.0 },
-        { min = 16, max = 18, value = 2.5 },
+        { min = 12, max = 14, value = 2.0 },
+        { min = 15, max = 1000, value = 2.5 },
     },
     shop = {
         { id = "expansion_unlock", type = "expansion", price = 250, name = "Weekly Expansion Unlock" },

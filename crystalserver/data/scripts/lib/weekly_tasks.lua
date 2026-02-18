@@ -17,8 +17,12 @@ WeeklyTasks.difficulty = {
     Master = { level = 300 },
 }
 
-WeeklyTasks.countWithoutExpansion = 6
-WeeklyTasks.countWithExpansion = 9
+WeeklyTasks.countKillTasks = 6
+WeeklyTasks.countDeliveryTasks = 6
+
+local WEEKLY_RESET_GUARD_STORAGE = 982451
+local DELIVERY_ACTION_LOCK_MS = 250
+local deliveryActionLocks = {}
 
 local function loadConfig(path)
     local fullPath = string.format("%s/%s", configManager.getString(configKeys.DATA_DIRECTORY), path)
@@ -31,6 +35,43 @@ loadConfig("weeklytasks/rewards.lua")
 
 local function nowWeekKey()
     return os.date("%Y-%W")
+end
+
+local function currentWeekdayHourMinute()
+    local dateTable = os.date("*t")
+    return dateTable.wday, dateTable.hour, dateTable.min
+end
+
+
+local function currentMinuteKey()
+    return os.date("%Y-%m-%d %H:%M")
+end
+
+local function resetAlreadyRanForCurrentMinute()
+    local key = currentMinuteKey()
+    return tostring(Game.getStorageValue(WEEKLY_RESET_GUARD_STORAGE)) == key
+end
+
+local function markResetRanForCurrentMinute()
+    Game.setStorageValue(WEEKLY_RESET_GUARD_STORAGE, currentMinuteKey())
+end
+
+local function nowMs()
+    return math.floor((os.clock() or 0) * 1000)
+end
+
+local function tryAcquireDeliveryLock(playerId)
+    local now = nowMs()
+    local untilMs = tonumber(deliveryActionLocks[playerId] or 0)
+    if now < untilMs then
+        return false
+    end
+    deliveryActionLocks[playerId] = now + DELIVERY_ACTION_LOCK_MS
+    return true
+end
+
+local function releaseDeliveryLock(playerId)
+    deliveryActionLocks[playerId] = nil
 end
 
 local function toNumber(v, fallback)
@@ -258,11 +299,18 @@ function WeeklyTasks.isExpansionUnlocked(player)
 end
 
 function WeeklyTasks.getMultiplierByCompleted(completedTotal)
-    for _, entry in ipairs(WeeklyTaskRewards.multiplierByCompletedTasks) do
-        if completedTotal >= entry.min and completedTotal <= entry.max then
-            return entry.value
-        end
+    local total = math.max(0, tonumber(completedTotal) or 0)
+
+    if total >= 15 then
+        return 2.5
+    elseif total >= 12 then
+        return 2.0
+    elseif total >= 8 then
+        return 1.7
+    elseif total >= 4 then
+        return 1.3
     end
+
     return 1.0
 end
 
@@ -299,32 +347,43 @@ function WeeklyTasks.ensureCurrentWeek(player)
     end
 end
 
-local function randomFromPool(pool, amount)
-    local available = {}
+local function randomFromPool(pool, amount, getSemanticKey)
+    local unique = {}
+    local seen = {}
+
     for _, entry in ipairs(pool) do
-        table.insert(available, entry)
+        local key
+        if type(getSemanticKey) == "function" then
+            key = tostring(getSemanticKey(entry) or "")
+        else
+            key = tostring(entry)
+        end
+
+        key = key:lower()
+        if key ~= "" and not seen[key] then
+            seen[key] = true
+            table.insert(unique, entry)
+        end
     end
 
     local selected = {}
-    while #selected < amount and #available > 0 do
-        local index = math.random(1, #available)
-        table.insert(selected, available[index])
-        table.remove(available, index)
+    while #selected < amount and #unique > 0 do
+        local index = math.random(1, #unique)
+        table.insert(selected, unique[index])
+        table.remove(unique, index)
     end
+
     return selected
 end
 
 function WeeklyTasks.generateTasks(player, difficulty)
     local playerId = player:getGuid()
     local weekKey = nowWeekKey()
-    local expansionUnlocked = WeeklyTasks.isExpansionUnlocked(player)
-    local taskCount = expansionUnlocked and WeeklyTasks.countWithExpansion or WeeklyTasks.countWithoutExpansion
-
     local monsterPool = WeeklyMonsters[difficulty] or {}
     local deliveryPool = WeeklyDeliveryItems[difficulty] or {}
 
-    local selectedMonsters = randomFromPool(monsterPool, taskCount)
-    local selectedItems = randomFromPool(deliveryPool, taskCount)
+    local selectedMonsters = randomFromPool(monsterPool, WeeklyTasks.countKillTasks, function(entry) return entry and entry.name end)
+    local selectedItems = randomFromPool(deliveryPool, WeeklyTasks.countDeliveryTasks, function(entry) return entry and entry.itemId end)
 
     for _, monster in ipairs(selectedMonsters) do
         db.query(string.format(
@@ -456,7 +515,6 @@ function WeeklyTasks.buildSyncPayload(player)
         points = header.points,
         soulSeals = header.soulSeals,
         multiplier = header.multiplier,
-        expansionUnlocked = WeeklyTasks.isExpansionUnlocked(player),
         difficulties = {
             Beginner = WeeklyTasks.difficulty.Beginner.level,
             Adept = WeeklyTasks.difficulty.Adept.level,
@@ -502,7 +560,13 @@ end
 
 function WeeklyTasks.applyTaskReward(player)
     local header = WeeklyTasks.getHeader(player)
-    local experience = math.floor(player:getLevel() * WeeklyTaskRewards.baseExperiencePerLevel * header.multiplier)
+    local completedTotal = (header.completedKillTasks or 0) + (header.completedDeliveryTasks or 0)
+    local xpMultiplier = WeeklyTasks.getMultiplierByCompleted(completedTotal)
+
+    local difficultyKey = tostring(header.difficulty or "")
+    local baseXp = (WeeklyTaskRewards.baseExperienceByDifficulty and WeeklyTaskRewards.baseExperienceByDifficulty[difficultyKey]) or 0
+    local experience = math.floor(baseXp * xpMultiplier)
+
     local points = WeeklyTaskRewards.pointsPerTask
     local soulSeals = WeeklyTaskRewards.soulSealsPerTask
 
@@ -586,9 +650,11 @@ function WeeklyTasks.onMonsterDeath(creature, killer, mostDamageKiller)
                 nextCurrent, completed, task.id
             ))
             if completed == 1 then
+                WeeklyTasks.updateCompletionAndRewards(player)
                 WeeklyTasks.applyTaskReward(player)
+            else
+                WeeklyTasks.updateCompletionAndRewards(player)
             end
-            WeeklyTasks.updateCompletionAndRewards(player)
             WeeklyTasks.sendSync(player)
             break
         end
@@ -658,6 +724,11 @@ end
 function WeeklyTasks.tryDeliver(player, taskEntryId)
     WeeklyTasks.ensureCurrentWeek(player)
 
+    local playerId = player:getGuid()
+    if not tryAcquireDeliveryLock(playerId) then
+        return false, "Please wait a moment before trying again."
+    end
+
     local resultId = db.storeQuery(string.format(
         "SELECT * FROM `player_weekly_task_entries` WHERE `id`=%d AND `player_id`=%d AND `task_type`='delivery'",
         taskEntryId,
@@ -665,6 +736,7 @@ function WeeklyTasks.tryDeliver(player, taskEntryId)
     ))
 
     if not resultId then
+        releaseDeliveryLock(playerId)
         return false, "Delivery task not found."
     end
 
@@ -678,11 +750,13 @@ function WeeklyTasks.tryDeliver(player, taskEntryId)
     Result.free(resultId)
 
     if task.completed then
+        releaseDeliveryLock(playerId)
         return false, "Task already completed."
     end
 
     local missing = task.required - task.current
     if missing <= 0 then
+        releaseDeliveryLock(playerId)
         return false, "Task already completed."
     end
 
@@ -696,6 +770,7 @@ function WeeklyTasks.tryDeliver(player, taskEntryId)
 
     local totalAvailable = inventoryCount + stashCount + depotCount
     if totalAvailable < missing then
+        releaseDeliveryLock(playerId)
         return false, string.format("Not enough items. Need %d, available %d (inventory+stash+depot).", missing, totalAvailable)
     end
 
@@ -718,15 +793,29 @@ function WeeklyTasks.tryDeliver(player, taskEntryId)
 
     if toRemove > 0 then
         -- Stash validation is supported, but stash removal is not exposed in Lua API in this distribution.
+        releaseDeliveryLock(playerId)
         return false, "Unable to remove all items from stash/depot with current API."
     end
 
     local nextCurrent = task.required
-    db.query(string.format("UPDATE `player_weekly_task_entries` SET `current_amount`=%d, `is_completed`=1 WHERE `id`=%d", nextCurrent, task.id))
+    db.query(string.format("UPDATE `player_weekly_task_entries` SET `current_amount`=%d, `is_completed`=1 WHERE `id`=%d AND `is_completed`=0", nextCurrent, task.id))
 
-    WeeklyTasks.applyTaskReward(player)
+    local verifyId = db.storeQuery(string.format("SELECT `is_completed` FROM `player_weekly_task_entries` WHERE `id`=%d", task.id))
+    local isCompletedNow = false
+    if verifyId then
+        isCompletedNow = Result.getNumber(verifyId, "is_completed") == 1
+        Result.free(verifyId)
+    end
+
+    if not isCompletedNow then
+        releaseDeliveryLock(playerId)
+        return false, "Task already completed."
+    end
+
     WeeklyTasks.updateCompletionAndRewards(player)
+    WeeklyTasks.applyTaskReward(player)
     WeeklyTasks.sendSync(player)
+    releaseDeliveryLock(playerId)
     return true, "Delivery task completed."
 end
 
@@ -750,9 +839,7 @@ function WeeklyTasks.purchaseShop(player, offerId)
 
     db.query(string.format("UPDATE `player_weekly_tasks` SET `earned_task_points` = `earned_task_points` - %d WHERE `player_id` = %d", selected.price, player:getGuid()))
 
-    if selected.type == "expansion" then
-        db.query(string.format("UPDATE `player_weekly_unlocks` SET `expansion_unlocked` = 1 WHERE `player_id` = %d", player:getGuid()))
-    elseif selected.type == "experience" then
+    if selected.type == "experience" then
         player:addExperience(selected.amount, true)
     elseif selected.type == "seals" then
         db.query(string.format("UPDATE `player_weekly_tasks` SET `earned_soul_seals` = `earned_soul_seals` + %d WHERE `player_id` = %d", selected.amount, player:getGuid()))
@@ -803,8 +890,22 @@ function WeeklyTasks.handleClientAction(player, payload)
     return false
 end
 
-function WeeklyTasks.resetAllForWeek()
+function WeeklyTasks.resetAllForWeek(force)
     local weekKey = nowWeekKey()
+
+    if not force then
+        local wday, hour, minute = currentWeekdayHourMinute()
+        if not (wday == 2 and hour == 0 and minute == 0) then
+            return false
+        end
+    end
+
+    if resetAlreadyRanForCurrentMinute() then
+        return false
+    end
+
+    markResetRanForCurrentMinute()
+
     db.query("DELETE FROM `player_weekly_task_entries`")
     db.query(string.format(
         "UPDATE `player_weekly_tasks` SET `week_key`=%s, `state`=%d, `difficulty`='', `completed_kill_tasks`=0, `completed_delivery_tasks`=0, `earned_task_points`=0, `earned_soul_seals`=0, `reward_multiplier`=1",
@@ -815,4 +916,6 @@ function WeeklyTasks.resetAllForWeek()
         WeeklyTasks.ensureCurrentWeek(player)
         WeeklyTasks.sendSync(player)
     end
+
+    return true
 end
