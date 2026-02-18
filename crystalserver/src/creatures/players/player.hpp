@@ -29,7 +29,6 @@
 #include "creatures/players/proficiencies/proficiencies.hpp"
 #include "creatures/players/proficiencies/proficiencies_definitions.hpp"
 #include "creatures/players/attached_effects/player_attached_effects.hpp"
-#include "creatures/players/hunting_task/hunting_task.hpp"
 
 class AnimusMastery;
 class House;
@@ -654,7 +653,7 @@ public:
 	void addItemOnStash(uint16_t itemId, uint32_t amount);
 	uint32_t getStashItemCount(uint16_t itemId) const;
 	bool withdrawItem(uint16_t itemId, uint32_t amount);
-	StashItemList getStashItems() const;
+	const StashItemList &getStashItems() const;
 
 	uint32_t getBaseCapacity() const;
 
@@ -1046,7 +1045,6 @@ public:
 	AcceptTransferErrorMessage canAcceptTransferHouse(uint32_t houseId);
 	void sendCyclopediaHouseList(const HouseMap &houses) const;
 	void sendResourceBalance(Resource_t resourceType, uint64_t value) const;
-	void sendHuntingTaskEvent(const std::string &payload) const;
 	void sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess = false) const;
 
 	// Imbuements
@@ -1616,10 +1614,6 @@ private:
 	void addHuntingTaskKill(const std::shared_ptr<MonsterType> &mType);
 	void addBestiaryKill(const std::shared_ptr<MonsterType> &mType);
 	void addBosstiaryKill(const std::shared_ptr<MonsterType> &mType);
-	void initializeHuntingTasks();
-	HuntingTaskSystem &getHuntingTaskSystem();
-	const HuntingTaskSystem &getHuntingTaskSystem() const;
-	ProtocolGame *getProtocol() const;
 
 	phmap::flat_hash_set<uint32_t> attackedSet {};
 
@@ -1643,7 +1637,6 @@ private:
 
 	std::vector<std::unique_ptr<PreySlot>> preys;
 	std::vector<std::unique_ptr<TaskHuntingSlot>> taskHunting;
-	HuntingTaskSystem huntingTaskSystem;
 
 	GuildWarVector guildWarVector;
 

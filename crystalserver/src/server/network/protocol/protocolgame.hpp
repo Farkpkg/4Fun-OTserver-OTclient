@@ -18,6 +18,7 @@
 #pragma once
 
 #include "server/network/protocol/protocol.hpp"
+#include <unordered_map>
 #include "game/movement/position.hpp"
 #include "utils/utils_definitions.hpp"
 
@@ -77,7 +78,7 @@ using UsersMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
 using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
-using StashItemList = std::map<uint16_t, uint32_t>;
+using StashItemList = std::unordered_map<uint16_t, uint32_t>;
 using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;
 
 struct TextMessage {
@@ -388,7 +389,6 @@ private:
 	void sendResourceBalance(Resource_t resourceType, uint64_t value);
 	void sendCharmResourcesBalance(uint32_t charm = 0, uint32_t minorCharm = 0, uint32_t maxCharm = 0, uint32_t maxMinorCharm = 0);
 	void sendCharmResourceBalance(CharmResource_t resourceType, uint32_t value);
-	void sendExtendedOpcode(uint8_t opcode, const std::string &buffer);
 	void sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap);
 	void sendMarketEnter(uint32_t depotId);
 	void updateCoinBalance();
