@@ -19,9 +19,6 @@ local monsterOutfit
 local monsterImage
 local bossOutfit
 local bossImage
-local boostedCreatureNameLabel
-local boostedBossNameLabel
-local boostedCreatureData
 
 local default_info = {
     -- hint 1
@@ -34,42 +31,6 @@ local default_info = {
     -- hint 2
     -- {image = "image of label", Title = "title", description = "your hint here"},
 }
-
-local function resetBoostedSlots()
-    if not monsterOutfit or not bossOutfit or not monsterImage or not bossImage then
-        return
-    end
-
-    monsterOutfit:setVisible(false)
-    bossOutfit:setVisible(false)
-    if boostedCreatureNameLabel then
-        boostedCreatureNameLabel:setText('?')
-    end
-    if boostedBossNameLabel then
-        boostedBossNameLabel:setText('?')
-    end
-    monsterImage:setImageSource("images/icon-questionmark")
-    monsterImage:setVisible(true)
-    bossImage:setImageSource("images/icon-questionmark")
-    bossImage:setVisible(true)
-end
-
-local function onBoostedCreatureOpcode(protocol, opcode, buffer)
-    local boostedCreatureName, boostedCreatureRaceId, boostedBossName, boostedBossRaceId = buffer:match("^(.-)|(%d+)|(.-)|(%d+)$")
-    if not boostedCreatureName then
-        g_logger.warning(string.format("[%s] Invalid boosted creature payload from server.", debug.getinfo(1, "S").source))
-        return
-    end
-
-    boostedCreatureData = {
-        boostedCreatureName = boostedCreatureName,
-        boostedCreatureRaceId = tonumber(boostedCreatureRaceId) or 0,
-        boostedBossName = boostedBossName,
-        boostedBossRaceId = tonumber(boostedBossRaceId) or 0
-    }
-
-    setBoostedCreatureAndBoss(boostedCreatureData)
-end
 
 function init()
     g_ui.importStyle('calendar')
@@ -93,15 +54,6 @@ function init()
     boostedWindow = bottomMenu:recursiveGetChildById('boostedWindow')
     monsterOutfit = boostedWindow:recursiveGetChildById('creature')
     bossOutfit = boostedWindow:recursiveGetChildById('boss')
-    monsterImage = boostedWindow:recursiveGetChildById('monsterImage')
-    bossImage = boostedWindow:recursiveGetChildById('bossImage')
-    boostedCreatureNameLabel = boostedWindow:recursiveGetChildById('boostedCreatureName')
-    boostedBossNameLabel = boostedWindow:recursiveGetChildById('boostedBossName')
-
-    ProtocolGame.registerExtendedOpcode(ExtendedIds.BoostedCreature, onBoostedCreatureOpcode)
-    connect(g_game, {
-        onGameEnd = resetBoostedSlots
-    })
 
 --  if not Services.status and default_info then
     if default_info then
@@ -116,23 +68,24 @@ function init()
         showOffWindow.title:setText(tr(randomItem.Title))
         image:setImageSource(randomItem.image)
         description:setText(tr(randomItem.description))
+        monsterOutfit:setVisible(false)
+        bossOutfit:setVisible(false)
         widget:resize(widget:getWidth(), description:getHeight())
-    end
-    resetBoostedSlots()
-    if boostedCreatureData then
-        setBoostedCreatureAndBoss(boostedCreatureData)
-    end
 
+        monsterImage = boostedWindow:recursiveGetChildById('monsterImage')
+        bossImage = boostedWindow:recursiveGetChildById('bossImage')
+
+        monsterImage:setImageSource("images/icon-questionmark")
+        monsterImage:setVisible(true)
+        bossImage:setImageSource("images/icon-questionmark")
+        bossImage:setVisible(true)
+    end
     if g_game.isOnline() then
         hide()
     end
 end
 
 function terminate()
-    ProtocolGame.unregisterExtendedOpcode(ExtendedIds.BoostedCreature)
-    disconnect(g_game, {
-        onGameEnd = resetBoostedSlots
-    })
     bottomMenu:destroy()
     calendarWindow:destroy()
 end
@@ -568,7 +521,7 @@ local function applyToBoostedSlot(raceId, outfitWidget, imageWidget, fileName)
 
     -- check if race id is present in the staticdata
     if raceData.raceId == 0 then
-        local msg = string.format("[%s] Creature with race id %s was not found.", fileName, raceId)
+        local msg = string.format("[%s] Creature with race id %s was not found.", fileName, data.creatureraceid)
         g_logger.warning(msg)
         return
     end
@@ -581,31 +534,19 @@ local function applyToBoostedSlot(raceId, outfitWidget, imageWidget, fileName)
 end
 
 function setBoostedCreatureAndBoss(data)
-    if not data then
-        return
-    end
-
-    boostedCreatureData = data
-
     if not modules.game_things.isLoaded() then
         return
     end
 
-    resetBoostedSlots()
-
     -- file name for error reporting
     local fileName = debug.getinfo(1, "S").source -- current file name - bottommenu.lua
 
-    local boostedCreatureRaceId = data.boostedCreatureRaceId or data.creatureraceid or data.raceid
-    local boostedBossRaceId = data.boostedBossRaceId or data.bossraceid
+    -- boosted creature
+    -- before bosstiary was introduced, the webservice was sending creature race in 'raceid' field
+    -- after bosstiary was added, it was changed to 'creatureraceid'
+    -- this 'or' statement ensures backwards compatibility
+    applyToBoostedSlot(data.creatureraceid or data.raceid, monsterOutfit, monsterImage, fileName)
 
-    if boostedCreatureNameLabel and data.boostedCreatureName and data.boostedCreatureName ~= '' then
-        boostedCreatureNameLabel:setText(data.boostedCreatureName)
-    end
-    if boostedBossNameLabel and data.boostedBossName and data.boostedBossName ~= '' then
-        boostedBossNameLabel:setText(data.boostedBossName)
-    end
-
-    applyToBoostedSlot(boostedCreatureRaceId, monsterOutfit, monsterImage, fileName)
-    applyToBoostedSlot(boostedBossRaceId, bossOutfit, bossImage, fileName)
+    -- boosted boss
+    applyToBoostedSlot(data.bossraceid, bossOutfit, bossImage, fileName)
 end
