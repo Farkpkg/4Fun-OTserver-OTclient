@@ -24,6 +24,20 @@
 - `player_prey`
 - `player_bosstiary`
 
+## Cyclopedia (persistência auditada)
+
+- `player_charms`
+  - Recursos e estado de charms (`charm_points`, `minor_charm_echoes`, bits de runes).
+  - `charms` (blob) e `tracker_list` (blob) usados pelo ecossistema bestiary/cyclopedia.
+- `player_deaths`
+  - Fonte de `RecentDeaths` e `RecentPvPKills` da Cyclopedia Character.
+- `player_hirelings`
+  - Contagem usada no Summary da Cyclopedia (`loadSummaryData`).
+- `kv_store`
+  - Backend de KV para summary/titles/badges/cooldowns e outros escopos consumidos por Cyclopedia.
+- `player_items` / `player_depotitems` / `player_inboxitems` / `player_stash`
+  - Base do cálculo de `ItemSummary` enviado pela Cyclopedia Character.
+
 ## Economia
 
 - `market_offers`
