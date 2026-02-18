@@ -2,6 +2,38 @@ local function sendBoostMessage(player, category, isIncreased)
 	return player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format("Event! %s is %screased. Happy Hunting!", category, isIncreased and "in" or "de"))
 end
 
+local BOOSTED_CREATURE_OPCODE = 243
+
+local function sendBoostedCreatureData(player)
+	if not player:isUsingOtClient() then
+		return
+	end
+
+	local boostedCreatureName = Game.getBoostedCreature() or ""
+	local boostedBossName = Game.getBoostedBoss() or ""
+
+	local boostedCreatureRaceId = 0
+	local boostedCreatureType = MonsterType(boostedCreatureName)
+	if boostedCreatureType then
+		boostedCreatureRaceId = boostedCreatureType:raceId()
+	end
+
+	local boostedBossRaceId = 0
+	local boostedBossType = MonsterType(boostedBossName)
+	if boostedBossType then
+		boostedBossRaceId = boostedBossType:raceId()
+	end
+
+	local payload = table.concat({
+		boostedCreatureName,
+		tostring(boostedCreatureRaceId),
+		boostedBossName,
+		tostring(boostedBossRaceId),
+	}, "|")
+
+	player:sendExtendedOpcode(BOOSTED_CREATURE_OPCODE, payload)
+end
+
 local function onMovementRemoveProtection(playerId, oldPos, time)
 	local player = Player(playerId)
 	if not player then
@@ -56,6 +88,7 @@ function playerLoginGlobal.onLogin(player)
 	-- Boosted
 	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format("Today's boosted creature: %s.\nBoosted creatures yield more experience points, carry more loot than usual, and respawn at a faster rate.", Game.getBoostedCreature()))
 	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format("Today's boosted boss: %s.\nBoosted bosses contain more loot and count more kills for your Bosstiary.", Game.getBoostedBoss()))
+	sendBoostedCreatureData(player)
 
 	-- Rewards
 	local rewards = #player:getRewardList()

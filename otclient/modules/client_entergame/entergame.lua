@@ -339,7 +339,6 @@ function EnterGame.firstShow()
             EnterGame.postCacheInfo()
             EnterGame.postEventScheduler()
             -- EnterGame.postShowOff() -- myacc/znote no send login.php
-            EnterGame.postShowCreatureBoost()
         end
     end
 end
