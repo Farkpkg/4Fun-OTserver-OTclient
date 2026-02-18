@@ -1,0 +1,8 @@
+Module
+  name: game_weeklytasks
+  description: Weekly tasks interface
+  author: crystal
+  sandboxed: true
+  scripts: [ game_weeklytasks ]
+  @onLoad: init()
+  @onUnload: terminate()

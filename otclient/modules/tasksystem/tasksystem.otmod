@@ -1,0 +1,8 @@
+Module
+  name: tasksystem
+  description: Linked tasks UI module
+  author: Codex
+  sandboxed: true
+  scripts: [ tasksystem ]
+  @onLoad: init()
+  @onUnload: terminate()

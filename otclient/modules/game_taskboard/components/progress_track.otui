@@ -1,0 +1,33 @@
+TaskBoardProgressTrack < Panel
+  height: 92
+  image-source: /images/ui/panel_flat
+  image-border: 1
+
+  RectangleProgressBar
+    id: weeklyProgressBar
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin: 10
+    margin-bottom: 44
+    minimum: 0
+    maximum: 18
+    value: 0
+
+  Label
+    id: milestones
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: weeklyProgressBar.bottom
+    margin-top: 6
+    text-align: center
+    text: 0 | 4 | 8 | 12 | 15 | 18
+
+  Label
+    id: multiplierState
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-bottom: 8
+    text-align: center
+    text: x1 | x1.3 | x1.7 | x2 | x2.5
