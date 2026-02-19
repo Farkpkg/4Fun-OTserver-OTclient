@@ -114,6 +114,15 @@ namespace {
 	constexpr uint32_t BOUNTY_EXP_HARD = 1200;
 	constexpr uint32_t BOUNTY_HP_HARD = 4000;
 
+static uint32_t getWeeklySeed(uint32_t playerId, uint32_t weekId) {
+		return (playerId * 2654435761u) ^ (weekId * 1013904223u);
+	}
+
+	static uint32_t seededUniform(uint32_t& seed, uint32_t min, uint32_t max) {
+		seed = seed * 1664525u + 1013904223u;
+		return min + (seed % (max - min + 1));
+	}
+
 	struct AllowedBountyEntry {
 		const MonsterType* monsterType;
 		BountyDifficulty difficulty;
@@ -168,7 +177,7 @@ namespace {
 		return 10;
 	}
 
-	static int32_t getWeightedRandomIndex(const std::vector<AllowedBountyEntry>& list) {
+	static int32_t getWeightedRandomIndex(const std::vector<AllowedBountyEntry>& list, uint32_t& seed) {
 		uint32_t totalWeight = 0;
 		for (const auto& e : list) {
 			totalWeight += e.weight;
@@ -178,7 +187,7 @@ namespace {
 			return -1;
 		}
 
-		const uint32_t r = uniform_random(1, totalWeight);
+		const uint32_t r = seededUniform(seed, 1, totalWeight);
 		uint32_t acc = 0;
 		for (size_t i = 0; i < list.size(); ++i) {
 			acc += list[i].weight;
@@ -190,7 +199,7 @@ namespace {
 		return -1;
 	}
 
-	static void buildDynamicBountyPool(uint32_t playerLevel, std::vector<AllowedBountyEntry>& outPool) {
+	static void buildDynamicBountyPool(const Player* player, uint32_t playerLevel, std::vector<AllowedBountyEntry>& outPool) {
 		for (const auto& [name, monsterTypePtr] : g_monsters().monsters) {
 			(void) name;
 			if (!monsterTypePtr) {
@@ -208,6 +217,17 @@ namespace {
 				monsterName.find("dummy") != std::string::npos ||
 				monsterName.find("event") != std::string::npos ||
 				monsterName.find("illusion") != std::string::npos) {
+				continue;
+			}
+
+			bool inHistory = false;
+			for (const auto& history : player->getLastBountyHistory()) {
+				if (history == mType->name) {
+					inHistory = true;
+					break;
+				}
+			}
+			if (inHistory) {
 				continue;
 			}
 
@@ -6831,6 +6851,7 @@ void Player::sendBountyBoard() const {
 
 void Player::generateBountyOffers() {
 	const uint32_t currentWeekID = getCurrentWeekID();
+	uint32_t seed = getWeeklySeed(getGUID(), currentWeekID);
 	// Weekly hard reset (global-like behavior)
 	// Active tasks must never persist across weeks
 	if (getLastBountyWeekID() != currentWeekID) {
@@ -6854,7 +6875,7 @@ void Player::generateBountyOffers() {
 	const uint32_t playerLevel = getLevel();
 	std::vector<AllowedBountyEntry> allowed;
 	allowed.reserve(g_monsters().monsters.size());
-	buildDynamicBountyPool(playerLevel, allowed);
+	buildDynamicBountyPool(this, playerLevel, allowed);
 
 	if (allowed.empty()) {
 		return;
@@ -6866,7 +6887,7 @@ void Player::generateBountyOffers() {
 
 	size_t generated = 0;
 	while (!allowed.empty() && generated < offerCount) {
-		const int32_t randomIndex = getWeightedRandomIndex(allowed);
+		const int32_t randomIndex = getWeightedRandomIndex(allowed, seed);
 		if (randomIndex < 0) {
 			break;
 		}
@@ -6880,7 +6901,7 @@ void Player::generateBountyOffers() {
 			continue;
 		}
 
-		uint32_t requiredKills = uniform_random(minKills, maxKills);
+		uint32_t requiredKills = seededUniform(seed, minKills, maxKills);
 
 		if (requiredKills > 0) {
 			bool duplicate = false;
@@ -6900,6 +6921,7 @@ void Player::generateBountyOffers() {
 				requiredKills,
 				selected.difficulty
 			);
+			pushBountyHistory(selected.monsterType->name);
 			++generated;
 		}
 	}
@@ -7079,6 +7101,17 @@ uint32_t Player::getLastBountyClaimWeekID() const {
 
 void Player::setLastBountyClaimWeekID(uint32_t weekID) {
 	lastBountyClaimWeekID = weekID;
+}
+
+const std::array<std::string, 6> &Player::getLastBountyHistory() const {
+	return lastBountyHistory;
+}
+
+void Player::pushBountyHistory(const std::string &name) {
+	for (size_t i = lastBountyHistory.size() - 1; i > 0; --i) {
+		lastBountyHistory[i] = lastBountyHistory[i - 1];
+	}
+	lastBountyHistory[0] = name;
 }
 
 void Player::gainExperience(uint64_t gainExp, const std::shared_ptr<Creature> &target) {

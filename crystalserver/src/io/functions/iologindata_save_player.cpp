@@ -17,6 +17,7 @@
 
 #include "io/functions/iologindata_save_player.hpp"
 
+
 #include "config/configmanager.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
@@ -229,6 +230,20 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	query << "`task_points` = " << player->getTaskHuntingPoints() << ",";
 	query << "`hunting_task_points` = " << player->getHuntingTaskPoints() << ",";
 	query << "`last_bounty_claim_week` = " << player->getLastBountyClaimWeekID() << ",";
+
+	std::string bountyHistory;
+	const auto &history = player->getLastBountyHistory();
+	for (size_t i = 0; i < history.size(); ++i) {
+		if (history[i].empty()) {
+			continue;
+		}
+
+		if (!bountyHistory.empty()) {
+			bountyHistory += ",";
+		}
+		bountyHistory += history[i];
+	}
+	query << "`last_bounty_history` = " << db.escapeString(bountyHistory) << ",";
 	query << "`boss_points` = " << player->getBossPoints() << ",";
 	query << "`loyalty_points` = " << player->getLoyaltyPoints() << ",";
 	query << "`forge_dusts` = " << player->getForgeDusts() << ",";

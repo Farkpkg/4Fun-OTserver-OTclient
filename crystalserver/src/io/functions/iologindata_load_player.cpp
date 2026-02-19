@@ -42,6 +42,7 @@
 #include "items/containers/rewards/rewardchest.hpp"
 #include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
+#include "tools/string.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {
 	try {
@@ -182,6 +183,12 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
 	player->setHuntingTaskPoints(result->getNumber<uint32_t>("hunting_task_points"));
 	player->setLastBountyClaimWeekID(result->getNumber<uint32_t>("last_bounty_claim_week"));
+	const auto bountyHistory = explodeString(result->getString("last_bounty_history"), ",");
+	for (auto it = bountyHistory.rbegin(); it != bountyHistory.rend(); ++it) {
+		if (!it->empty()) {
+			player->pushBountyHistory(*it);
+		}
+	}
 	player->addForgeDusts(result->getNumber<uint64_t>("forge_dusts"));
 	player->addForgeDustLevel(result->getNumber<uint64_t>("forge_dust_level"));
 	player->setRandomMount(static_cast<uint8_t>(result->getNumber<uint16_t>("randomize_mount")));

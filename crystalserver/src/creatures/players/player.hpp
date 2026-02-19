@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include <array>
 #include <optional>
 
 #include "creatures/creature.hpp"
@@ -1649,6 +1650,8 @@ private:
 	void setLastBountyWeekID(uint32_t weekID);
 	uint32_t getLastBountyClaimWeekID() const;
 	void setLastBountyClaimWeekID(uint32_t weekID);
+	const std::array<std::string, 6> &getLastBountyHistory() const;
+	void pushBountyHistory(const std::string &name);
 
 	void addBountyTaskKill(const std::shared_ptr<MonsterType> &mType);
 	void addBestiaryKill(const std::shared_ptr<MonsterType> &mType);
@@ -1685,6 +1688,7 @@ private:
 	std::vector<BountyOffer> bountyOffers;
 	uint32_t lastBountyWeekID = 0;
 	uint32_t lastBountyClaimWeekID = 0;
+	std::array<std::string, 6> lastBountyHistory;
 
 	GuildWarVector guildWarVector;
 
