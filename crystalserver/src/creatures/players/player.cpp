@@ -112,24 +112,34 @@ namespace {
 
 	struct BountyCreatureEntry {
 		const char* name;
-		uint8_t category; // 0 = Weak, 1 = Medium, 2 = Strong
 		uint32_t minKills;
 		uint32_t maxKills;
 	};
 
 	static const BountyCreatureEntry BOUNTY_CREATURE_POOL[] = {
-		// Weak
-		{ "Rat", 0, 20, 50 },
-		{ "Orc", 0, 20, 50 },
-		{ "Troll", 0, 20, 50 },
-
-		// Medium
-		{ "Minotaur", 1, 10, 25 },
-		{ "Dragon", 1, 10, 25 },
-
-		// Strong
-		{ "Demon", 2, 5, 15 },
+		{ "Rat", 20, 50 },
+		{ "Orc", 20, 50 },
+		{ "Troll", 20, 50 },
+		{ "Minotaur", 10, 25 },
+		{ "Dragon", 10, 25 },
+		{ "Demon", 5, 15 },
 	};
+
+	static BountyDifficulty resolveBountyDifficulty(const MonsterType* mType) {
+		if (!mType) {
+			return BountyDifficulty::Easy;
+		}
+
+		if (mType->info.health >= 4000 || mType->info.experience >= 1200) {
+			return BountyDifficulty::Hard;
+		}
+
+		if (mType->info.experience >= 200) {
+			return BountyDifficulty::Medium;
+		}
+
+		return BountyDifficulty::Easy;
+	}
 }
 
 Player::Player(std::shared_ptr<ProtocolGame> p) :
@@ -6745,18 +6755,22 @@ void Player::generateBountyOffers() {
 	allowed.reserve(sizeof(BOUNTY_CREATURE_POOL) / sizeof(BOUNTY_CREATURE_POOL[0]));
 
 	for (const auto &entry : BOUNTY_CREATURE_POOL) {
+		const MonsterType* monsterType = g_monsters().getMonsterType(entry.name);
+		if (!monsterType) {
+			continue;
+		}
+
+		const BountyDifficulty difficulty = resolveBountyDifficulty(monsterType);
 		if (playerLevel <= 19) {
-			if (entry.category == 0) {
+			if (difficulty == BountyDifficulty::Easy) {
 				allowed.push_back(&entry);
 			}
 		} else if (playerLevel <= 49) {
-			if (entry.category <= 1) {
+			if (difficulty == BountyDifficulty::Easy || difficulty == BountyDifficulty::Medium) {
 				allowed.push_back(&entry);
 			}
 		} else {
-			if (entry.category <= 2) {
-				allowed.push_back(&entry);
-			}
+			allowed.push_back(&entry);
 		}
 	}
 
@@ -6774,7 +6788,8 @@ void Player::generateBountyOffers() {
 		const BountyCreatureEntry* selectedEntry = allowed[randomIndex];
 		allowed.erase(allowed.begin() + randomIndex);
 
-		if (!g_monsters().getMonsterType(selectedEntry->name)) {
+		const MonsterType* monsterType = g_monsters().getMonsterType(selectedEntry->name);
+		if (!monsterType) {
 			continue;
 		}
 
@@ -6787,7 +6802,7 @@ void Player::generateBountyOffers() {
 		uint32_t requiredKills = uniform_random(minKills, maxKills);
 
 		if (requiredKills > 0) {
-			addBountyOffer(selectedEntry->name, requiredKills, static_cast<BountyDifficulty>(selectedEntry->category));
+			addBountyOffer(selectedEntry->name, requiredKills, resolveBountyDifficulty(monsterType));
 			++generated;
 		}
 	}
