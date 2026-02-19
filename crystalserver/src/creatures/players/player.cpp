@@ -6720,6 +6720,8 @@ void Player::sendBountyBoard() const {
 
 void Player::generateBountyOffers() {
 	const uint32_t currentWeekID = getCurrentWeekID();
+	// Weekly hard reset (global-like behavior)
+	// Active tasks must never persist across weeks
 	if (getLastBountyWeekID() != currentWeekID) {
 		clearBountyOffers();
 		clearActiveBountyTask();
@@ -6730,11 +6732,11 @@ void Player::generateBountyOffers() {
 		return;
 	}
 
-	if (!bountyOffers.empty()) {
+	if (activeBountyTask.has_value()) {
 		return;
 	}
 
-	if (activeBountyTask) {
+	if (!bountyOffers.empty()) {
 		return;
 	}
 
