@@ -110,10 +110,20 @@ namespace {
 		return static_cast<uint64_t>(requiredKills * scaling.expMultiplier * levelFactor * 20);
 	}
 
+	constexpr uint32_t BOUNTY_EXP_MEDIUM = 200;
+	constexpr uint32_t BOUNTY_EXP_HARD = 1200;
+	constexpr uint32_t BOUNTY_HP_HARD = 4000;
+
 	struct BountyCreatureEntry {
 		const char* name;
 		uint32_t minKills;
 		uint32_t maxKills;
+	};
+
+	struct AllowedBountyEntry {
+		const BountyCreatureEntry* entry;
+		const MonsterType* monsterType;
+		BountyDifficulty difficulty;
 	};
 
 	static const BountyCreatureEntry BOUNTY_CREATURE_POOL[] = {
@@ -130,11 +140,11 @@ namespace {
 			return BountyDifficulty::Easy;
 		}
 
-		if (mType->info.health >= 4000 || mType->info.experience >= 1200) {
+		if (mType->info.health >= BOUNTY_HP_HARD || mType->info.experience >= BOUNTY_EXP_HARD) {
 			return BountyDifficulty::Hard;
 		}
 
-		if (mType->info.experience >= 200) {
+		if (mType->info.experience >= BOUNTY_EXP_MEDIUM) {
 			return BountyDifficulty::Medium;
 		}
 
@@ -6751,7 +6761,7 @@ void Player::generateBountyOffers() {
 	}
 
 	const uint32_t playerLevel = getLevel();
-	std::vector<const BountyCreatureEntry*> allowed;
+	std::vector<AllowedBountyEntry> allowed;
 	allowed.reserve(sizeof(BOUNTY_CREATURE_POOL) / sizeof(BOUNTY_CREATURE_POOL[0]));
 
 	for (const auto &entry : BOUNTY_CREATURE_POOL) {
@@ -6763,14 +6773,14 @@ void Player::generateBountyOffers() {
 		const BountyDifficulty difficulty = resolveBountyDifficulty(monsterType);
 		if (playerLevel <= 19) {
 			if (difficulty == BountyDifficulty::Easy) {
-				allowed.push_back(&entry);
+				allowed.push_back(AllowedBountyEntry { &entry, monsterType, difficulty });
 			}
 		} else if (playerLevel <= 49) {
 			if (difficulty == BountyDifficulty::Easy || difficulty == BountyDifficulty::Medium) {
-				allowed.push_back(&entry);
+				allowed.push_back(AllowedBountyEntry { &entry, monsterType, difficulty });
 			}
 		} else {
-			allowed.push_back(&entry);
+			allowed.push_back(AllowedBountyEntry { &entry, monsterType, difficulty });
 		}
 	}
 
@@ -6785,16 +6795,11 @@ void Player::generateBountyOffers() {
 	size_t generated = 0;
 	while (!allowed.empty() && generated < offerCount) {
 		const auto randomIndex = uniform_random(0, static_cast<int32_t>(allowed.size() - 1));
-		const BountyCreatureEntry* selectedEntry = allowed[randomIndex];
+		const AllowedBountyEntry selected = allowed[randomIndex];
 		allowed.erase(allowed.begin() + randomIndex);
 
-		const MonsterType* monsterType = g_monsters().getMonsterType(selectedEntry->name);
-		if (!monsterType) {
-			continue;
-		}
-
-		uint32_t minKills = selectedEntry->minKills + levelBonus;
-		uint32_t maxKills = selectedEntry->maxKills + levelBonus;
+		uint32_t minKills = selected.entry->minKills + levelBonus;
+		uint32_t maxKills = selected.entry->maxKills + levelBonus;
 		if (minKills > maxKills) {
 			continue;
 		}
@@ -6802,7 +6807,11 @@ void Player::generateBountyOffers() {
 		uint32_t requiredKills = uniform_random(minKills, maxKills);
 
 		if (requiredKills > 0) {
-			addBountyOffer(selectedEntry->name, requiredKills, resolveBountyDifficulty(monsterType));
+			addBountyOffer(
+				selected.entry->name,
+				requiredKills,
+				selected.difficulty
+			);
 			++generated;
 		}
 	}
