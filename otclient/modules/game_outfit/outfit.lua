@@ -221,7 +221,7 @@ function check()
 
     if not outfitButton then
         outfitButton = modules.game_mainpanel.addToggleButton('topMenuOutfitButton', tr('Outfit'),
-            '/game_cyclopedia/images/character_icons/icon_outfitsmounts', toggleOutfitWindow)
+            '/images/options/button_outfit', toggleOutfitWindow)
         outfitButton:setOn(false)
     end
 end
