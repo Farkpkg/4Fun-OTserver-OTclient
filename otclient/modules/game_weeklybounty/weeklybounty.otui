@@ -1,0 +1,86 @@
+WeeklyBountyWindow < MainWindow
+  id: weeklyBountyWindow
+  !text: tr('Weekly Bounty')
+  size: 460 360
+
+  Label
+    id: activeTaskLabel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    margin-left: 10
+    margin-right: 10
+    text-wrap: true
+    text: tr('No active bounty task.')
+
+  ScrollablePanel
+    id: offersList
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: claimButton.top
+    margin-top: 8
+    margin-left: 10
+    margin-right: 10
+    margin-bottom: 8
+    layout:
+      type: verticalBox
+      fit-children: true
+      spacing: 4
+
+  Button
+    id: claimButton
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    margin-left: 10
+    margin-bottom: 8
+    width: 120
+    text: tr('Claim Reward')
+
+  Button
+    id: refreshButton
+    anchors.left: claimButton.right
+    anchors.bottom: parent.bottom
+    margin-left: 6
+    margin-bottom: 8
+    width: 90
+    text: tr('Refresh')
+
+  Button
+    id: closeButton
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-right: 10
+    margin-bottom: 8
+    width: 80
+    text: tr('Close')
+
+BountyOfferRow < Panel
+  height: 34
+  layout:
+    type: horizontalBox
+    fit-children: true
+    spacing: 6
+
+  Label
+    id: nameLabel
+    width: 180
+    text-auto-resize: false
+
+  Label
+    id: killsLabel
+    width: 85
+    text-auto-resize: false
+
+  Label
+    id: difficultyLabel
+    width: 80
+    text-auto-resize: false
+
+  Button
+    id: acceptButton
+    width: 80
+    text: tr('Accept')
+
+WeeklyBountyWindow

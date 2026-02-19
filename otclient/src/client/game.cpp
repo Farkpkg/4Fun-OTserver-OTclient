@@ -1815,6 +1815,30 @@ void Game::preyRequest()
     m_protocolGame->sendPreyRequest();
 }
 
+void Game::requestBountyBoard()
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendRequestBountyBoard();
+}
+
+void Game::selectBounty(std::string_view creatureName)
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendSelectBounty(creatureName);
+}
+
+void Game::claimBountyReward()
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendClaimBountyReward();
+}
+
 void Game::openPortableForgeRequest()
 {
     if (!canPerformGameAction())

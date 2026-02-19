@@ -409,6 +409,9 @@ void Client::registerLuaFunctions()
     g_lua.bindSingletonFunction("g_game", "sendOpenRewardWall", &Game::sendOpenRewardWall, &g_game);
     g_lua.bindSingletonFunction("g_game", "requestOpenRewardHistory", &Game::requestOpenRewardHistory, &g_game);
     g_lua.bindSingletonFunction("g_game", "requestGetRewardDaily", &Game::requestGetRewardDaily, &g_game);
+    g_lua.bindSingletonFunction("g_game", "requestBountyBoard", &Game::requestBountyBoard, &g_game);
+    g_lua.bindSingletonFunction("g_game", "selectBounty", &Game::selectBounty, &g_game);
+    g_lua.bindSingletonFunction("g_game", "claimBountyReward", &Game::claimBountyReward, &g_game);
     g_lua.bindSingletonFunction("g_game", "sendRequestTrackerQuestLog", &Game::sendRequestTrackerQuestLog, &g_game);
     g_lua.bindSingletonFunction("g_game", "openWheel", &Game::openWheel, &g_game);
     g_lua.bindSingletonFunction("g_game", "sendApplyWheelPoints", &Game::sendApplyWheelPoints, &g_game);

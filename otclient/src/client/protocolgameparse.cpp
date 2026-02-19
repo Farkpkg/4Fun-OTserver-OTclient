@@ -597,6 +597,9 @@ void ProtocolGame::parseMessage(const InputMessagePtr& msg)
                 case Proto::GameServerQuestLine:
                     parseQuestLine(msg);
                     break;
+                case 0xFF:
+                    parseBountyBoard(msg);
+                    break;
                 case Proto::GameServerCoinBalanceUpdating:
                     parseCoinBalanceUpdating(msg);
                     break;
@@ -3550,6 +3553,51 @@ void ProtocolGame::parsePlayerInventory(const InputMessagePtr& msg)
         g_lua.callGlobalField("g_game", "updateInventoryItems");
     }
 }
+
+void ProtocolGame::parseBountyBoard(const InputMessagePtr& msg)
+{
+    std::vector<std::string> offerNames;
+    std::vector<uint32_t> offerRequiredKills;
+    std::vector<uint8_t> offerDifficulties;
+
+    const uint8_t offerCount = msg->getU8();
+    offerNames.reserve(offerCount);
+    offerRequiredKills.reserve(offerCount);
+    offerDifficulties.reserve(offerCount);
+
+    for (uint8_t i = 0; i < offerCount; ++i) {
+        offerNames.emplace_back(msg->getString());
+        offerRequiredKills.emplace_back(msg->getU32());
+        offerDifficulties.emplace_back(msg->getU8());
+    }
+
+    const bool hasActiveTask = msg->getU8() != 0;
+    std::string taskCreatureName;
+    uint32_t taskRequiredKills = 0;
+    uint32_t taskCurrentKills = 0;
+    uint8_t taskDifficulty = 0;
+    bool taskCompleted = false;
+
+    if (hasActiveTask) {
+        taskCreatureName = msg->getString();
+        taskRequiredKills = msg->getU32();
+        taskCurrentKills = msg->getU32();
+        taskDifficulty = msg->getU8();
+        taskCompleted = msg->getU8() != 0;
+    }
+
+    g_lua.callGlobalField("g_game", "onBountyBoard",
+        offerNames,
+        offerRequiredKills,
+        offerDifficulties,
+        hasActiveTask,
+        taskCreatureName,
+        taskRequiredKills,
+        taskCurrentKills,
+        taskDifficulty,
+        taskCompleted);
+}
+
 
 void ProtocolGame::parseModalDialog(const InputMessagePtr& msg)
 {
