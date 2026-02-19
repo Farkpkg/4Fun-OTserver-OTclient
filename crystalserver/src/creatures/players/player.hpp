@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <optional>
+
 #include "creatures/creature.hpp"
 #include "enums/forge_conversion.hpp"
 #include "game/bank/bank.hpp"
@@ -152,6 +154,26 @@ struct WeaponProficiencyAugment {
 	uint16_t spellId = 0;
 	WeaponProficiencyPerkAugmentType_t augmentType = PROFICIENCY_AUGMENTTYPE_NONE;
 	float value = 0;
+};
+
+enum class BountyDifficulty : uint8_t {
+	Easy = 0,
+	Medium = 1,
+	Hard = 2
+};
+
+struct BountyTask {
+	std::string creatureName;
+	uint32_t requiredKills;
+	uint32_t currentKills;
+	bool completed;
+	BountyDifficulty difficulty = BountyDifficulty::Easy;
+};
+
+struct BountyOffer {
+	std::string creatureName;
+	uint32_t requiredKills;
+	BountyDifficulty difficulty = BountyDifficulty::Easy;
 };
 
 struct EquippedWeaponProficiencyBonuses {
@@ -1290,6 +1312,9 @@ public:
 	bool useTaskHuntingPoints(uint64_t amount);
 
 	uint64_t getTaskHuntingPoints() const;
+	uint32_t getHuntingTaskPoints() const;
+	void addHuntingTaskPoints(uint32_t amount);
+	void setHuntingTaskPoints(uint32_t amount);
 
 	uint32_t getTaskHuntingRerollPrice() const;
 
@@ -1612,8 +1637,25 @@ private:
 	void internalAddThing(uint32_t index, const std::shared_ptr<Thing> &thing) override;
 
 	void addHuntingTaskKill(const std::shared_ptr<MonsterType> &mType);
+	bool assignBountyTask(const std::string &creatureName, uint32_t requiredKills);
+	bool addBountyOffer(const std::string &creatureName, uint32_t requiredKills, BountyDifficulty difficulty = BountyDifficulty::Easy);
+	void generateBountyOffers();
+	void sendBountyBoard() const;
+	void clearBountyOffers();
+	bool selectBountyOffer(uint8_t index);
+	bool acceptBountyOffer(const std::string &creatureName);
+	bool claimBountyReward();
+	uint32_t getLastBountyWeekID() const;
+	void setLastBountyWeekID(uint32_t weekID);
+
+	void addBountyTaskKill(const std::shared_ptr<MonsterType> &mType);
 	void addBestiaryKill(const std::shared_ptr<MonsterType> &mType);
 	void addBosstiaryKill(const std::shared_ptr<MonsterType> &mType);
+
+	const std::optional<BountyTask> &getActiveBountyTask() const;
+	void setActiveBountyTask(const BountyTask &task);
+	void clearActiveBountyTask();
+	const std::vector<BountyOffer> &getBountyOffers() const;
 
 	phmap::flat_hash_set<uint32_t> attackedSet {};
 
@@ -1637,6 +1679,9 @@ private:
 
 	std::vector<std::unique_ptr<PreySlot>> preys;
 	std::vector<std::unique_ptr<TaskHuntingSlot>> taskHunting;
+	std::optional<BountyTask> activeBountyTask;
+	std::vector<BountyOffer> bountyOffers;
+	uint32_t lastBountyWeekID = 0;
 
 	GuildWarVector guildWarVector;
 
@@ -1671,6 +1716,7 @@ private:
 	uint64_t lastQuestlogUpdate = 0;
 	uint64_t preyCards = 0;
 	uint64_t taskHuntingPoints = 0;
+	uint32_t huntingTaskPoints = 0;
 	uint32_t bossPoints = 0;
 	uint32_t bossIdSlotOne = 0;
 	uint32_t bossIdSlotTwo = 0;
