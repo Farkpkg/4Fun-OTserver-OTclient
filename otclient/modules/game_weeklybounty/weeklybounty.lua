@@ -92,7 +92,13 @@ function init()
     onBountyBoard = onBountyBoard
   })
 
-  weeklyBountyWindow = g_ui.displayUI('weeklybounty')
+  g_ui.importStyle('weeklybounty')
+  weeklyBountyWindow = g_ui.createWidget('WeeklyBountyWindow', rootWidget)
+  if not weeklyBountyWindow then
+    perror('Failed to create WeeklyBountyWindow from weeklybounty.otui.')
+    return
+  end
+
   weeklyBountyWindow:hide()
 
   weeklyBountyButton = modules.client_topmenu.addLeftGameButton('weeklyBountyButton', tr('Weekly Bounty'), '/images/topbuttons/quests', toggle)
