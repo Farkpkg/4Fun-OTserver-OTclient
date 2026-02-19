@@ -119,6 +119,7 @@ namespace {
 		BountyDifficulty difficulty;
 		uint32_t minKills;
 		uint32_t maxKills;
+		uint32_t weight;
 	};
 
 	static BountyDifficulty resolveBountyDifficulty(const MonsterType* mType) {
@@ -150,6 +151,45 @@ namespace {
 		}
 	}
 
+	static uint32_t calculateBountyWeight(const MonsterType* mType) {
+		if (!mType) {
+			return 0;
+		}
+
+		const uint32_t exp = mType->info.experience;
+		if (exp < BOUNTY_EXP_MEDIUM) {
+			return 50;
+		}
+
+		if (exp < BOUNTY_EXP_HARD) {
+			return 30;
+		}
+
+		return 10;
+	}
+
+	static int32_t getWeightedRandomIndex(const std::vector<AllowedBountyEntry>& list) {
+		uint32_t totalWeight = 0;
+		for (const auto& e : list) {
+			totalWeight += e.weight;
+		}
+
+		if (totalWeight == 0) {
+			return -1;
+		}
+
+		const uint32_t r = uniform_random(1, totalWeight);
+		uint32_t acc = 0;
+		for (size_t i = 0; i < list.size(); ++i) {
+			acc += list[i].weight;
+			if (r <= acc) {
+				return static_cast<int32_t>(i);
+			}
+		}
+
+		return -1;
+	}
+
 	static void buildDynamicBountyPool(uint32_t playerLevel, std::vector<AllowedBountyEntry>& outPool) {
 		for (const auto& [name, monsterTypePtr] : g_monsters().monsters) {
 			(void) name;
@@ -159,6 +199,15 @@ namespace {
 
 			const MonsterType* mType = monsterTypePtr.get();
 			if (!mType || mType->isBoss() || mType->info.isSummonable || mType->info.isRewardBoss || mType->info.experience == 0) {
+				continue;
+			}
+
+			const std::string monsterName = asLowerCaseString(mType->name);
+			if (monsterName.find("training") != std::string::npos ||
+				monsterName.find("summon") != std::string::npos ||
+				monsterName.find("dummy") != std::string::npos ||
+				monsterName.find("event") != std::string::npos ||
+				monsterName.find("illusion") != std::string::npos) {
 				continue;
 			}
 
@@ -177,11 +226,17 @@ namespace {
 			uint32_t maxKills = 0;
 			calculateKillRange(mType, minKills, maxKills);
 
+			const uint32_t weight = calculateBountyWeight(mType);
+			if (weight == 0) {
+				continue;
+			}
+
 			outPool.push_back(AllowedBountyEntry {
 				.monsterType = mType,
 				.difficulty = difficulty,
 				.minKills = minKills,
 				.maxKills = maxKills,
+				.weight = weight,
 			});
 		}
 	}
@@ -6811,8 +6866,12 @@ void Player::generateBountyOffers() {
 
 	size_t generated = 0;
 	while (!allowed.empty() && generated < offerCount) {
-		const auto randomIndex = uniform_random(0, static_cast<int32_t>(allowed.size() - 1));
-		const AllowedBountyEntry selected = allowed[randomIndex];
+		const int32_t randomIndex = getWeightedRandomIndex(allowed);
+		if (randomIndex < 0) {
+			break;
+		}
+
+		const AllowedBountyEntry selected = allowed[static_cast<size_t>(randomIndex)];
 		allowed.erase(allowed.begin() + randomIndex);
 
 		uint32_t minKills = selected.minKills + levelBonus;
@@ -6824,6 +6883,18 @@ void Player::generateBountyOffers() {
 		uint32_t requiredKills = uniform_random(minKills, maxKills);
 
 		if (requiredKills > 0) {
+			bool duplicate = false;
+			for (const auto& o : bountyOffers) {
+				if (o.creatureName == selected.monsterType->name) {
+					duplicate = true;
+					break;
+				}
+			}
+
+			if (duplicate) {
+				continue;
+			}
+
 			addBountyOffer(
 				selected.monsterType->name,
 				requiredKills,
