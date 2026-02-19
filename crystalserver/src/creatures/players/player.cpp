@@ -114,25 +114,11 @@ namespace {
 	constexpr uint32_t BOUNTY_EXP_HARD = 1200;
 	constexpr uint32_t BOUNTY_HP_HARD = 4000;
 
-	struct BountyCreatureEntry {
-		const char* name;
-		uint32_t minKills;
-		uint32_t maxKills;
-	};
-
 	struct AllowedBountyEntry {
-		const BountyCreatureEntry* entry;
 		const MonsterType* monsterType;
 		BountyDifficulty difficulty;
-	};
-
-	static const BountyCreatureEntry BOUNTY_CREATURE_POOL[] = {
-		{ "Rat", 20, 50 },
-		{ "Orc", 20, 50 },
-		{ "Troll", 20, 50 },
-		{ "Minotaur", 10, 25 },
-		{ "Dragon", 10, 25 },
-		{ "Demon", 5, 15 },
+		uint32_t minKills;
+		uint32_t maxKills;
 	};
 
 	static BountyDifficulty resolveBountyDifficulty(const MonsterType* mType) {
@@ -150,6 +136,56 @@ namespace {
 
 		return BountyDifficulty::Easy;
 	}
+
+	static void calculateKillRange(const MonsterType* mType, uint32_t& minKills, uint32_t& maxKills) {
+		if (!mType || mType->info.experience < BOUNTY_EXP_MEDIUM) {
+			minKills = 40;
+			maxKills = 80;
+		} else if (mType->info.experience < BOUNTY_EXP_HARD) {
+			minKills = 20;
+			maxKills = 40;
+		} else {
+			minKills = 5;
+			maxKills = 15;
+		}
+	}
+
+	static void buildDynamicBountyPool(uint32_t playerLevel, std::vector<AllowedBountyEntry>& outPool) {
+		for (const auto& [name, monsterTypePtr] : g_monsters().monsters) {
+			(void) name;
+			if (!monsterTypePtr) {
+				continue;
+			}
+
+			const MonsterType* mType = monsterTypePtr.get();
+			if (!mType || mType->isBoss() || mType->info.isSummonable || mType->info.isRewardBoss || mType->info.experience == 0) {
+				continue;
+			}
+
+			const BountyDifficulty difficulty = resolveBountyDifficulty(mType);
+			if (playerLevel <= 19) {
+				if (difficulty != BountyDifficulty::Easy) {
+					continue;
+				}
+			} else if (playerLevel <= 49) {
+				if (difficulty == BountyDifficulty::Hard) {
+					continue;
+				}
+			}
+
+			uint32_t minKills = 0;
+			uint32_t maxKills = 0;
+			calculateKillRange(mType, minKills, maxKills);
+
+			outPool.push_back(AllowedBountyEntry {
+				.monsterType = mType,
+				.difficulty = difficulty,
+				.minKills = minKills,
+				.maxKills = maxKills,
+			});
+		}
+	}
+
 }
 
 Player::Player(std::shared_ptr<ProtocolGame> p) :
@@ -6762,27 +6798,8 @@ void Player::generateBountyOffers() {
 
 	const uint32_t playerLevel = getLevel();
 	std::vector<AllowedBountyEntry> allowed;
-	allowed.reserve(sizeof(BOUNTY_CREATURE_POOL) / sizeof(BOUNTY_CREATURE_POOL[0]));
-
-	for (const auto &entry : BOUNTY_CREATURE_POOL) {
-		const MonsterType* monsterType = g_monsters().getMonsterType(entry.name);
-		if (!monsterType) {
-			continue;
-		}
-
-		const BountyDifficulty difficulty = resolveBountyDifficulty(monsterType);
-		if (playerLevel <= 19) {
-			if (difficulty == BountyDifficulty::Easy) {
-				allowed.push_back(AllowedBountyEntry { &entry, monsterType, difficulty });
-			}
-		} else if (playerLevel <= 49) {
-			if (difficulty == BountyDifficulty::Easy || difficulty == BountyDifficulty::Medium) {
-				allowed.push_back(AllowedBountyEntry { &entry, monsterType, difficulty });
-			}
-		} else {
-			allowed.push_back(AllowedBountyEntry { &entry, monsterType, difficulty });
-		}
-	}
+	allowed.reserve(g_monsters().monsters.size());
+	buildDynamicBountyPool(playerLevel, allowed);
 
 	if (allowed.empty()) {
 		return;
@@ -6798,8 +6815,8 @@ void Player::generateBountyOffers() {
 		const AllowedBountyEntry selected = allowed[randomIndex];
 		allowed.erase(allowed.begin() + randomIndex);
 
-		uint32_t minKills = selected.entry->minKills + levelBonus;
-		uint32_t maxKills = selected.entry->maxKills + levelBonus;
+		uint32_t minKills = selected.minKills + levelBonus;
+		uint32_t maxKills = selected.maxKills + levelBonus;
 		if (minKills > maxKills) {
 			continue;
 		}
@@ -6808,7 +6825,7 @@ void Player::generateBountyOffers() {
 
 		if (requiredKills > 0) {
 			addBountyOffer(
-				selected.entry->name,
+				selected.monsterType->name,
 				requiredKills,
 				selected.difficulty
 			);
