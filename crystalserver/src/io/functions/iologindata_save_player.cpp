@@ -229,6 +229,7 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	query << "`prey_wildcard` = " << player->getPreyCards() << ",";
 	query << "`task_points` = " << player->getTaskHuntingPoints() << ",";
 	query << "`hunting_task_points` = " << player->getHuntingTaskPoints() << ",";
+	query << "`last_bounty_week` = " << player->getLastBountyWeekID() << ",";
 	query << "`last_bounty_claim_week` = " << player->getLastBountyClaimWeekID() << ",";
 	query << "`weekly_bounty_completions` = " << static_cast<uint32_t>(player->getWeeklyBountyCompletions()) << ",";
 

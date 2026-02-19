@@ -77,7 +77,7 @@
 // This "getIteration" function will allow us to get the total number of iterations that run within a specific map
 // Very useful to send the total amount in certain bytes in the ProtocolGame class
 namespace {
-	constexpr uint8_t OPCODE_BOUNTY_BOARD = 0xF0;
+	constexpr uint8_t OPCODE_BOUNTY_BOARD = 0xFF;
 
 	template <typename T>
 	uint16_t getVectorIterationIncreaseCount(T &vector) {

@@ -182,6 +182,7 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
 	player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
 	player->setHuntingTaskPoints(result->getNumber<uint32_t>("hunting_task_points"));
+	player->setLastBountyWeekID(result->getNumber<uint32_t>("last_bounty_week"));
 	player->setLastBountyClaimWeekID(result->getNumber<uint32_t>("last_bounty_claim_week"));
 	player->setWeeklyBountyCompletions(result->getNumber<uint8_t>("weekly_bounty_completions"));
 	const auto bountyHistory = explodeString(result->getString("last_bounty_history"), ",");
@@ -960,8 +961,6 @@ void IOLoginDataLoad::loadBountyOffers(const std::shared_ptr<Player> &player) {
 	query << "SELECT `slot`, `creature_name`, `required_kills`, `difficulty`, `last_bounty_week` FROM `player_bounty_offers` WHERE `player_id` = " << player->getGUID() << " ORDER BY `slot` ASC";
 	DBResult_ptr result = db.storeQuery(query.str());
 	if (result) {
-		uint32_t weekID = result->getNumber<uint32_t>("last_bounty_week");
-		player->setLastBountyWeekID(weekID);
 		do {
 			uint8_t diff = result->getNumber<uint8_t>("difficulty");
 			if (diff > 2) {
