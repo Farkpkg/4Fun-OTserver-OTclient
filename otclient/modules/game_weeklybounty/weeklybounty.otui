@@ -1,4 +1,4 @@
-WeeklyBountyWindow < MainWindow
+MainWindow
   id: weeklyBountyWindow
   !text: tr('Weekly Bounty')
   size: 460 360

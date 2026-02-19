@@ -92,10 +92,9 @@ function init()
     onBountyBoard = onBountyBoard
   })
 
-  g_ui.importStyle('weeklybounty')
-  weeklyBountyWindow = g_ui.createWidget('WeeklyBountyWindow', rootWidget)
+  weeklyBountyWindow = g_ui.displayUI('weeklybounty')
   if not weeklyBountyWindow then
-    perror('Failed to create WeeklyBountyWindow from weeklybounty.otui.')
+    perror('Failed to load weekly bounty UI (weeklybounty.otui).')
     return
   end
 
