@@ -87,19 +87,27 @@ namespace {
 		return static_cast<uint32_t>(now / (60 * 60 * 24 * 7));
 	}
 
-	uint32_t getBountyPointsReward(BountyDifficulty difficulty, uint32_t requiredKills) {
-		switch (difficulty) {
-			case BountyDifficulty::Easy:
-				return std::max<uint32_t>(1, requiredKills / 10);
+	struct BountyRewardScaling {
+		uint32_t expMultiplier;
+		uint16_t points;
+	};
 
-			case BountyDifficulty::Medium:
-				return std::max<uint32_t>(3, requiredKills / 6);
+	static const BountyRewardScaling BOUNTY_REWARD_SCALING[] = {
+		{ 1, 1 },
+		{ 2, 3 },
+		{ 4, 6 },
+	};
 
-			case BountyDifficulty::Hard:
-				return std::max<uint32_t>(5, requiredKills / 4);
+	uint64_t calculateBountyExpReward(uint32_t playerLevel, uint32_t requiredKills, BountyDifficulty difficulty) {
+		uint8_t index = static_cast<uint8_t>(difficulty);
+		if (index > 2) {
+			index = 0;
 		}
 
-		return 1;
+		const auto &scaling = BOUNTY_REWARD_SCALING[index];
+		uint32_t levelFactor = std::max<uint32_t>(1, playerLevel / 20);
+
+		return static_cast<uint64_t>(requiredKills * scaling.expMultiplier * levelFactor * 20);
 	}
 
 	struct BountyCreatureEntry {
@@ -6647,13 +6655,6 @@ void Player::addHuntingTaskKill(const std::shared_ptr<MonsterType> &mType) {
 
 	if (activeBountyTask->currentKills >= activeBountyTask->requiredKills) {
 		activeBountyTask->completed = true;
-
-		const uint32_t rewardPoints = getBountyPointsReward(
-			activeBountyTask->difficulty,
-			activeBountyTask->requiredKills
-		);
-
-		addHuntingTaskPoints(rewardPoints);
 	}
 
 	const auto &taskSlot = getTaskHuntingWithCreature(mType->info.raceid);
@@ -6837,30 +6838,25 @@ bool Player::claimBountyReward() {
 		return false;
 	}
 
-	const uint32_t requiredKills = activeBountyTask->requiredKills;
-	const BountyDifficulty difficulty = activeBountyTask->difficulty;
+	const BountyTask &task = *activeBountyTask;
 
-	uint64_t expReward = 0;
+	uint64_t expReward = calculateBountyExpReward(
+		getLevel(),
+		task.requiredKills,
+		task.difficulty
+	);
 
-	switch (difficulty) {
-		case BountyDifficulty::Easy:
-			expReward = requiredKills * 20;
-			break;
+	addExperience(nullptr, expReward, false);
 
-		case BountyDifficulty::Medium:
-			expReward = requiredKills * 45;
-			break;
-
-		case BountyDifficulty::Hard:
-			expReward = requiredKills * 90;
-			break;
+	uint8_t diffIndex = static_cast<uint8_t>(task.difficulty);
+	if (diffIndex > 2) {
+		diffIndex = 0;
 	}
 
-	if (expReward > 0) {
-		addExperience(nullptr, expReward, false);
-	}
+	addHuntingTaskPoints(BOUNTY_REWARD_SCALING[diffIndex].points);
 
 	clearActiveBountyTask();
+	g_saveManager().savePlayer(getPlayer());
 
 	return true;
 }
