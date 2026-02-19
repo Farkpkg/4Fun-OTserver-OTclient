@@ -82,5 +82,3 @@ BountyOfferRow < Panel
     id: acceptButton
     width: 80
     text: tr('Accept')
-
-WeeklyBountyWindow
