@@ -119,6 +119,9 @@ namespace {
 	}
 
 	static uint64_t calculateBountyExpReward(const MonsterType* mType, uint32_t requiredKills, BountyDifficulty difficulty, uint32_t playerLevel) {
+		static constexpr uint64_t BOUNTY_EXP_MIN = 100;
+		static constexpr uint64_t BOUNTY_EXP_MAX = 45000000;
+
 		const uint64_t effort = calculateBountyEffort(mType, requiredKills);
 		if (effort == 0) {
 			return 0;
@@ -138,8 +141,9 @@ namespace {
 
 		double expReward = static_cast<double>(effort) * multiplier;
 		expReward *= getLevelNormalizationFactor(playerLevel);
-		const auto scaledExp = static_cast<uint64_t>(expReward);
-		return std::max<uint64_t>(1, scaledExp);
+		uint64_t reward = static_cast<uint64_t>(expReward);
+		reward = std::clamp(reward, BOUNTY_EXP_MIN, BOUNTY_EXP_MAX);
+		return reward;
 	}
 
 	static uint32_t calculateBountyTaskPoints(uint64_t effort, BountyDifficulty difficulty) {
@@ -7140,6 +7144,8 @@ bool Player::claimBountyReward() {
 	const uint32_t currentWeekID = getCurrentWeekID();
 	if (getLastBountyWeekID() != currentWeekID) {
 		bool changed = false;
+		setLastBountyWeekID(currentWeekID);
+		changed = true;
 		if (getWeeklyBountyCompletions() != 0) {
 			setWeeklyBountyCompletions(0);
 			changed = true;
@@ -7206,6 +7212,8 @@ void Player::addBountyTaskKill(const std::shared_ptr<MonsterType> &mType) {
 	const uint32_t currentWeekID = getCurrentWeekID();
 	if (getLastBountyWeekID() != currentWeekID) {
 		bool changed = false;
+		setLastBountyWeekID(currentWeekID);
+		changed = true;
 		if (getWeeklyBountyCompletions() != 0) {
 			setWeeklyBountyCompletions(0);
 			changed = true;

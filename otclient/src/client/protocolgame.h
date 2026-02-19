@@ -136,6 +136,9 @@ public:
     void sendMarketAcceptOffer(uint32_t timestamp, uint16_t counter, uint16_t amount);
     void sendPreyAction(uint8_t slot, uint8_t actionType, uint16_t index);
     void sendPreyRequest();
+    void sendRequestBountyBoard();
+    void sendSelectBounty(const std::string_view creatureName);
+    void sendClaimBountyReward();
     void sendOpenPortableForge();
     void sendForgeRequest(Otc::ForgeAction_t actionType, bool convergence = false, uint16_t firstItemid = 0, uint8_t firstItemTier = 0, uint16_t secondItemId = 0, bool improveChance = false, bool tierLoss = false);
     void sendForgeBrowseHistoryRequest(uint16_t page);
@@ -200,6 +203,7 @@ private:
     void parseRequestPurchaseData(const InputMessagePtr& msg);
     void parseResourceBalance(const InputMessagePtr& msg) const;
     void parseWorldTime(const InputMessagePtr& msg);
+    void parseBountyBoard(const InputMessagePtr& msg);
     void parseCoinBalance(const InputMessagePtr& msg) const;
     void parseCoinBalanceUpdating(const InputMessagePtr& msg);
     void parseBlessings(const InputMessagePtr& msg) const;

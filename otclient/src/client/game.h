@@ -379,6 +379,9 @@ public:
     // prey related
     void preyAction(uint8_t slot, uint8_t actionType, uint16_t index);
     void preyRequest();
+    void requestBountyBoard();
+    void selectBounty(std::string_view creatureName);
+    void claimBountyReward();
 
     // forge related
     void openPortableForgeRequest();
