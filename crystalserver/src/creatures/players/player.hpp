@@ -1650,6 +1650,9 @@ private:
 	void setLastBountyWeekID(uint32_t weekID);
 	uint32_t getLastBountyClaimWeekID() const;
 	void setLastBountyClaimWeekID(uint32_t weekID);
+	uint32_t getWeeklyBountyCompletions() const;
+	void setWeeklyBountyCompletions(uint32_t completions);
+	void incrementWeeklyBountyCompletions();
 	const std::array<std::string, 6> &getLastBountyHistory() const;
 	void pushBountyHistory(const std::string &name);
 
@@ -1688,6 +1691,7 @@ private:
 	std::vector<BountyOffer> bountyOffers;
 	uint32_t lastBountyWeekID = 0;
 	uint32_t lastBountyClaimWeekID = 0;
+	uint32_t weeklyBountyCompletions = 0;
 	std::array<std::string, 6> lastBountyHistory;
 
 	GuildWarVector guildWarVector;

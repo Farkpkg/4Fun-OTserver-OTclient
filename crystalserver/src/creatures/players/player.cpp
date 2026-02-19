@@ -99,15 +99,23 @@ namespace {
 	};
 
 	uint64_t calculateBountyExpReward(uint32_t playerLevel, uint32_t requiredKills, BountyDifficulty difficulty) {
+		constexpr uint64_t BOUNTY_EXP_MIN = 100;
+		constexpr uint64_t BOUNTY_EXP_MAX = 45000000;
+
 		uint8_t index = static_cast<uint8_t>(difficulty);
 		if (index > 2) {
 			index = 0;
 		}
 
 		const auto &scaling = BOUNTY_REWARD_SCALING[index];
-		uint32_t levelFactor = std::max<uint32_t>(1, playerLevel / 20);
+		const uint64_t levelFactor = static_cast<uint64_t>(std::max<uint32_t>(1, playerLevel / 20));
 
-		return static_cast<uint64_t>(requiredKills * scaling.expMultiplier * levelFactor * 20);
+		uint64_t expReward = static_cast<uint64_t>(requiredKills)
+			* static_cast<uint64_t>(scaling.expMultiplier)
+			* levelFactor
+			* static_cast<uint64_t>(20);
+
+		return std::clamp(expReward, BOUNTY_EXP_MIN, BOUNTY_EXP_MAX);
 	}
 
 	constexpr uint32_t BOUNTY_EXP_MEDIUM = 200;
@@ -6770,24 +6778,6 @@ void Player::addHuntingTaskKill(const std::shared_ptr<MonsterType> &mType) {
 		return;
 	}
 
-	if (!activeBountyTask) {
-		return;
-	}
-
-	if (activeBountyTask->completed) {
-		return;
-	}
-
-	if (asLowerCaseString(activeBountyTask->creatureName) != asLowerCaseString(mType->name)) {
-		return;
-	}
-
-	activeBountyTask->currentKills++;
-
-	if (activeBountyTask->currentKills >= activeBountyTask->requiredKills) {
-		activeBountyTask->completed = true;
-	}
-
 	const auto &taskSlot = getTaskHuntingWithCreature(mType->info.raceid);
 	if (!taskSlot) {
 		return;
@@ -6969,6 +6959,25 @@ bool Player::acceptBountyOffer(const std::string &creatureName) {
 }
 
 bool Player::claimBountyReward() {
+	const uint32_t currentWeekID = getCurrentWeekID();
+	if (getLastBountyWeekID() != currentWeekID) {
+		bool changed = false;
+		if (getWeeklyBountyCompletions() != 0) {
+			setWeeklyBountyCompletions(0);
+			changed = true;
+		}
+
+		if (activeBountyTask) {
+			clearActiveBountyTask();
+			changed = true;
+		}
+
+		if (changed) {
+			g_saveManager().savePlayer(getPlayer());
+		}
+		return false;
+	}
+
 	if (!activeBountyTask) {
 		return false;
 	}
@@ -6977,7 +6986,6 @@ bool Player::claimBountyReward() {
 		return false;
 	}
 
-	const uint32_t currentWeekID = getCurrentWeekID();
 	if (lastBountyClaimWeekID == currentWeekID) {
 		return false;
 	}
@@ -6998,6 +7006,7 @@ bool Player::claimBountyReward() {
 	}
 
 	addHuntingTaskPoints(BOUNTY_REWARD_SCALING[diffIndex].points);
+	incrementWeeklyBountyCompletions();
 
 	setLastBountyClaimWeekID(currentWeekID);
 	clearActiveBountyTask();
@@ -7007,6 +7016,25 @@ bool Player::claimBountyReward() {
 }
 
 void Player::addBountyTaskKill(const std::shared_ptr<MonsterType> &mType) {
+	const uint32_t currentWeekID = getCurrentWeekID();
+	if (getLastBountyWeekID() != currentWeekID) {
+		bool changed = false;
+		if (getWeeklyBountyCompletions() != 0) {
+			setWeeklyBountyCompletions(0);
+			changed = true;
+		}
+
+		if (activeBountyTask) {
+			clearActiveBountyTask();
+			changed = true;
+		}
+
+		if (changed) {
+			g_saveManager().savePlayer(getPlayer());
+		}
+		return;
+	}
+
 	if (!activeBountyTask || activeBountyTask->completed || activeBountyTask->currentKills >= activeBountyTask->requiredKills) {
 		return;
 	}
@@ -7101,6 +7129,18 @@ uint32_t Player::getLastBountyClaimWeekID() const {
 
 void Player::setLastBountyClaimWeekID(uint32_t weekID) {
 	lastBountyClaimWeekID = weekID;
+}
+
+uint32_t Player::getWeeklyBountyCompletions() const {
+	return weeklyBountyCompletions;
+}
+
+void Player::setWeeklyBountyCompletions(uint32_t completions) {
+	weeklyBountyCompletions = completions;
+}
+
+void Player::incrementWeeklyBountyCompletions() {
+	weeklyBountyCompletions += 1;
 }
 
 const std::array<std::string, 6> &Player::getLastBountyHistory() const {
