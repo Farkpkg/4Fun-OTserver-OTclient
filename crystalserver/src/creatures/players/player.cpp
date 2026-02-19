@@ -6722,11 +6722,7 @@ void Player::generateBountyOffers() {
 	const uint32_t currentWeekID = getCurrentWeekID();
 	if (getLastBountyWeekID() != currentWeekID) {
 		clearBountyOffers();
-
-		if (activeBountyTask && activeBountyTask->completed) {
-			clearActiveBountyTask();
-		}
-
+		clearActiveBountyTask();
 		setLastBountyWeekID(currentWeekID);
 	}
 
