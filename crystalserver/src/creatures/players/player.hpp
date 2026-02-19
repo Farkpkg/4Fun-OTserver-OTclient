@@ -1647,6 +1647,8 @@ private:
 	bool claimBountyReward();
 	uint32_t getLastBountyWeekID() const;
 	void setLastBountyWeekID(uint32_t weekID);
+	uint32_t getLastBountyClaimWeekID() const;
+	void setLastBountyClaimWeekID(uint32_t weekID);
 
 	void addBountyTaskKill(const std::shared_ptr<MonsterType> &mType);
 	void addBestiaryKill(const std::shared_ptr<MonsterType> &mType);
@@ -1682,6 +1684,7 @@ private:
 	std::optional<BountyTask> activeBountyTask;
 	std::vector<BountyOffer> bountyOffers;
 	uint32_t lastBountyWeekID = 0;
+	uint32_t lastBountyClaimWeekID = 0;
 
 	GuildWarVector guildWarVector;
 

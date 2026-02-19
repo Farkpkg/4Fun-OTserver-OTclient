@@ -6730,6 +6730,10 @@ void Player::generateBountyOffers() {
 		setLastBountyWeekID(currentWeekID);
 	}
 
+	if (getLastBountyClaimWeekID() == currentWeekID) {
+		return;
+	}
+
 	if (!bountyOffers.empty()) {
 		return;
 	}
@@ -6776,10 +6780,13 @@ void Player::generateBountyOffers() {
 			continue;
 		}
 
-		uint32_t requiredKills = uniform_random(
-			selectedEntry->minKills + levelBonus,
-			selectedEntry->maxKills + levelBonus
-		);
+		uint32_t minKills = selectedEntry->minKills + levelBonus;
+		uint32_t maxKills = selectedEntry->maxKills + levelBonus;
+		if (minKills > maxKills) {
+			continue;
+		}
+
+		uint32_t requiredKills = uniform_random(minKills, maxKills);
 
 		if (requiredKills > 0) {
 			addBountyOffer(selectedEntry->name, requiredKills, static_cast<BountyDifficulty>(selectedEntry->category));
@@ -6838,6 +6845,11 @@ bool Player::claimBountyReward() {
 		return false;
 	}
 
+	const uint32_t currentWeekID = getCurrentWeekID();
+	if (lastBountyClaimWeekID == currentWeekID) {
+		return false;
+	}
+
 	const BountyTask &task = *activeBountyTask;
 
 	uint64_t expReward = calculateBountyExpReward(
@@ -6855,6 +6867,7 @@ bool Player::claimBountyReward() {
 
 	addHuntingTaskPoints(BOUNTY_REWARD_SCALING[diffIndex].points);
 
+	setLastBountyClaimWeekID(currentWeekID);
 	clearActiveBountyTask();
 	g_saveManager().savePlayer(getPlayer());
 
@@ -6948,6 +6961,14 @@ uint32_t Player::getLastBountyWeekID() const {
 
 void Player::setLastBountyWeekID(uint32_t weekID) {
 	lastBountyWeekID = weekID;
+}
+
+uint32_t Player::getLastBountyClaimWeekID() const {
+	return lastBountyClaimWeekID;
+}
+
+void Player::setLastBountyClaimWeekID(uint32_t weekID) {
+	lastBountyClaimWeekID = weekID;
 }
 
 void Player::gainExperience(uint64_t gainExp, const std::shared_ptr<Creature> &target) {
