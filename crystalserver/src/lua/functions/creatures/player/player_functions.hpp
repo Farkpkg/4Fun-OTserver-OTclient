@@ -53,7 +53,6 @@ class PlayerFunctions {
 	static int luaPlayerIsMonsterBestiaryUnlocked(lua_State* L);
 	static int luaPlayercharmExpansion(lua_State* L);
 	static int luaPlayergetCharmMonsterType(lua_State* L);
-	static int luaPlayerAssignBountyTask(lua_State* L);
 
 	static int luaPlayerisMonsterPrey(lua_State* L);
 	static int luaPlayerGetPreyCards(lua_State* L);

@@ -172,12 +172,6 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		// Load task hunting class
 		IOLoginDataLoad::loadPlayerTaskHuntingClass(player, result);
 
-		// Load bounty task
-		IOLoginDataLoad::loadBountyTask(player);
-
-		// Load bounty offers
-		IOLoginDataLoad::loadBountyOffers(player);
-
 		// Load instant spells list
 		IOLoginDataLoad::loadPlayerInstantSpellList(player, result);
 
@@ -272,14 +266,6 @@ bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 
 	if (!IOLoginDataSave::savePlayerTaskHuntingClass(player)) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerTaskHuntingClass] - Failed to save player task hunting class: " + player->getName());
-	}
-
-	if (!IOLoginDataSave::saveBountyTask(player)) {
-		throw DatabaseException("[IOLoginDataSave::saveBountyTask] - Failed to save player bounty task: " + player->getName());
-	}
-
-	if (!IOLoginDataSave::saveBountyOffers(player)) {
-		throw DatabaseException("[IOLoginDataSave::saveBountyOffers] - Failed to save player bounty offers: " + player->getName());
 	}
 
 	if (!IOLoginDataSave::savePlayerForgeHistory(player)) {

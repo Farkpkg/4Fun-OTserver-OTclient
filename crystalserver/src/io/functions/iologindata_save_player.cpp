@@ -17,7 +17,6 @@
 
 #include "io/functions/iologindata_save_player.hpp"
 
-
 #include "config/configmanager.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
@@ -228,24 +227,6 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 	query << "`prey_wildcard` = " << player->getPreyCards() << ",";
 	query << "`task_points` = " << player->getTaskHuntingPoints() << ",";
-	query << "`hunting_task_points` = " << player->getHuntingTaskPoints() << ",";
-	query << "`last_bounty_week` = " << player->getLastBountyWeekID() << ",";
-	query << "`last_bounty_claim_week` = " << player->getLastBountyClaimWeekID() << ",";
-	query << "`weekly_bounty_completions` = " << static_cast<uint32_t>(player->getWeeklyBountyCompletions()) << ",";
-
-	std::string bountyHistory;
-	const auto &history = player->getLastBountyHistory();
-	for (size_t i = 0; i < history.size(); ++i) {
-		if (history[i].empty()) {
-			continue;
-		}
-
-		if (!bountyHistory.empty()) {
-			bountyHistory += ",";
-		}
-		bountyHistory += history[i];
-	}
-	query << "`last_bounty_history` = " << db.escapeString(bountyHistory) << ",";
 	query << "`boss_points` = " << player->getBossPoints() << ",";
 	query << "`loyalty_points` = " << player->getLoyaltyPoints() << ",";
 	query << "`forge_dusts` = " << player->getForgeDusts() << ",";
@@ -744,93 +725,6 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 			}
 		}
 	}
-	return true;
-}
-
-bool IOLoginDataSave::clearBountyTask(const std::shared_ptr<Player> &player) {
-	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
-		return false;
-	}
-
-	std::ostringstream query;
-	query << "DELETE FROM `player_bounty_task` WHERE `player_id` = " << player->getGUID();
-	return Database::getInstance().executeQuery(query.str());
-}
-
-bool IOLoginDataSave::saveBountyTask(const std::shared_ptr<Player> &player) {
-	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
-		return false;
-	}
-
-	if (!player->getActiveBountyTask()) {
-		return clearBountyTask(player);
-	}
-
-	const auto &task = player->getActiveBountyTask().value();
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "INSERT INTO `player_bounty_task` (`player_id`, `creature_name`, `required_kills`, `current_kills`, `completed`, `difficulty`) VALUES (";
-	query << player->getGUID() << ", ";
-	query << db.escapeString(task.creatureName) << ", ";
-	query << task.requiredKills << ", ";
-	query << task.currentKills << ", ";
-	query << (task.completed ? 1 : 0) << ", ";
-	query << static_cast<uint8_t>(task.difficulty) << ") ";
-	query << "ON DUPLICATE KEY UPDATE ";
-	query << "`creature_name` = VALUES(`creature_name`), ";
-	query << "`required_kills` = VALUES(`required_kills`), ";
-	query << "`current_kills` = VALUES(`current_kills`), ";
-	query << "`completed` = VALUES(`completed`), ";
-	query << "`difficulty` = VALUES(`difficulty`)";
-
-	return db.executeQuery(query.str());
-}
-
-bool IOLoginDataSave::clearBountyOffersFromDB(const std::shared_ptr<Player> &player) {
-	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
-		return false;
-	}
-
-	std::ostringstream query;
-	query << "DELETE FROM `player_bounty_offers` WHERE `player_id` = " << player->getGUID();
-	return Database::getInstance().executeQuery(query.str());
-}
-
-bool IOLoginDataSave::saveBountyOffers(const std::shared_ptr<Player> &player) {
-	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
-		return false;
-	}
-
-	if (!clearBountyOffersFromDB(player)) {
-		return false;
-	}
-
-	const auto &offers = player->getBountyOffers();
-	if (offers.empty()) {
-		return true;
-	}
-
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	for (size_t i = 0; i < offers.size() && i < 3; ++i) {
-		query.str("");
-		query << "INSERT INTO `player_bounty_offers` (`player_id`, `slot`, `creature_name`, `required_kills`, `difficulty`, `last_bounty_week`) VALUES (";
-		query << player->getGUID() << ", ";
-		query << i << ", ";
-		query << db.escapeString(offers[i].creatureName) << ", ";
-		query << offers[i].requiredKills << ", ";
-		query << static_cast<uint8_t>(offers[i].difficulty) << ", ";
-		query << player->getLastBountyWeekID() << ")";
-
-		if (!db.executeQuery(query.str())) {
-			return false;
-		}
-	}
-
 	return true;
 }
 

@@ -77,8 +77,6 @@
 // This "getIteration" function will allow us to get the total number of iterations that run within a specific map
 // Very useful to send the total amount in certain bytes in the ProtocolGame class
 namespace {
-	constexpr uint8_t OPCODE_BOUNTY_BOARD = 0xFF;
-
 	template <typename T>
 	uint16_t getVectorIterationIncreaseCount(T &vector) {
 		uint16_t totalIterationCount = 0;
@@ -1496,20 +1494,15 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 			parseGreet(msg);
 			break;
 		// Premium coins transfer
-		case 0xEF:
-			parseRequestBountyBoard(msg);
-			break;
+		// case 0xEF: parseCoinTransfer(msg); break;
 		case 0xF0:
 			g_game().playerShowQuestLog(player->getID());
 			break;
 		case 0xF1:
 			parseQuestLine(msg);
 			break;
-		case 0xF2:
-			parseSelectBounty(msg);
-			break;
-		case 0xF3:
-			parseClaimBountyReward(msg);
+		// case 0xF2: parseRuleViolationReport(msg); break;
+		case 0xF3: /* get object info */
 			break;
 		case 0xF4:
 			parseMarketLeave();
@@ -3367,35 +3360,6 @@ void ProtocolGame::parseEnableSharedPartyExperience(NetworkMessage &msg) {
 void ProtocolGame::parseQuestLine(NetworkMessage &msg) {
 	auto questId = msg.get<uint16_t>();
 	g_game().playerShowQuestLine(player->getID(), questId);
-}
-
-void ProtocolGame::parseRequestBountyBoard(NetworkMessage &msg) {
-	if (!player || msg.isOverrun()) {
-		return;
-	}
-
-	player->generateBountyOffers();
-	player->sendBountyBoard();
-}
-
-void ProtocolGame::parseSelectBounty(NetworkMessage &msg) {
-	if (!player || msg.isOverrun()) {
-		return;
-	}
-
-	const std::string creatureName = msg.getString();
-	player->acceptBountyOffer(creatureName);
-	player->sendBountyBoard();
-}
-
-void ProtocolGame::parseClaimBountyReward(NetworkMessage &msg) {
-	if (!player || msg.isOverrun()) {
-		return;
-	}
-
-	if (player->claimBountyReward()) {
-		sendBountyBoard(player.get());
-	}
 }
 
 void ProtocolGame::parseMarketLeave() {
@@ -8223,35 +8187,6 @@ void ProtocolGame::sendPreyPrices() {
 		msg.add<uint32_t>(player->getTaskHuntingRerollPrice());
 		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_SELECTION_LIST_PRICE)));
 		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_BONUS_REROLL_PRICE)));
-	}
-
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::sendBountyBoard(const Player* playerPtr) {
-	if (!playerPtr) {
-		return;
-	}
-
-	NetworkMessage msg;
-	msg.addByte(OPCODE_BOUNTY_BOARD);
-
-	const auto &offers = playerPtr->getBountyOffers();
-	msg.addByte(static_cast<uint8_t>(offers.size()));
-	for (const auto &offer : offers) {
-		msg.addString(offer.creatureName);
-		msg.add<uint32_t>(offer.requiredKills);
-		msg.addByte(static_cast<uint8_t>(offer.difficulty));
-	}
-
-	const auto &activeTask = playerPtr->getActiveBountyTask();
-	msg.addByte(activeTask ? 1 : 0);
-	if (activeTask) {
-		msg.addString(activeTask->creatureName);
-		msg.add<uint32_t>(activeTask->requiredKills);
-		msg.add<uint32_t>(activeTask->currentKills);
-		msg.addByte(static_cast<uint8_t>(activeTask->difficulty));
-		msg.addByte(activeTask->completed ? 1 : 0);
 	}
 
 	writeToOutputBuffer(msg);

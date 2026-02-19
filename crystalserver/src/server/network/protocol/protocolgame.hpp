@@ -225,9 +225,6 @@ private:
 	void parsePlayerSellOnShop(NetworkMessage &msg);
 
 	void parseQuestLine(NetworkMessage &msg);
-	void parseRequestBountyBoard(NetworkMessage &msg);
-	void parseSelectBounty(NetworkMessage &msg);
-	void parseClaimBountyReward(NetworkMessage &msg);
 
 	void parseInviteToParty(NetworkMessage &msg);
 	void parseJoinParty(NetworkMessage &msg);
@@ -437,7 +434,6 @@ private:
 
 	void sendPreyTimeLeft(const std::unique_ptr<PreySlot> &slot);
 	void sendPreyData(const std::unique_ptr<PreySlot> &slot);
-	void sendBountyBoard(const Player* player);
 	void sendPreyPrices();
 
 	// tiles

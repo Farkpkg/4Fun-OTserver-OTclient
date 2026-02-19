@@ -42,7 +42,6 @@
 #include "items/containers/rewards/rewardchest.hpp"
 #include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
-#include "tools/string.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {
 	try {
@@ -181,16 +180,6 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	player->loginPosition.z = static_cast<uint8_t>(result->getNumber<uint16_t>("posz"));
 	player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
 	player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
-	player->setHuntingTaskPoints(result->getNumber<uint32_t>("hunting_task_points"));
-	player->setLastBountyWeekID(result->getNumber<uint32_t>("last_bounty_week"));
-	player->setLastBountyClaimWeekID(result->getNumber<uint32_t>("last_bounty_claim_week"));
-	player->setWeeklyBountyCompletions(result->getNumber<uint8_t>("weekly_bounty_completions"));
-	const auto bountyHistory = explodeString(result->getString("last_bounty_history"), ",");
-	for (auto it = bountyHistory.rbegin(); it != bountyHistory.rend(); ++it) {
-		if (!it->empty()) {
-			player->pushBountyHistory(*it);
-		}
-	}
 	player->addForgeDusts(result->getNumber<uint64_t>("forge_dusts"));
 	player->addForgeDustLevel(result->getNumber<uint64_t>("forge_dust_level"));
 	player->setRandomMount(static_cast<uint8_t>(result->getNumber<uint16_t>("randomize_mount")));
@@ -914,65 +903,6 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &
 				player->setTaskHuntingSlotClass(slot);
 			} while (result->next());
 		}
-	}
-}
-
-void IOLoginDataLoad::loadBountyTask(const std::shared_ptr<Player> &player) {
-	if (!player) {
-		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
-		return;
-	}
-
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "SELECT `creature_name`, `required_kills`, `current_kills`, `completed`, `difficulty` FROM `player_bounty_task` WHERE `player_id` = " << player->getGUID();
-	DBResult_ptr result = db.storeQuery(query.str());
-	if (result) {
-		uint8_t diff = result->getNumber<uint8_t>("difficulty");
-		if (diff > 2) {
-			diff = static_cast<uint8_t>(BountyDifficulty::Easy);
-		}
-
-		BountyTask task {
-			.creatureName = result->getString("creature_name"),
-			.requiredKills = result->getNumber<uint32_t>("required_kills"),
-			.currentKills = result->getNumber<uint32_t>("current_kills"),
-			.completed = result->getNumber<bool>("completed"),
-			.difficulty = static_cast<BountyDifficulty>(diff),
-		};
-
-		if (task.currentKills >= task.requiredKills) {
-			task.completed = true;
-		}
-
-		player->setActiveBountyTask(task);
-	}
-}
-
-void IOLoginDataLoad::loadBountyOffers(const std::shared_ptr<Player> &player) {
-	if (!player) {
-		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
-		return;
-	}
-
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	player->clearBountyOffers();
-	query << "SELECT `slot`, `creature_name`, `required_kills`, `difficulty`, `last_bounty_week` FROM `player_bounty_offers` WHERE `player_id` = " << player->getGUID() << " ORDER BY `slot` ASC";
-	DBResult_ptr result = db.storeQuery(query.str());
-	if (result) {
-		do {
-			uint8_t diff = result->getNumber<uint8_t>("difficulty");
-			if (diff > 2) {
-				diff = static_cast<uint8_t>(BountyDifficulty::Easy);
-			}
-
-			player->addBountyOffer(
-				result->getString("creature_name"),
-				result->getNumber<uint32_t>("required_kills"),
-				static_cast<BountyDifficulty>(diff)
-			);
-		} while (result->next());
 	}
 }
 

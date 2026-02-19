@@ -76,7 +76,6 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "addBestiaryKill", PlayerFunctions::luaPlayerAddBestiaryKill);
 	Lua::registerMethod(L, "Player", "charmExpansion", PlayerFunctions::luaPlayercharmExpansion);
 	Lua::registerMethod(L, "Player", "getCharmMonsterType", PlayerFunctions::luaPlayergetCharmMonsterType);
-	Lua::registerMethod(L, "Player", "assignBountyTask", PlayerFunctions::luaPlayerAssignBountyTask);
 
 	Lua::registerMethod(L, "Player", "isMonsterPrey", PlayerFunctions::luaPlayerisMonsterPrey);
 	Lua::registerMethod(L, "Player", "getPreyCards", PlayerFunctions::luaPlayerGetPreyCards);
@@ -922,19 +921,6 @@ int PlayerFunctions::luaPlayergetCharmMonsterType(lua_State* L) {
 		} else {
 			lua_pushnil(L);
 		}
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerAssignBountyTask(lua_State* L) {
-	// player:assignBountyTask(creatureName, requiredKills)
-	const auto &player = Lua::getUserdataShared<Player>(L, 1);
-	if (player) {
-		const std::string creatureName = Lua::getString(L, 2);
-		const uint32_t requiredKills = Lua::getNumber<uint32_t>(L, 3);
-		Lua::pushBoolean(L, player->assignBountyTask(creatureName, requiredKills));
 	} else {
 		lua_pushnil(L);
 	}

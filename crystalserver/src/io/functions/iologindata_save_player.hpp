@@ -35,10 +35,6 @@ public:
 	static bool savePlayerInbox(const std::shared_ptr<Player> &player);
 	static bool savePlayerPreyClass(const std::shared_ptr<Player> &player);
 	static bool savePlayerTaskHuntingClass(const std::shared_ptr<Player> &player);
-	static bool saveBountyTask(const std::shared_ptr<Player> &player);
-	static bool clearBountyTask(const std::shared_ptr<Player> &player);
-	static bool saveBountyOffers(const std::shared_ptr<Player> &player);
-	static bool clearBountyOffersFromDB(const std::shared_ptr<Player> &player);
 	static bool savePlayerForgeHistory(const std::shared_ptr<Player> &player);
 	static bool savePlayerBosstiary(const std::shared_ptr<Player> &player);
 	static bool savePlayerStorage(const std::shared_ptr<Player> &player);
