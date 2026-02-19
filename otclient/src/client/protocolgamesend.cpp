@@ -1431,28 +1431,6 @@ void ProtocolGame::sendPreyRequest()
     send(msg);
 }
 
-void ProtocolGame::sendRequestBountyBoard()
-{
-    const auto& msg = std::make_shared<OutputMessage>();
-    msg->addU8(0xEF);
-    send(msg);
-}
-
-void ProtocolGame::sendSelectBounty(const std::string_view creatureName)
-{
-    const auto& msg = std::make_shared<OutputMessage>();
-    msg->addU8(0xF2);
-    msg->addString(creatureName);
-    send(msg);
-}
-
-void ProtocolGame::sendClaimBountyReward()
-{
-    const auto& msg = std::make_shared<OutputMessage>();
-    msg->addU8(0xF3);
-    send(msg);
-}
-
 void ProtocolGame::sendOpenPortableForge() {
     const auto& msg = std::make_shared<OutputMessage>();
     msg->addU8(Proto::ClientPreyRequest);

@@ -1,9 +1,0 @@
-Module
-  name: game_weeklybounty
-  description: Weekly Bounty Board
-  author: crystalserver
-  sandboxed: true
-  scripts: [ weeklybounty ]
-  dependencies: [ client_topmenu, game_interface ]
-  @onLoad: init()
-  @onUnload: terminate()

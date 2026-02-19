@@ -1,0 +1,9 @@
+Module
+  name: game_taskboard
+  description: Task Board — Bounty, Weekly Tasks, Shop, Talisman
+  author: CrystalServer Dev
+  website:
+  sandboxed: false
+  scripts: [ taskboard.lua ]
+  @onLoad: init()
+  @onUnload: terminate()
