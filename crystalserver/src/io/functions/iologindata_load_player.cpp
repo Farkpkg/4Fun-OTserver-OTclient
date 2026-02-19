@@ -183,7 +183,7 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
 	player->setHuntingTaskPoints(result->getNumber<uint32_t>("hunting_task_points"));
 	player->setLastBountyClaimWeekID(result->getNumber<uint32_t>("last_bounty_claim_week"));
-	player->setWeeklyBountyCompletions(result->getNumber<uint32_t>("weekly_bounty_completions"));
+	player->setWeeklyBountyCompletions(result->getNumber<uint8_t>("weekly_bounty_completions"));
 	const auto bountyHistory = explodeString(result->getString("last_bounty_history"), ",");
 	for (auto it = bountyHistory.rbegin(); it != bountyHistory.rend(); ++it) {
 		if (!it->empty()) {

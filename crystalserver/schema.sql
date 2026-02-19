@@ -153,6 +153,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `virtue` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `harmony` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `weapon_proficiencies` mediumblob DEFAULT NULL,
+    `weekly_bounty_completions` tinyint(3) unsigned NOT NULL DEFAULT '0',
     INDEX `account_id` (`account_id`),
     INDEX `vocation` (`vocation`),
     CONSTRAINT `players_pk` PRIMARY KEY (`id`),
