@@ -87,6 +87,78 @@ local function decodeTaskBoardPayload(opcode, buffer)
 	return payload
 end
 
+local function dispatchTaskBoardOpcode(player, opcode, payload)
+	if type(TaskBoard) ~= "table" then
+		logger.error("TaskBoard table is not available for extended opcode {}", opcode)
+		return
+	end
+
+	if opcode == TASKBOARD_OPCODE.SELECT then
+		if payload.slot == nil then
+			logger.warn("TaskBoard SELECT opcode is missing slot payload")
+			return
+		end
+		TaskBoard.select(player, payload.slot)
+	elseif opcode == TASKBOARD_OPCODE.REROLL then
+		TaskBoard.reroll(player)
+	elseif opcode == TASKBOARD_OPCODE.CLAIM_DAILY then
+		TaskBoard.claimDaily(player)
+	elseif opcode == TASKBOARD_OPCODE.PREF_SET then
+		if payload.listType == nil or payload.creatureId == nil then
+			-- Client can ping this opcode without payload while opening preferred list.
+			TaskBoard.getData(player)
+			return
+		end
+		TaskBoard.preferred(player, "set", payload.listType, payload.creatureId, "")
+	elseif opcode == TASKBOARD_OPCODE.PREF_CLEAR then
+		if payload.slot == nil then
+			logger.warn("TaskBoard PREF_CLEAR opcode is missing slot payload")
+			return
+		end
+		TaskBoard.preferred(player, "clear", payload.slot)
+	elseif opcode == TASKBOARD_OPCODE.UNWANTED_CLEAR then
+		if payload.slot == nil then
+			logger.warn("TaskBoard UNWANTED_CLEAR opcode is missing slot payload")
+			return
+		end
+		TaskBoard.preferred(player, "clear_unwanted", payload.slot)
+	elseif opcode == TASKBOARD_OPCODE.EXTRA_SLOT then
+		if payload.index == nil then
+			logger.warn("TaskBoard EXTRA_SLOT opcode is missing index payload")
+			return
+		end
+		TaskBoard.unlock(player, payload.index)
+	elseif opcode == TASKBOARD_OPCODE.TALISMAN_UPGRADE then
+		if payload.slot == nil then
+			logger.warn("TaskBoard TALISMAN_UPGRADE opcode is missing slot payload")
+			return
+		end
+		TaskBoard.talisman(player, payload.slot)
+	elseif opcode == TASKBOARD_OPCODE.SHOP_BUY then
+		if payload.index == nil then
+			logger.warn("TaskBoard SHOP_BUY opcode is missing index payload")
+			return
+		end
+		TaskBoard.shop(player, payload.index)
+	elseif opcode == TASKBOARD_OPCODE.WEEKLY_DIFFICULTY then
+		if payload.difficulty == nil then
+			logger.warn("TaskBoard WEEKLY_DIFFICULTY opcode is missing difficulty payload")
+			return
+		end
+		TaskBoard.weekly(player, "difficulty", payload.difficulty)
+	elseif opcode == TASKBOARD_OPCODE.WEEKLY_DELIVER then
+		if payload.index == nil then
+			logger.warn("TaskBoard WEEKLY_DELIVER opcode is missing index payload")
+			return
+		end
+		TaskBoard.weekly(player, "delivery", payload.index)
+	elseif opcode == TASKBOARD_OPCODE.WEEKLY_UNLOCK_KILL then
+		TaskBoard.weekly(player, "unlock_kill")
+	elseif opcode == TASKBOARD_OPCODE.WEEKLY_UNLOCK_DELIVER then
+		TaskBoard.weekly(player, "unlock_delivery")
+	end
+end
+
 local extendedOpcode = CreatureEvent("ExtendedOpcode")
 
 function extendedOpcode.onExtendedOpcode(player, opcode, buffer)
@@ -97,14 +169,11 @@ function extendedOpcode.onExtendedOpcode(player, opcode, buffer)
 			-- player:setStorageValue(SOME_STORAGE_ID, SOME_VALUE)
 		end
 	elseif isTaskBoardOpcode(opcode) then
-		-- Task Board payload decode (opcodes 60-72)
-		-- This keeps server parsing aligned with client binary-string payload format.
 		local payload = decodeTaskBoardPayload(opcode, buffer)
 		if payload.remainingBytes ~= 0 then
 			logger.warn(string.format("TaskBoard opcode %d has %d unread bytes", opcode, payload.remainingBytes))
 		end
-		-- Integrate real handlers here (example):
-		-- TaskBoard.onExtendedOpcode(player, opcode, payload)
+		dispatchTaskBoardOpcode(player, opcode, payload)
 	else
 		-- other opcodes can be ignored, and the server will just work fine...
 	end

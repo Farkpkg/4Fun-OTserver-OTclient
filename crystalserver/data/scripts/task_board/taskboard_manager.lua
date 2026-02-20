@@ -344,9 +344,22 @@ function TaskBoard.claim(player)
 	return TaskBoard.claimSelected(player)
 end
 
+
+function TaskBoard.deliverWeekly(player, index)
+	if index == nil then
+		return false, "Índice semanal inválido."
+	end
+
+	-- TODO: ligar entrega semanal ao backend de itens quando o fluxo estiver disponível.
+	return false, "Entrega semanal ainda não implementada."
+end
+
 function TaskBoard.weekly(player, action, value)
 	if action == "difficulty" then
 		return TaskBoard.selectWeeklyDifficulty(player, value)
+	end
+	if action == "delivery" or action == "deliver" then
+		return TaskBoard.deliverWeekly(player, value)
 	end
 	if action == "unlock_kill" then
 		return TaskBoard.unlockWeeklyKill(player)
