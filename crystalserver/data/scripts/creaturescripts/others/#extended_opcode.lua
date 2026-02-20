@@ -93,69 +93,103 @@ local function dispatchTaskBoardOpcode(player, opcode, payload)
 		return
 	end
 
+	local ok = false
+	local message = "Ação inválida."
+
 	if opcode == TASKBOARD_OPCODE.SELECT then
 		if payload.slot == nil then
 			logger.warn("TaskBoard SELECT opcode is missing slot payload")
+			if TaskBoard.result then
+				TaskBoard.result(player, false, "Slot da task não informado.")
+			end
 			return
 		end
-		TaskBoard.select(player, payload.slot)
+		ok, message = TaskBoard.select(player, payload.slot)
 	elseif opcode == TASKBOARD_OPCODE.REROLL then
-		TaskBoard.reroll(player)
+		ok, message = TaskBoard.reroll(player)
 	elseif opcode == TASKBOARD_OPCODE.CLAIM_DAILY then
-		TaskBoard.claimDaily(player)
+		ok, message = TaskBoard.claimDaily(player)
 	elseif opcode == TASKBOARD_OPCODE.PREF_SET then
 		if payload.listType == nil or payload.creatureId == nil then
 			-- Client can ping this opcode without payload while opening preferred list.
 			TaskBoard.getData(player)
+			if TaskBoard.result then
+				TaskBoard.result(player, true, "Lista carregada.")
+			end
 			return
 		end
-		TaskBoard.preferred(player, "set", payload.listType, payload.creatureId, "")
+		ok, message = TaskBoard.preferred(player, "set", payload.listType, payload.creatureId, "")
 	elseif opcode == TASKBOARD_OPCODE.PREF_CLEAR then
 		if payload.slot == nil then
 			logger.warn("TaskBoard PREF_CLEAR opcode is missing slot payload")
+			if TaskBoard.result then
+				TaskBoard.result(player, false, "Slot preferred não informado.")
+			end
 			return
 		end
-		TaskBoard.preferred(player, "clear", payload.slot)
+		ok, message = TaskBoard.preferred(player, "clear", payload.slot)
 	elseif opcode == TASKBOARD_OPCODE.UNWANTED_CLEAR then
 		if payload.slot == nil then
 			logger.warn("TaskBoard UNWANTED_CLEAR opcode is missing slot payload")
+			if TaskBoard.result then
+				TaskBoard.result(player, false, "Slot unwanted não informado.")
+			end
 			return
 		end
-		TaskBoard.preferred(player, "clear_unwanted", payload.slot)
+		ok, message = TaskBoard.preferred(player, "clear_unwanted", payload.slot)
 	elseif opcode == TASKBOARD_OPCODE.EXTRA_SLOT then
 		if payload.index == nil then
 			logger.warn("TaskBoard EXTRA_SLOT opcode is missing index payload")
+			if TaskBoard.result then
+				TaskBoard.result(player, false, "Índice de slot extra não informado.")
+			end
 			return
 		end
-		TaskBoard.unlock(player, payload.index)
+		ok, message = TaskBoard.unlock(player, payload.index)
 	elseif opcode == TASKBOARD_OPCODE.TALISMAN_UPGRADE then
 		if payload.slot == nil then
 			logger.warn("TaskBoard TALISMAN_UPGRADE opcode is missing slot payload")
+			if TaskBoard.result then
+				TaskBoard.result(player, false, "Slot de talisman não informado.")
+			end
 			return
 		end
-		TaskBoard.talisman(player, payload.slot)
+		ok, message = TaskBoard.talisman(player, payload.slot)
 	elseif opcode == TASKBOARD_OPCODE.SHOP_BUY then
 		if payload.index == nil then
 			logger.warn("TaskBoard SHOP_BUY opcode is missing index payload")
+			if TaskBoard.result then
+				TaskBoard.result(player, false, "Índice da loja não informado.")
+			end
 			return
 		end
-		TaskBoard.shop(player, payload.index)
+		ok, message = TaskBoard.shop(player, payload.index)
 	elseif opcode == TASKBOARD_OPCODE.WEEKLY_DIFFICULTY then
 		if payload.difficulty == nil then
 			logger.warn("TaskBoard WEEKLY_DIFFICULTY opcode is missing difficulty payload")
+			if TaskBoard.result then
+				TaskBoard.result(player, false, "Dificuldade semanal não informada.")
+			end
 			return
 		end
-		TaskBoard.weekly(player, "difficulty", payload.difficulty)
+		ok, message = TaskBoard.weekly(player, "difficulty", payload.difficulty)
 	elseif opcode == TASKBOARD_OPCODE.WEEKLY_DELIVER then
 		if payload.index == nil then
 			logger.warn("TaskBoard WEEKLY_DELIVER opcode is missing index payload")
+			if TaskBoard.result then
+				TaskBoard.result(player, false, "Índice de entrega não informado.")
+			end
 			return
 		end
-		TaskBoard.weekly(player, "delivery", payload.index)
+		ok, message = TaskBoard.weekly(player, "delivery", payload.index)
 	elseif opcode == TASKBOARD_OPCODE.WEEKLY_UNLOCK_KILL then
-		TaskBoard.weekly(player, "unlock_kill")
+		ok, message = TaskBoard.weekly(player, "unlock_kill")
 	elseif opcode == TASKBOARD_OPCODE.WEEKLY_UNLOCK_DELIVER then
-		TaskBoard.weekly(player, "unlock_delivery")
+		ok, message = TaskBoard.weekly(player, "unlock_delivery")
+	end
+
+	if TaskBoard.result then
+		TaskBoard.result(player, ok, message)
 	end
 end
 
