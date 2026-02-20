@@ -54,7 +54,7 @@ MainWindow
       anchors.left: parent.left
       anchors.right: parent.right
       height: 20
-      align: center
+      text-align: center
       color: #f0c060
       font: verdana-11px-rounded
 
@@ -143,7 +143,7 @@ MainWindow
           anchors.left: parent.left
           anchors.right: parent.right
           height: 20
-          align: center
+          text-align: center
           color: #f0c060
           font: verdana-11px-rounded
 
@@ -155,7 +155,7 @@ MainWindow
           height: 14
           font: verdana-11px-rounded
 
-        Creature
+        UICreature
           id: taskCard1Creature
           anchors.top: taskCard1Badge.bottom
           anchors.horizontalCenter: parent.horizontalCenter
@@ -209,7 +209,7 @@ MainWindow
           anchors.left: parent.left
           anchors.right: parent.right
           height: 20
-          align: center
+          text-align: center
           color: #f0c060
           font: verdana-11px-rounded
 
@@ -221,7 +221,7 @@ MainWindow
           height: 14
           font: verdana-11px-rounded
 
-        Creature
+        UICreature
           id: taskCard2Creature
           anchors.top: taskCard2Badge.bottom
           anchors.horizontalCenter: parent.horizontalCenter
@@ -275,7 +275,7 @@ MainWindow
           anchors.left: parent.left
           anchors.right: parent.right
           height: 20
-          align: center
+          text-align: center
           color: #f0c060
           font: verdana-11px-rounded
 
@@ -287,7 +287,7 @@ MainWindow
           height: 14
           font: verdana-11px-rounded
 
-        Creature
+        UICreature
           id: taskCard3Creature
           anchors.top: taskCard3Badge.bottom
           anchors.horizontalCenter: parent.horizontalCenter
@@ -333,7 +333,7 @@ MainWindow
       anchors.left: parent.left
       anchors.right: parent.right
       height: 20
-      align: center
+      text-align: center
       color: #f0c060
       font: verdana-11px-rounded
       margin-top: 8
@@ -562,7 +562,7 @@ MainWindow
       anchors.left: parent.left
       anchors.right: parent.right
       height: 18
-      align: center
+      text-align: center
       color: #cccccc
       font: verdana-11px-rounded
 
@@ -589,7 +589,7 @@ MainWindow
           anchors.left: parent.left
           anchors.right: parent.right
           height: 18
-          align: center
+          text-align: center
           color: #f0c060
           font: verdana-11px-rounded
 
@@ -627,7 +627,7 @@ MainWindow
           anchors.left: parent.left
           anchors.right: parent.right
           height: 18
-          align: center
+          text-align: center
           color: #f0c060
           font: verdana-11px-rounded
 
@@ -674,7 +674,7 @@ MainWindow
           anchors.left: parent.left
           anchors.right: parent.right
           height: 16
-          align: center
+          text-align: center
           color: #aaaaaa
           font: verdana-11px-rounded
 
@@ -728,7 +728,7 @@ MainWindow
           anchors.left: parent.left
           anchors.right: parent.right
           height: 16
-          align: center
+          text-align: center
           color: #f0c060
           font: verdana-11px-rounded
 
@@ -924,7 +924,7 @@ Window
       anchors.left: parent.left
       width: 120
       height: 16
-      align: center
+      text-align: center
       color: #f0c060
       font: verdana-11px-rounded
 
@@ -934,7 +934,7 @@ Window
       anchors.left: prev.right
       anchors.right: parent.right
       height: 16
-      align: center
+      text-align: center
       color: #f0c060
       font: verdana-11px-rounded
 
@@ -949,7 +949,7 @@ Window
       margin-top: 20
       padding: 4
 
-      Creature
+      UICreature
         id: prefSlot1Creature
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
@@ -995,7 +995,7 @@ Window
       height: 56
       padding: 4
 
-      Creature
+      UICreature
         id: unwantedSlot1Creature
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
@@ -1225,7 +1225,7 @@ Window
     anchors.left: parent.left
     anchors.right: parent.right
     height: 18
-    align: center
+    text-align: center
     color: #e8d8b0
     font: verdana-11px-rounded
     margin-top: 8
@@ -1237,7 +1237,7 @@ Window
     anchors.left: parent.left
     anchors.right: parent.right
     height: 18
-    align: center
+    text-align: center
     color: #e8d8b0
     font: verdana-11px-rounded
     margin-top: 4
@@ -1249,7 +1249,7 @@ Window
     anchors.left: parent.left
     anchors.right: parent.right
     height: 18
-    align: center
+    text-align: center
     color: #80d060
     font: verdana-11px-rounded
     margin-top: 8
@@ -1260,7 +1260,7 @@ Window
     anchors.left: parent.left
     anchors.right: parent.right
     height: 18
-    align: center
+    text-align: center
     color: #7090c0
     font: verdana-11px-rounded
     margin-top: 10
@@ -1314,7 +1314,7 @@ Panel
   height: 30
   padding: 4
 
-  Creature
+  UICreature
     id: itemCreature
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
@@ -1344,11 +1344,11 @@ Panel
     anchors.left: parent.left
     anchors.right: parent.right
     height: 28
-    align: center
+    text-align: center
     font: verdana-11px-rounded
     color: #dddddd
 
-  Creature
+  UICreature
     id: cardCreature
     anchors.top: cardName.bottom
     anchors.horizontalCenter: parent.horizontalCenter
@@ -1386,7 +1386,7 @@ Panel
     anchors.left: parent.left
     anchors.right: parent.right
     height: 16
-    align: center
+    text-align: center
     font: verdana-11px-rounded
     color: #e8d8b0
 
