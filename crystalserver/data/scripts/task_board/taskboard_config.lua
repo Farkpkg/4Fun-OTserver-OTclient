@@ -10,7 +10,6 @@ TaskBoardConfig = {
 			id = 0,
 			maxKills = { 50, 100 },
 			bountyPoints = 3,
-			weeklyKillRange = { 50, 150 },
 			killTaskHuntingPoints = 25,
 			creatures = {
 				{ id = 3090, name = "Troll" },
@@ -23,7 +22,6 @@ TaskBoardConfig = {
 			id = 1,
 			maxKills = { 100, 200 },
 			bountyPoints = 7,
-			weeklyKillRange = { 150, 300 },
 			killTaskHuntingPoints = 50,
 			creatures = {
 				{ id = 3145, name = "Dragon" },
@@ -36,7 +34,6 @@ TaskBoardConfig = {
 			id = 2,
 			maxKills = { 200, 400 },
 			bountyPoints = 16,
-			weeklyKillRange = { 300, 600 },
 			killTaskHuntingPoints = 100,
 			creatures = {
 				{ id = 3195, name = "Hydra" },
@@ -49,7 +46,6 @@ TaskBoardConfig = {
 			id = 3,
 			maxKills = { 400, 600 },
 			bountyPoints = 54,
-			weeklyKillRange = { 600, 1000 },
 			killTaskHuntingPoints = 110,
 			creatures = {
 				{ id = 3290, name = "Dark Torturer" },
@@ -77,6 +73,20 @@ TaskBoardConfig = {
 		{ name = "Double Bestiary Progress", levels = { 5.00, 6.00, 7.00, 8.00 }, costs = { 5, 8, 12 } },
 	},
 	extraSlotCosts = { 300, 600, 900, 1200 },
+	weeklyKillRange = {
+		beginner = { 50, 150 },
+		adept = { 150, 300 },
+		expert = { 300, 600 },
+		master = { 600, 1000 },
+	},
+	weeklyDeliveryItems = {
+		{ id = 3031, name = "Gold Coin", min = 1000, max = 2500 },
+		{ id = 3587, name = "Ham", min = 50, max = 120 },
+		{ id = 3043, name = "Crystal Coin", min = 1, max = 5 },
+		{ id = 3595, name = "Egg", min = 40, max = 80 },
+		{ id = 3600, name = "Meat", min = 80, max = 150 },
+		{ id = 3358, name = "Chain Armor", min = 3, max = 8 },
+	},
 	weeklyDeliveryHuntingPoints = 75,
 	rerollTokenMax = 10,
 	preferredWeightBonus = 0.5,
