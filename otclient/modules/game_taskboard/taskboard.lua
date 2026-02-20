@@ -208,16 +208,36 @@ end
 -- ─────────────────────────────────────────────────────────────
 --  HELPERS — enviar pacote ao servidor
 -- ─────────────────────────────────────────────────────────────
+local function addU8(buffer, value)
+  buffer[#buffer + 1] = string.char(value % 256)
+end
+
+local function addU16(buffer, value)
+  buffer[#buffer + 1] = string.char(value % 256, math.floor(value / 256) % 256)
+end
+
+local function addU32(buffer, value)
+  local b1 = value % 256
+  local b2 = math.floor(value / 256) % 256
+  local b3 = math.floor(value / 65536) % 256
+  local b4 = math.floor(value / 16777216) % 256
+  buffer[#buffer + 1] = string.char(b1, b2, b3, b4)
+end
+
 local function sendOpcode(opcode, writeCallback)
   local protocol = g_game.getProtocolGame()
   if not protocol then return end
-  local msg = OutputMessage.create()
-  msg:addU8(0x32)       -- ExtendedOpcode header (OTCRedemption)
-  msg:addU8(opcode)
+
+  local payload = {}
   if writeCallback then
-    writeCallback(msg)
+    writeCallback({
+      addU8 = function(_, value) addU8(payload, value) end,
+      addU16 = function(_, value) addU16(payload, value) end,
+      addU32 = function(_, value) addU32(payload, value) end,
+    })
   end
-  protocol:send(msg)
+
+  protocol:sendExtendedOpcode(opcode, table.concat(payload))
 end
 
 -- ─────────────────────────────────────────────────────────────
