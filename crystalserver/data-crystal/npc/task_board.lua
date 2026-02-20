@@ -50,6 +50,17 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+
+local function greetCallback(npc, creature)
+	local player = Player(creature)
+	if not player then
+		return false
+	end
+	TaskBoard.open(player)
+	npcHandler:say("Task Board opened.", npc, creature)
+	return true
+end
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	if not player then
@@ -73,6 +84,7 @@ npcHandler:setMessage(MESSAGE_GREET, "Greetings, |PLAYERNAME|. Say {task} to ope
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good hunting.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good hunting.")
 
+npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

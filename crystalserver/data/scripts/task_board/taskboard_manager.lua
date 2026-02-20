@@ -1,6 +1,7 @@
 TaskBoard = TaskBoard or {}
 
 local cache = {}
+
 local OPCODE = {
 	OPEN = 50,
 	BOUNTY_DATA = 51,
@@ -27,19 +28,13 @@ end
 
 local function addU32(buffer, value)
 	local number = math.max(0, math.floor(value or 0))
-	local b1 = number % 256
-	local b2 = math.floor(number / 256) % 256
-	local b3 = math.floor(number / 65536) % 256
-	local b4 = math.floor(number / 16777216) % 256
-	buffer[#buffer + 1] = string.char(b1, b2, b3, b4)
+	buffer[#buffer + 1] = string.char(number % 256, math.floor(number / 256) % 256, math.floor(number / 65536) % 256, math.floor(number / 16777216) % 256)
 end
 
 local function addU64(buffer, value)
 	local number = math.max(0, math.floor(value or 0))
-	local low = number % 4294967296
-	local high = math.floor(number / 4294967296)
-	addU32(buffer, low)
-	addU32(buffer, high)
+	addU32(buffer, number % 4294967296)
+	addU32(buffer, math.floor(number / 4294967296))
 end
 
 local function addFloat(buffer, value)
@@ -68,12 +63,42 @@ local function sendResult(player, ok, message)
 	return ok, message
 end
 
-local function getTodayUtc()
-	return os.date("!%Y-%m-%d")
+local function getCurrentWeekToken()
+	return tonumber(os.date("!%Y%W"))
 end
 
-local function getCurrentWeekUtc()
-	return tonumber(os.date("!%W")) + 1
+local function getWeeklyXpMultiplier(completed)
+	if completed >= 16 then
+		return 8
+	elseif completed >= 12 then
+		return 5
+	elseif completed >= 8 then
+		return 3
+	elseif completed >= 4 then
+		return 2
+	end
+	return 1
+end
+
+local function buildCreatureCatalog()
+	local creatures = {}
+	for _, difficultyName in pairs(TaskBoardConfig.difficultyById) do
+		local difficulty = TaskBoardConfig.difficulties[difficultyName]
+		for _, creature in ipairs(difficulty.creatures) do
+			if not creatures[creature.id] then
+				creatures[creature.id] = { creatureId = creature.id, creatureName = creature.name }
+			end
+		end
+	end
+
+	local ordered = {}
+	for _, creature in pairs(creatures) do
+		ordered[#ordered + 1] = creature
+	end
+	table.sort(ordered, function(a, b)
+		return a.creatureName < b.creatureName
+	end)
+	return ordered
 end
 
 local function ensureData(player)
@@ -89,19 +114,16 @@ local function ensureData(player)
 		talisman = TaskBoardDB.loadTalisman(playerId),
 		preferred = TaskBoardDB.loadPreferred(playerId),
 		extraSlots = TaskBoardDB.loadExtraSlots(playerId),
-		selectedBountySlot = 0,
 		selectedDifficulty = 0,
-		lastBountyWeek = getCurrentWeekUtc(),
+		selectedBountySlot = 0,
+		killUnlocked = false,
+		deliveryUnlocked = false,
 		weeklyCompletions = 0,
+		weeklyHuntingPoints = 0,
+		weeklySoulseals = 0,
+		weeklyRewardXP = 0,
+		weeklyToken = getCurrentWeekToken(),
 	}
-
-	if data.currencies.weeklySeed == 0 then
-		data.currencies.weeklySeed = os.time()
-	end
-	if data.currencies.bountySeed == 0 then
-		data.currencies.bountySeed = playerId * 131 + os.time()
-	end
-	TaskBoardDB.saveCurrencies(playerId, data.currencies)
 
 	for slot = 1, 4 do
 		if not data.talisman[slot] then
@@ -111,8 +133,8 @@ local function ensureData(player)
 		end
 	end
 
-	if not next(data.bountyTasks) then
-		for slot = 1, 3 do
+	for slot = 1, 3 do
+		if not data.bountyTasks[slot] then
 			data.bountyTasks[slot] = {
 				slot = slot,
 				creatureId = 0,
@@ -123,7 +145,7 @@ local function ensureData(player)
 				bpReward = 0,
 				rtReward = 0,
 				tier = 0,
-				difficulty = 0,
+				difficulty = data.selectedDifficulty,
 				completed = false,
 			}
 			TaskBoardDB.saveBountyTask(playerId, slot, data.bountyTasks[slot])
@@ -139,34 +161,28 @@ local function sendBountyData(player)
 	sendOpcode(player, OPCODE.BOUNTY_DATA, function(buffer)
 		addU8(buffer, data.selectedDifficulty)
 		for slot = 1, 3 do
-			local task = data.bountyTasks[slot] or {}
-			addString(buffer, task.creatureName or "")
-			addU32(buffer, task.creatureId or 0)
-			addU32(buffer, task.kills or 0)
-			addU32(buffer, task.maxKills or 0)
-			addU64(buffer, task.xpReward or 0)
-			addU16(buffer, task.bpReward or 0)
-			addU8(buffer, task.rtReward or 0)
-			addU8(buffer, task.tier or 0)
+			local task = data.bountyTasks[slot]
+			addString(buffer, task.creatureName)
+			addU32(buffer, task.creatureId)
+			addU32(buffer, task.kills)
+			addU32(buffer, task.maxKills)
+			addU64(buffer, task.xpReward)
+			addU16(buffer, task.bpReward)
+			addU8(buffer, task.rtReward)
+			addU8(buffer, task.tier)
 		end
 	end)
 end
 
 local function sendWeeklyData(player)
 	local data = ensureData(player)
-	local killUnlocked = data.killUnlocked and 1 or 0
-	local delivUnlocked = data.deliveryUnlocked and 1 or 0
-	local weeklyHTP = data.weeklyHuntingPoints or 0
-	local weeklySeals = data.weeklySoulseals or 0
-	local completedTasks = data.weeklyCompletions or 0
-
 	sendOpcode(player, OPCODE.WEEKLY_DATA, function(buffer)
-		addU32(buffer, data.weeklyRewardXP or 0)
-		addU8(buffer, killUnlocked)
-		addU8(buffer, delivUnlocked)
-		addU8(buffer, completedTasks)
-		addU32(buffer, weeklyHTP)
-		addU32(buffer, weeklySeals)
+		addU32(buffer, data.weeklyRewardXP)
+		addU8(buffer, data.killUnlocked and 1 or 0)
+		addU8(buffer, data.deliveryUnlocked and 1 or 0)
+		addU8(buffer, data.weeklyCompletions)
+		addU32(buffer, data.weeklyHuntingPoints)
+		addU32(buffer, data.weeklySoulseals)
 
 		for slot = 1, 6 do
 			local task = data.weeklyTasks.killTasks[slot] or {}
@@ -199,57 +215,33 @@ local function sendShopData(player)
 	end)
 end
 
-local function buildCreatureCatalog()
-	local creatures = {}
-	for _, difficultyName in pairs(TaskBoardConfig.difficultyById) do
-		local difficulty = TaskBoardConfig.difficulties[difficultyName]
-		for _, creature in ipairs(difficulty.creatures) do
-			if not creatures[creature.id] then
-				creatures[creature.id] = { creatureId = creature.id, creatureName = creature.name }
-			end
-		end
-	end
-
-	local ordered = {}
-	for _, creature in pairs(creatures) do
-		ordered[#ordered + 1] = creature
-	end
-	table.sort(ordered, function(a, b)
-		return a.creatureName < b.creatureName
-	end)
-	return ordered
-end
-
 local function sendPreferredData(player)
 	local data = ensureData(player)
-	local preferredList = {}
-	local unwantedList = {}
+	local preferred = {}
+	local unwanted = {}
+
 	for slot = 1, 5 do
-		local preferred = data.preferred.preferred[slot]
-		if preferred then
-			preferredList[#preferredList + 1] = preferred
+		if data.preferred.preferred[slot] then
+			preferred[#preferred + 1] = data.preferred.preferred[slot]
 		end
-		local unwanted = data.preferred.unwanted[slot]
-		if unwanted then
-			unwantedList[#unwantedList + 1] = unwanted
+		if data.preferred.unwanted[slot] then
+			unwanted[#unwanted + 1] = data.preferred.unwanted[slot]
 		end
 	end
 
 	local catalog = buildCreatureCatalog()
 	sendOpcode(player, OPCODE.PREFERRED, function(buffer)
-		addU8(buffer, data.extraSlots or 0)
-		addU8(buffer, #preferredList)
-		for _, entry in ipairs(preferredList) do
+		addU8(buffer, data.extraSlots)
+		addU8(buffer, #preferred)
+		for _, entry in ipairs(preferred) do
 			addString(buffer, entry.creatureName)
 			addU32(buffer, entry.creatureId)
 		end
-
-		addU8(buffer, #unwantedList)
-		for _, entry in ipairs(unwantedList) do
+		addU8(buffer, #unwanted)
+		for _, entry in ipairs(unwanted) do
 			addString(buffer, entry.creatureName)
 			addU32(buffer, entry.creatureId)
 		end
-
 		addU16(buffer, #catalog)
 		for _, creature in ipairs(catalog) do
 			addString(buffer, creature.creatureName)
@@ -262,11 +254,11 @@ local function sendTalismanData(player)
 	local data = ensureData(player)
 	sendOpcode(player, OPCODE.TALISMAN, function(buffer)
 		for slot = 1, 4 do
-			local talismanData = data.talisman[slot] or { level = 1, currentPct = 0 }
+			local state = data.talisman[slot]
 			local config = TaskBoardConfig.talisman[slot]
-			local nextPct = config.levels[math.min(talismanData.level + 1, #config.levels)]
-			local cost = config.costs[talismanData.level] or 0
-			addFloat(buffer, talismanData.currentPct)
+			local nextPct = config.levels[math.min(state.level + 1, #config.levels)]
+			local cost = config.costs[state.level] or 0
+			addFloat(buffer, state.currentPct)
 			addFloat(buffer, nextPct)
 			addU16(buffer, cost)
 		end
@@ -284,70 +276,169 @@ local function sendCurrencies(player)
 end
 
 local function saveCurrenciesAndSend(player)
-	local data = ensureData(player)
-	TaskBoardDB.saveCurrencies(player:getGuid(), data.currencies)
+	TaskBoardDB.saveCurrencies(player:getGuid(), ensureData(player).currencies)
 	sendCurrencies(player)
 end
 
 local function saveBountyTask(player, slot)
-	local playerId = player:getGuid()
 	local data = ensureData(player)
-	TaskBoardDB.saveBountyTask(playerId, slot, data.bountyTasks[slot])
+	TaskBoardDB.saveBountyTask(player:getGuid(), slot, data.bountyTasks[slot])
 end
 
-local function saveWeeklyTask(player, taskType, slot, task)
+local function saveWeeklyTask(player, taskType, slot)
+	local data = ensureData(player)
+	local task = taskType == 0 and data.weeklyTasks.killTasks[slot] or data.weeklyTasks.deliveryTasks[slot]
 	TaskBoardDB.saveWeeklyTask(player:getGuid(), taskType, slot, task)
 end
 
-local function addBountyTaskReward(data, task)
-	data.currencies.bountyPoints = data.currencies.bountyPoints + task.bpReward
-	data.currencies.rerollTokens = math.min(TaskBoardConfig.rerollTokenMax, data.currencies.rerollTokens + task.rtReward)
+local function clearWeeklyProgress(data)
+	data.weeklyCompletions = 0
+	data.weeklyHuntingPoints = 0
+	data.weeklySoulseals = 0
+	data.weeklyRewardXP = 0
+	data.killUnlocked = false
+	data.deliveryUnlocked = false
 end
 
 local function rollTier()
 	local roll = math.random(1, 100)
 	if roll <= 5 then
 		return 2, 4
-	end
-	if roll <= 25 then
+	elseif roll <= 25 then
 		return 1, 2
 	end
 	return 0, 1
 end
 
-local function pickDifficulty(diff)
-	local name = TaskBoardConfig.difficultyById[diff] or "beginner"
-	return TaskBoardConfig.difficulties[name], diff
+local function pickWeightedCreature(pool, preferredById, unwantedById)
+	local weighted = {}
+	for _, creature in ipairs(pool) do
+		if not unwantedById[creature.id] then
+			local weight = 1
+			if preferredById[creature.id] then
+				weight = weight + TaskBoardConfig.preferredWeightBonus
+			end
+			weighted[#weighted + 1] = { creature = creature, weight = weight }
+		end
+	end
+	if #weighted == 0 then
+		for _, creature in ipairs(pool) do
+			weighted[#weighted + 1] = { creature = creature, weight = 1 }
+		end
+	end
+
+	local total = 0
+	for _, entry in ipairs(weighted) do
+		total = total + entry.weight
+	end
+	local roll = math.random() * total
+	local acc = 0
+	for _, entry in ipairs(weighted) do
+		acc = acc + entry.weight
+		if roll <= acc then
+			return entry.creature
+		end
+	end
+	return weighted[#weighted].creature
 end
 
 local function rerollBountyTasks(player)
 	local data = ensureData(player)
-	local difficultyConfig, difficulty = pickDifficulty(data.selectedDifficulty)
-	local creaturePool = difficultyConfig.creatures
-	for slot = 1, 3 do
-		local pick = creaturePool[math.random(1, #creaturePool)]
-		local maxKills = math.random(difficultyConfig.maxKills[1], difficultyConfig.maxKills[2])
-		local tier, mult = rollTier()
+	local diffName = TaskBoardConfig.difficultyById[data.selectedDifficulty] or "beginner"
+	local config = TaskBoardConfig.difficulties[diffName]
+	local preferredById = {}
+	local unwantedById = {}
+	for _, entry in pairs(data.preferred.preferred) do
+		preferredById[entry.creatureId] = true
+	end
+	for _, entry in pairs(data.preferred.unwanted) do
+		unwantedById[entry.creatureId] = true
+	end
 
+	for slot = 1, 3 do
+		local creature = pickWeightedCreature(config.creatures, preferredById, unwantedById)
+		local maxKills = math.random(config.maxKills[1], config.maxKills[2])
+		local tier, mult = rollTier()
 		data.bountyTasks[slot] = {
 			slot = slot,
-			creatureId = pick.id,
-			creatureName = pick.name,
+			creatureId = creature.id,
+			creatureName = creature.name,
 			kills = 0,
 			maxKills = maxKills,
 			xpReward = maxKills * 100 * mult,
-			bpReward = difficultyConfig.bountyPoints * mult,
+			bpReward = config.bountyPoints * mult,
 			rtReward = mult > 1 and 1 or 0,
 			tier = tier,
-			difficulty = difficulty,
+			difficulty = data.selectedDifficulty,
 			completed = false,
 		}
 		saveBountyTask(player, slot)
 	end
 end
 
+local function rebuildWeeklyTasks(player)
+	local data = ensureData(player)
+	local weekToken = getCurrentWeekToken()
+	local diffName = TaskBoardConfig.difficultyById[data.selectedDifficulty] or "beginner"
+	local diffConfig = TaskBoardConfig.difficulties[diffName]
+	local killRange = TaskBoardConfig.weeklyKillRange[diffName]
+	data.weeklyToken = weekToken
+	clearWeeklyProgress(data)
+	data.weeklyTasks = { killTasks = {}, deliveryTasks = {} }
+
+	for slot = 1, 6 do
+		local creature = diffConfig.creatures[((slot - 1) % #diffConfig.creatures) + 1]
+		data.weeklyTasks.killTasks[slot] = {
+			slot = slot,
+			targetName = creature.name,
+			targetId = creature.id,
+			currentCount = 0,
+			maxCount = math.random(killRange[1], killRange[2]),
+			completed = false,
+			weekNumber = weekToken,
+		}
+		TaskBoardDB.saveWeeklyTask(player:getGuid(), 0, slot, data.weeklyTasks.killTasks[slot])
+	end
+
+	for slot = 1, 6 do
+		local item = TaskBoardConfig.weeklyDeliveryItems[((slot - 1) % #TaskBoardConfig.weeklyDeliveryItems) + 1]
+		data.weeklyTasks.deliveryTasks[slot] = {
+			slot = slot,
+			targetName = item.name,
+			targetId = item.id,
+			currentCount = 0,
+			maxCount = math.random(item.min, item.max),
+			completed = false,
+			weekNumber = weekToken,
+		}
+		TaskBoardDB.saveWeeklyTask(player:getGuid(), 1, slot, data.weeklyTasks.deliveryTasks[slot])
+	end
+end
+
+local function ensureWeeklyState(player)
+	local data = ensureData(player)
+	local weekToken = getCurrentWeekToken()
+	local first = data.weeklyTasks.killTasks[1] or data.weeklyTasks.deliveryTasks[1]
+	if not first or first.weekNumber ~= weekToken then
+		rebuildWeeklyTasks(player)
+	end
+end
+
+local function rewardWeeklyCompletion(player, huntingPoints)
+	local data = ensureData(player)
+	data.currencies.huntingPoints = data.currencies.huntingPoints + huntingPoints
+	data.currencies.soulseals = data.currencies.soulseals + 1
+	data.weeklyHuntingPoints = data.weeklyHuntingPoints + huntingPoints
+	data.weeklySoulseals = data.weeklySoulseals + 1
+	data.weeklyCompletions = math.min(18, data.weeklyCompletions + 1)
+	data.weeklyRewardXP = 10000 * getWeeklyXpMultiplier(data.weeklyCompletions)
+	saveCurrenciesAndSend(player)
+	sendWeeklyData(player)
+end
+
 function TaskBoard.open(player)
 	ensureData(player)
+	ensureWeeklyState(player)
 	sendOpcode(player, OPCODE.OPEN)
 	sendBountyData(player)
 	sendWeeklyData(player)
@@ -361,8 +452,7 @@ function TaskBoard.selectTask(player, slot)
 	if slot < 1 or slot > 3 then
 		return false, "Slot inválido."
 	end
-	local data = ensureData(player)
-	data.selectedBountySlot = slot
+	ensureData(player).selectedBountySlot = slot
 	sendBountyData(player)
 	return true, "Task selecionada."
 end
@@ -372,7 +462,6 @@ function TaskBoard.rerollTasks(player)
 	if data.currencies.rerollTokens <= 0 then
 		return false, "Você não possui reroll tokens."
 	end
-
 	data.currencies.rerollTokens = data.currencies.rerollTokens - 1
 	rerollBountyTasks(player)
 	saveCurrenciesAndSend(player)
@@ -382,107 +471,99 @@ end
 
 function TaskBoard.claimDaily(player)
 	local data = ensureData(player)
-	local today = getTodayUtc()
+	local today = os.date("!%Y-%m-%d")
 	if data.currencies.lastDaily == today then
 		return false, "Recompensa diária já coletada."
 	end
-
-	if data.currencies.rerollTokens >= TaskBoardConfig.rerollTokenMax then
-		data.currencies.lastDaily = today
-		saveCurrenciesAndSend(player)
-		return false, "Você já atingiu o máximo de reroll tokens."
-	end
-
 	data.currencies.lastDaily = today
-	data.currencies.rerollTokens = math.min(TaskBoardConfig.rerollTokenMax, data.currencies.rerollTokens + 1)
+	if data.currencies.rerollTokens < TaskBoardConfig.rerollTokenMax then
+		data.currencies.rerollTokens = math.min(TaskBoardConfig.rerollTokenMax, data.currencies.rerollTokens + 1)
+		saveCurrenciesAndSend(player)
+		return true, "+1 reroll token recebido."
+	end
 	saveCurrenciesAndSend(player)
-	return true, "+1 reroll token recebido."
+	return false, "Você já atingiu o máximo de reroll tokens."
 end
 
 function TaskBoard.onCreatureKill(player, creatureName)
 	local data = ensureData(player)
+	ensureWeeklyState(player)
+	local lowered = creatureName:lower()
 	for slot = 1, 3 do
 		local task = data.bountyTasks[slot]
-		if task and not task.completed and task.creatureName:lower() == creatureName:lower() then
+		if not task.completed and task.creatureName:lower() == lowered then
 			task.kills = math.min(task.maxKills, task.kills + 1)
 			if task.kills >= task.maxKills then
 				task.completed = true
-				addBountyTaskReward(data, task)
+				data.currencies.bountyPoints = data.currencies.bountyPoints + task.bpReward
+				data.currencies.rerollTokens = math.min(TaskBoardConfig.rerollTokenMax, data.currencies.rerollTokens + task.rtReward)
 				saveCurrenciesAndSend(player)
 			end
 			saveBountyTask(player, slot)
-			sendBountyData(player)
 		end
 	end
+
+	for slot = 1, 6 do
+		local task = data.weeklyTasks.killTasks[slot]
+		if task and not task.completed and task.targetName:lower() == lowered then
+			task.currentCount = math.min(task.maxCount, task.currentCount + 1)
+			if task.currentCount >= task.maxCount then
+				task.completed = true
+				rewardWeeklyCompletion(player, TaskBoardConfig.difficulties[TaskBoardConfig.difficultyById[data.selectedDifficulty]].killTaskHuntingPoints)
+			end
+			saveWeeklyTask(player, 0, slot)
+		end
+	end
+
+	sendBountyData(player)
+	sendWeeklyData(player)
 	return true
 end
 
-function TaskBoard.claimSelected(player)
+function TaskBoard.onItemDeliver(player, index)
+	if index < 1 or index > 6 then
+		return false, "Índice semanal inválido."
+	end
 	local data = ensureData(player)
-	local slot = data.selectedBountySlot
-	if slot == 0 then
-		return false, "Nenhuma task selecionada."
+	ensureWeeklyState(player)
+	local task = data.weeklyTasks.deliveryTasks[index]
+	if not task or task.completed then
+		return false, "Task de entrega inválida."
 	end
-	local task = data.bountyTasks[slot]
-	if not task or not task.completed then
-		return false, "Task não concluída."
+	local need = task.maxCount - task.currentCount
+	if need <= 0 then
+		return false, "Task já concluída."
 	end
-
-	data.currencies.huntingPoints = data.currencies.huntingPoints + TaskBoardConfig.difficulties[TaskBoardConfig.difficultyById[task.difficulty]].killTaskHuntingPoints
-	data.currencies.soulseals = data.currencies.soulseals + 1
-	data.bountyTasks[slot] = {
-		slot = slot,
-		creatureId = 0,
-		creatureName = "",
-		kills = 0,
-		maxKills = 0,
-		xpReward = 0,
-		bpReward = 0,
-		rtReward = 0,
-		tier = 0,
-		difficulty = task.difficulty,
-		completed = false,
-	}
-	saveCurrenciesAndSend(player)
-	saveBountyTask(player, slot)
-	sendBountyData(player)
-	return true, "Task resgatada."
-end
-
-function TaskBoard.selectWeeklyDifficulty(player, diff)
-	if diff < 0 or diff > 3 then
-		return false, "Dificuldade inválida."
+	local removed = player:removeItem(task.targetId, need)
+	if not removed then
+		return false, "Itens insuficientes para entrega."
 	end
-
-	local data = ensureData(player)
-	data.selectedDifficulty = diff
-	rerollBountyTasks(player)
-	sendBountyData(player)
-	return true, "Dificuldade semanal alterada."
+	task.currentCount = task.maxCount
+	task.completed = true
+	saveWeeklyTask(player, 1, index)
+	rewardWeeklyCompletion(player, TaskBoardConfig.weeklyDeliveryHuntingPoints)
+	return true, "Entrega concluída."
 end
 
 function TaskBoard.upgradeTalisman(player, slot)
 	local data = ensureData(player)
-	local talismanData = data.talisman[slot]
+	local talisman = data.talisman[slot]
 	local config = TaskBoardConfig.talisman[slot]
-	if not talismanData or not config then
+	if not talisman or not config then
 		return false, "Talisman inválido."
 	end
-
-	if talismanData.level >= #config.levels then
+	if talisman.level >= #config.levels then
 		return false, "Este talisman já está no nível máximo."
 	end
-
-	local cost = config.costs[talismanData.level]
+	local cost = config.costs[talisman.level]
 	if data.currencies.bountyPoints < cost then
 		return false, "Bounty points insuficientes."
 	end
-
 	data.currencies.bountyPoints = data.currencies.bountyPoints - cost
-	talismanData.level = talismanData.level + 1
-	talismanData.currentPct = config.levels[talismanData.level]
+	talisman.level = talisman.level + 1
+	talisman.currentPct = config.levels[talisman.level]
+	TaskBoardDB.saveTalisman(player:getGuid(), slot, talisman)
 	saveCurrenciesAndSend(player)
-	TaskBoardDB.saveTalisman(player:getGuid(), slot, talismanData)
 	sendTalismanData(player)
 	return true, "Talisman aprimorado."
 end
@@ -492,24 +573,38 @@ function TaskBoard.buyShopItem(player, index)
 	if not item then
 		return false, "Item inválido."
 	end
-
 	local data = ensureData(player)
 	if data.currencies.huntingPoints < item.price then
 		return false, "Hunting task points insuficientes."
 	end
-
 	data.currencies.huntingPoints = data.currencies.huntingPoints - item.price
 	saveCurrenciesAndSend(player)
 	return true, "Compra realizada com sucesso."
 end
 
-function TaskBoard.setPreferred(player, listType, creatureId, creatureName)
+function TaskBoard.setPreferred(player, tipo, creatureId)
 	local data = ensureData(player)
-	local list = listType == 1 and data.preferred.unwanted or data.preferred.preferred
+	local list = tipo == 1 and data.preferred.unwanted or data.preferred.preferred
+	for _, entry in pairs(list) do
+		if entry.creatureId == creatureId then
+			return false, "Criatura já está na lista."
+		end
+	end
+	local catalog = buildCreatureCatalog()
+	local creatureName = nil
+	for _, entry in ipairs(catalog) do
+		if entry.creatureId == creatureId then
+			creatureName = entry.creatureName
+			break
+		end
+	end
+	if not creatureName then
+		return false, "Criatura inválida."
+	end
 	for slot = 1, 5 do
 		if not list[slot] then
 			list[slot] = { creatureId = creatureId, creatureName = creatureName }
-			TaskBoardDB.savePreferred(player:getGuid(), listType == 1 and 1 or 0, slot, creatureId, creatureName)
+			TaskBoardDB.savePreferred(player:getGuid(), tipo == 1 and 1 or 0, slot, creatureId, creatureName)
 			sendPreferredData(player)
 			return true, "Criatura adicionada à lista."
 		end
@@ -537,44 +632,70 @@ function TaskBoard.unlockExtraSlot(player, index)
 	if index < 1 or index > #TaskBoardConfig.extraSlotCosts then
 		return false, "Índice inválido."
 	end
-
 	local data = ensureData(player)
 	local mask = bit.lshift(1, index - 1)
 	if bit.band(data.extraSlots, mask) ~= 0 then
 		return false, "Slot extra já desbloqueado."
 	end
-
 	local cost = TaskBoardConfig.extraSlotCosts[index]
 	if data.currencies.bountyPoints < cost then
 		return false, "Bounty points insuficientes."
 	end
-
 	data.currencies.bountyPoints = data.currencies.bountyPoints - cost
 	data.extraSlots = bit.bor(data.extraSlots, mask)
-	saveCurrenciesAndSend(player)
 	TaskBoardDB.saveExtraSlots(player:getGuid(), data.extraSlots)
+	saveCurrenciesAndSend(player)
 	sendPreferredData(player)
 	return true, "Slot extra desbloqueado."
 end
 
-function TaskBoard.unlockWeeklyKill(player)
+function TaskBoard.selectWeeklyDifficulty(player, diff)
+	if diff < 0 or diff > 3 then
+		return false, "Dificuldade inválida."
+	end
+	local data = ensureData(player)
+	data.selectedDifficulty = diff
+	rerollBountyTasks(player)
+	rebuildWeeklyTasks(player)
+	sendBountyData(player)
+	sendWeeklyData(player)
+	return true, "Dificuldade semanal alterada."
+end
+
+function TaskBoard.unlockKillTasks(player)
+	ensureData(player).killUnlocked = true
+	sendWeeklyData(player)
 	return true, "Tarefas de caça desbloqueadas."
 end
 
-function TaskBoard.unlockWeeklyDelivery(player)
+function TaskBoard.unlockDeliveryTasks(player)
+	ensureData(player).deliveryUnlocked = true
+	sendWeeklyData(player)
 	return true, "Tarefas de entrega desbloqueadas."
 end
 
-function TaskBoard.getData(player)
-	local data = ensureData(player)
+function TaskBoard.openPreferredList(player)
 	sendPreferredData(player)
-	return data
+	return true, "Lista carregada."
 end
 
 function TaskBoard.result(player, ok, message)
 	return sendResult(player, ok, message)
 end
 
+function TaskBoard.resetWeeklyForAll()
+	db.query("TRUNCATE TABLE `player_weekly_tasks`")
+	for playerId, data in pairs(cache) do
+		data.weeklyTasks = { killTasks = {}, deliveryTasks = {} }
+		data.weeklyToken = getCurrentWeekToken()
+		clearWeeklyProgress(data)
+		local player = Player(playerId)
+		if player then
+			rebuildWeeklyTasks(player)
+			sendWeeklyData(player)
+		end
+	end
+end
 
 function TaskBoard.select(player, slot)
 	return TaskBoard.selectTask(player, slot)
@@ -585,31 +706,18 @@ function TaskBoard.reroll(player)
 end
 
 function TaskBoard.claim(player)
-	return TaskBoard.claimSelected(player)
-end
-
-
-function TaskBoard.deliverWeekly(player, index)
-	if index == nil then
-		return false, "Índice semanal inválido."
-	end
-
-	-- TODO: ligar entrega semanal ao backend de itens quando o fluxo estiver disponível.
-	return false, "Entrega semanal ainda não implementada."
+	return false, "Use o botão de claim daily ou complete as weekly tasks."
 end
 
 function TaskBoard.weekly(player, action, value)
 	if action == "difficulty" then
 		return TaskBoard.selectWeeklyDifficulty(player, value)
-	end
-	if action == "delivery" or action == "deliver" then
-		return TaskBoard.deliverWeekly(player, value)
-	end
-	if action == "unlock_kill" then
-		return TaskBoard.unlockWeeklyKill(player)
-	end
-	if action == "unlock_delivery" then
-		return TaskBoard.unlockWeeklyDelivery(player)
+	elseif action == "delivery" then
+		return TaskBoard.onItemDeliver(player, value)
+	elseif action == "unlock_kill" then
+		return TaskBoard.unlockKillTasks(player)
+	elseif action == "unlock_delivery" then
+		return TaskBoard.unlockDeliveryTasks(player)
 	end
 	return false, "Ação semanal inválida."
 end
@@ -625,11 +733,9 @@ end
 function TaskBoard.preferred(player, action, ...)
 	if action == "set" then
 		return TaskBoard.setPreferred(player, ...)
-	end
-	if action == "clear" then
+	elseif action == "clear" then
 		return TaskBoard.clearPreferred(player, ...)
-	end
-	if action == "clear_unwanted" then
+	elseif action == "clear_unwanted" then
 		return TaskBoard.clearUnwanted(player, ...)
 	end
 	return false, "Ação de preferred inválida."
