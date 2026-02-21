@@ -122,6 +122,10 @@ local MULTIPLIERS = {
 }
 
 local EXTRA_SLOT_COSTS = {300, 600, 900, 1200}
+local DIFFICULTY_TO_ID = {beginner = 0, adept = 1, expert = 2, master = 3}
+local ID_TO_DIFFICULTY = {[0] = 'beginner', [1] = 'adept', [2] = 'expert', [3] = 'master'}
+local bitLib = rawget(_G, 'bit32') or rawget(_G, 'bit')
+local isUpdatingDifficulty = false
 
 -- ─────────────────────────────────────────────────────────────
 --  INIT / TERMINATE
@@ -150,6 +154,12 @@ function init()
   combo:addOption('Master',   'master')
   combo.onOptionChange = function(_, opt)
     state.difficulty = opt
+    if isUpdatingDifficulty then
+      return
+    end
+    sendOpcode(OPCODE.WEEKLY_DIFF, function(msg)
+      msg:addU8(DIFFICULTY_TO_ID[opt] or 0)
+    end)
   end
 
   -- Conecta aba
@@ -257,6 +267,15 @@ end
 --          uint16 bp, uint8 rt, uint8 tier (0=normal,1=silver,2=gold) }
 function onBountyData(protocol, msg)
   local diff = msg:getU8()
+  state.difficulty = ID_TO_DIFFICULTY[diff] or 'beginner'
+
+  local combo = ui.window and ui.window:recursiveGetChildById('comboDifficulty')
+  if combo then
+    isUpdatingDifficulty = true
+    combo:setCurrentOptionByData(state.difficulty, true)
+    isUpdatingDifficulty = false
+  end
+
   state.bountyTasks = {}
 
   for i = 1, 3 do
@@ -352,7 +371,13 @@ end
 function onPreferredData(protocol, msg)
   local extraBits = msg:getU8()
   for i = 1, 4 do
-    state.extraSlots[i] = (bit32.band(extraBits, bit32.lshift(1, i-1)) ~= 0)
+    local mask = 2 ^ (i - 1)
+    if bitLib and bitLib.band and bitLib.lshift then
+      mask = bitLib.lshift(1, i - 1)
+      state.extraSlots[i] = (bitLib.band(extraBits, mask) ~= 0)
+    else
+      state.extraSlots[i] = (math.floor(extraBits / mask) % 2 == 1)
+    end
   end
 
   local prefCount = msg:getU8()
@@ -697,8 +722,7 @@ end
 -- Seleciona dificuldade no popup semanal
 function selectDifficulty(diff)
   sendOpcode(OPCODE.WEEKLY_DIFF, function(msg)
-    local d = {beginner=0, adept=1, expert=2, master=3}
-    msg:addU8(d[diff] or 0)
+    msg:addU8(DIFFICULTY_TO_ID[diff] or 0)
   end)
   closeWeeklyPopup()
 end

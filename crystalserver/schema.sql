@@ -764,7 +764,7 @@ CREATE TABLE IF NOT EXISTS `player_taskhunt` (
 
 -- Table structure `player_bounty_tasks`
 CREATE TABLE IF NOT EXISTS `player_bounty_tasks` (
-    `player_id` int(11) UNSIGNED NOT NULL,
+    `player_id` int(11) NOT NULL,
     `slot` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
     `creature_id` int(11) UNSIGNED NOT NULL DEFAULT 0,
     `creature_name` varchar(64) NOT NULL DEFAULT '',
@@ -784,7 +784,7 @@ CREATE TABLE IF NOT EXISTS `player_bounty_tasks` (
 
 -- Table structure `player_weekly_tasks`
 CREATE TABLE IF NOT EXISTS `player_weekly_tasks` (
-    `player_id` int(11) UNSIGNED NOT NULL,
+    `player_id` int(11) NOT NULL,
     `task_type` tinyint(4) NOT NULL DEFAULT 0,
     `slot` tinyint(4) NOT NULL DEFAULT 1,
     `target_name` varchar(64) NOT NULL DEFAULT '',
@@ -801,7 +801,7 @@ CREATE TABLE IF NOT EXISTS `player_weekly_tasks` (
 
 -- Table structure `player_talisman`
 CREATE TABLE IF NOT EXISTS `player_talisman` (
-    `player_id` int(11) UNSIGNED NOT NULL,
+    `player_id` int(11) NOT NULL,
     `slot` tinyint(4) NOT NULL DEFAULT 1,
     `level` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
     `current_pct` float NOT NULL DEFAULT 2.5,
@@ -813,7 +813,7 @@ CREATE TABLE IF NOT EXISTS `player_talisman` (
 
 -- Table structure `player_task_preferred`
 CREATE TABLE IF NOT EXISTS `player_task_preferred` (
-    `player_id` int(11) UNSIGNED NOT NULL,
+    `player_id` int(11) NOT NULL,
     `list_type` tinyint(4) NOT NULL DEFAULT 0,
     `slot` tinyint(4) NOT NULL DEFAULT 1,
     `creature_id` int(11) UNSIGNED NOT NULL DEFAULT 0,
@@ -826,7 +826,7 @@ CREATE TABLE IF NOT EXISTS `player_task_preferred` (
 
 -- Table structure `player_task_extra_slots`
 CREATE TABLE IF NOT EXISTS `player_task_extra_slots` (
-    `player_id` int(11) UNSIGNED NOT NULL,
+    `player_id` int(11) NOT NULL,
     `extra_slots` tinyint(4) UNSIGNED NOT NULL DEFAULT 0,
     CONSTRAINT `player_task_extra_slots_pk` PRIMARY KEY (`player_id`),
     CONSTRAINT `player_task_extra_slots_players_fk`
@@ -836,7 +836,7 @@ CREATE TABLE IF NOT EXISTS `player_task_extra_slots` (
 
 -- Table structure `player_task_currencies`
 CREATE TABLE IF NOT EXISTS `player_task_currencies` (
-    `player_id` int(11) UNSIGNED NOT NULL,
+    `player_id` int(11) NOT NULL,
     `reroll_tokens` smallint(6) UNSIGNED NOT NULL DEFAULT 0,
     `bounty_points` int(11) UNSIGNED NOT NULL DEFAULT 0,
     `hunting_points` int(11) UNSIGNED NOT NULL DEFAULT 0,
