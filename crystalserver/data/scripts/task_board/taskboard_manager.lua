@@ -37,8 +37,35 @@ local function addU64(buffer, value)
 	addU32(buffer, math.floor(number / 4294967296))
 end
 
+local function encodeFloat32LE(value)
+	if string.pack then
+		return string.pack("<f", value)
+	end
+
+	if value == 0 then
+		return string.char(0, 0, 0, 0)
+	end
+
+	local sign = 0
+	if value < 0 then
+		sign = 1
+		value = -value
+	end
+
+	local mantissa, exponent = math.frexp(value)
+	exponent = exponent + 126
+	mantissa = math.floor((mantissa * 2 - 1) * 8388608)
+
+	local bits = sign * 2147483648 + exponent * 8388608 + mantissa
+	local b1 = bits % 256
+	local b2 = math.floor(bits / 256) % 256
+	local b3 = math.floor(bits / 65536) % 256
+	local b4 = math.floor(bits / 16777216) % 256
+	return string.char(b1, b2, b3, b4)
+end
+
 local function addFloat(buffer, value)
-	buffer[#buffer + 1] = string.pack("<f", tonumber(value) or 0)
+	buffer[#buffer + 1] = encodeFloat32LE(tonumber(value) or 0)
 end
 
 local function addString(buffer, value)
