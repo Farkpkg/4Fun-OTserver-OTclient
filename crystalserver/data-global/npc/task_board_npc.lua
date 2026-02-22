@@ -50,18 +50,22 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function getPlayer(creature)
+	return Player(creature)
+end
 
 local function greetCallback(npc, creature)
-	local player = Player(creature)
+	local player = getPlayer(creature)
 	if not player then
 		return false
 	end
+
 	npcHandler:say("Use the Task Board button to open the panel.", npc, player)
 	return true
 end
 
 local function creatureSayCallback(npc, creature, type, message)
-	local player = Player(creature)
+	local player = getPlayer(creature)
 	if not player then
 		return false
 	end
