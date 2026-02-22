@@ -42,41 +42,6 @@ function onUpdateDatabase()
 	]])
 
 	db.query([[
-		ALTER TABLE `player_weekly_tasks`
-		ADD COLUMN IF NOT EXISTS `slot` TINYINT NOT NULL DEFAULT 1 AFTER `task_type`
-	]])
-
-	db.query([[
-		ALTER TABLE `player_weekly_tasks`
-		ADD COLUMN IF NOT EXISTS `target_name` VARCHAR(64) NOT NULL DEFAULT '' AFTER `slot`
-	]])
-
-	db.query([[
-		ALTER TABLE `player_weekly_tasks`
-		ADD COLUMN IF NOT EXISTS `target_id` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `target_name`
-	]])
-
-	db.query([[
-		ALTER TABLE `player_weekly_tasks`
-		ADD COLUMN IF NOT EXISTS `current_count` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `target_id`
-	]])
-
-	db.query([[
-		ALTER TABLE `player_weekly_tasks`
-		ADD COLUMN IF NOT EXISTS `max_count` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `current_count`
-	]])
-
-	db.query([[
-		ALTER TABLE `player_weekly_tasks`
-		ADD COLUMN IF NOT EXISTS `completed` TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER `max_count`
-	]])
-
-	db.query([[
-		ALTER TABLE `player_weekly_tasks`
-		ADD COLUMN IF NOT EXISTS `week_number` SMALLINT UNSIGNED NOT NULL DEFAULT 0 AFTER `completed`
-	]])
-
-	db.query([[
 		CREATE TABLE IF NOT EXISTS `player_talisman` (
 			`player_id` INT NOT NULL,
 			`slot` TINYINT NOT NULL DEFAULT 1,
