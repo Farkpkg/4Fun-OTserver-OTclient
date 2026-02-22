@@ -43,6 +43,7 @@ local OPCODE = {
   RESULT       = 57,
 
   -- enviados ao servidor
+  OPEN_REQUEST = 59,
   SELECT       = 60,
   REROLL       = 61,
   CLAIM_DAILY  = 62,
@@ -126,11 +127,50 @@ local DIFFICULTY_TO_ID = {beginner = 0, adept = 1, expert = 2, master = 3}
 local ID_TO_DIFFICULTY = {[0] = 'beginner', [1] = 'adept', [2] = 'expert', [3] = 'master'}
 local bitLib = rawget(_G, 'bit32') or rawget(_G, 'bit')
 local isUpdatingDifficulty = false
+local taskBoardButton = nil
+local sendOpcode
+
+
+local function destroyTaskBoardButton()
+  if taskBoardButton then
+    taskBoardButton:destroy()
+    taskBoardButton = nil
+  end
+end
+
+local function toggleTaskBoardWindow()
+  if not g_game.isOnline() then
+    return
+  end
+
+  if ui.window and ui.window:isVisible() then
+    hide()
+    if taskBoardButton then
+      taskBoardButton:setOn(false)
+    end
+    return
+  end
+
+  sendOpcode(OPCODE.OPEN_REQUEST)
+end
+
+local function checkTaskBoardButton()
+  if not g_game.isOnline() then
+    return
+  end
+
+  if not taskBoardButton then
+    taskBoardButton = modules.game_mainpanel.addToggleButton('topMenuTaskBoardButton', tr('Task Board'), '/images/options/button_prey', toggleTaskBoardWindow)
+    taskBoardButton:setOn(false)
+  end
+end
 
 -- ─────────────────────────────────────────────────────────────
 --  INIT / TERMINATE
 -- ─────────────────────────────────────────────────────────────
 function init()
+  connect(g_game, { onGameStart = checkTaskBoardButton, onGameEnd = hide })
+
   -- Carrega UI
   ui.window        = g_ui.loadUI('taskboard', GameInterface)
   ui.prefWindow    = g_ui.loadUI('preferredListWindow', GameInterface)
@@ -165,9 +205,16 @@ function init()
   -- Conecta aba
   local tabBar = ui.window:recursiveGetChildById('taskBoardTabBar')
   tabBar.onTabChange = onTabChange
+
+  if g_game.isOnline() then
+    checkTaskBoardButton()
+  end
 end
 
 function terminate()
+  disconnect(g_game, { onGameStart = checkTaskBoardButton, onGameEnd = hide })
+  destroyTaskBoardButton()
+
   ProtocolGame.unregisterOpcode(OPCODE.OPEN)
   ProtocolGame.unregisterOpcode(OPCODE.BOUNTY_DATA)
   ProtocolGame.unregisterOpcode(OPCODE.WEEKLY_DATA)
@@ -203,6 +250,9 @@ function hide()
   if ui.window then
     ui.window:hide()
   end
+  if taskBoardButton then
+    taskBoardButton:setOn(false)
+  end
 end
 
 -- ─────────────────────────────────────────────────────────────
@@ -234,7 +284,7 @@ local function addU32(buffer, value)
   buffer[#buffer + 1] = string.char(b1, b2, b3, b4)
 end
 
-local function sendOpcode(opcode, writeCallback)
+sendOpcode = function(opcode, writeCallback)
   local protocol = g_game.getProtocolGame()
   if not protocol then return end
 
@@ -257,6 +307,9 @@ end
 -- Abre a janela e solicita todos os dados
 function onServerOpen(protocol, msg)
   show()
+  if taskBoardButton then
+    taskBoardButton:setOn(true)
+  end
   -- O servidor pode já enviar os dados junto ou podemos pedir:
   -- (depende da implementação server-side; aqui apenas abrimos)
 end

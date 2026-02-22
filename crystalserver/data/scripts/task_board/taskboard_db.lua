@@ -4,6 +4,41 @@ local function tobool(value)
 	return tonumber(value) == 1
 end
 
+local weeklySchemaReady = false
+
+local function ensureWeeklyTaskSchema()
+	if weeklySchemaReady then
+		return
+	end
+
+	db.query([[
+		CREATE TABLE IF NOT EXISTS `player_weekly_tasks` (
+			`player_id` INT NOT NULL,
+			`task_type` TINYINT NOT NULL DEFAULT 0,
+			`slot` TINYINT NOT NULL DEFAULT 1,
+			`target_name` VARCHAR(64) NOT NULL DEFAULT '',
+			`target_id` INT UNSIGNED NOT NULL DEFAULT 0,
+			`current_count` INT UNSIGNED NOT NULL DEFAULT 0,
+			`max_count` INT UNSIGNED NOT NULL DEFAULT 0,
+			`completed` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+			`week_number` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+			PRIMARY KEY (`player_id`, `task_type`, `slot`),
+			FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE CASCADE
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	]])
+
+	db.query([[ALTER TABLE `player_weekly_tasks` ADD COLUMN IF NOT EXISTS `task_type` TINYINT NOT NULL DEFAULT 0 AFTER `player_id`]])
+	db.query([[ALTER TABLE `player_weekly_tasks` ADD COLUMN IF NOT EXISTS `slot` TINYINT NOT NULL DEFAULT 1 AFTER `task_type`]])
+	db.query([[ALTER TABLE `player_weekly_tasks` ADD COLUMN IF NOT EXISTS `target_name` VARCHAR(64) NOT NULL DEFAULT '' AFTER `slot`]])
+	db.query([[ALTER TABLE `player_weekly_tasks` ADD COLUMN IF NOT EXISTS `target_id` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `target_name`]])
+	db.query([[ALTER TABLE `player_weekly_tasks` ADD COLUMN IF NOT EXISTS `current_count` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `target_id`]])
+	db.query([[ALTER TABLE `player_weekly_tasks` ADD COLUMN IF NOT EXISTS `max_count` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `current_count`]])
+	db.query([[ALTER TABLE `player_weekly_tasks` ADD COLUMN IF NOT EXISTS `completed` TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER `max_count`]])
+	db.query([[ALTER TABLE `player_weekly_tasks` ADD COLUMN IF NOT EXISTS `week_number` SMALLINT UNSIGNED NOT NULL DEFAULT 0 AFTER `completed`]])
+
+	weeklySchemaReady = true
+end
+
 function TaskBoardDB.loadCurrencies(playerId)
 	local data = {
 		rerollTokens = 0,
@@ -115,6 +150,7 @@ function TaskBoardDB.saveBountyTask(playerId, slot, task)
 end
 
 function TaskBoardDB.loadWeeklyTasks(playerId)
+	ensureWeeklyTaskSchema()
 	local weekly = { killTasks = {}, deliveryTasks = {} }
 	local query = db.storeQuery("SELECT `task_type`, `slot`, `target_name`, `target_id`, `current_count`, `max_count`, `completed`, `week_number` FROM `player_weekly_tasks` WHERE `player_id` = " .. playerId)
 	if not query then
@@ -146,6 +182,7 @@ function TaskBoardDB.loadWeeklyTasks(playerId)
 end
 
 function TaskBoardDB.saveWeeklyTask(playerId, taskType, slot, task)
+	ensureWeeklyTaskSchema()
 	return db.query("INSERT INTO `player_weekly_tasks` (`player_id`, `task_type`, `slot`, `target_name`, `target_id`, `current_count`, `max_count`, `completed`, `week_number`) VALUES ("
 		.. playerId
 		.. ", "

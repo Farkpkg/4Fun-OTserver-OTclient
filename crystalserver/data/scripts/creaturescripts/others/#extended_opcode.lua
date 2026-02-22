@@ -1,6 +1,7 @@
 local OPCODE_LANGUAGE = 1
 
 local TASKBOARD_OPCODE = {
+	OPEN_REQUEST = 59,
 	SELECT = 60,
 	REROLL = 61,
 	CLAIM_DAILY = 62,
@@ -17,7 +18,7 @@ local TASKBOARD_OPCODE = {
 }
 
 local function isTaskBoardOpcode(opcode)
-	return opcode >= TASKBOARD_OPCODE.SELECT and opcode <= TASKBOARD_OPCODE.WEEKLY_UNLOCK_DELIVER
+	return opcode >= TASKBOARD_OPCODE.OPEN_REQUEST and opcode <= TASKBOARD_OPCODE.WEEKLY_UNLOCK_DELIVER
 end
 
 local function newReader(buffer)
@@ -96,7 +97,10 @@ local function dispatchTaskBoardOpcode(player, opcode, payload)
 	local ok = false
 	local message = "Ação inválida."
 
-	if opcode == TASKBOARD_OPCODE.SELECT then
+	if opcode == TASKBOARD_OPCODE.OPEN_REQUEST then
+		TaskBoard.open(player)
+		return
+	elseif opcode == TASKBOARD_OPCODE.SELECT then
 		if payload.slot == nil then
 			logger.warn("TaskBoard SELECT opcode is missing slot payload")
 			if TaskBoard.result then
