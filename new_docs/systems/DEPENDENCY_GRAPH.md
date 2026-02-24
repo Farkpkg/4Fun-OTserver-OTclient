@@ -1,0 +1,194 @@
+# DEPENDENCY_GRAPH
+
+## crystalserver
+- C/C++: 450
+- Includes: 1953
+- Ciclos de include (SCC>1): 0
+
+### Namespaces frequentes
+- `boost::ut`: 10
+- `extension`: 6
+- `di`: 5
+- `std`: 4
+- `OTB`: 4
+- `stdext`: 4
+- `detail`: 3
+- `metrics`: 3
+- `pugi`: 3
+- `Crystal::protobuf::appearances`: 2
+- `Crystal`: 2
+- `protobuf`: 2
+- `appearances`: 2
+- `ProtoHelpers`: 2
+- `is`: 2
+- `ParsePlayerFlagMap`: 1
+- `WheelSpells`: 1
+- `InternalDBManager`: 1
+- `InternalGame`: 1
+- `fs`: 1
+
+### Macros frequentes
+- `DEFINE_LATENCY_CLASS(class_name,`: 2
+- `lua_strlen`: 1
+- `CLIENT_VERSION_UPPER`: 1
+- `CLIENT_VERSION_LOWER`: 1
+- `MITIGATION_INCREASE`: 1
+- `MANA_LEECH_INCREASE`: 1
+- `HEALTH_LEECH_INCREASE`: 1
+- `ITEM_IMBUEMENT_SLOT`: 1
+- `commandCallback(block)`: 1
+- `appendCommandListener(type,`: 1
+- `eventCallback(block)`: 1
+- `appendEventListener(type,`: 1
+- `DEFAULT_NUMBER_OF_THREADS`: 1
+- `registerMagicEnumIn(L,`: 1
+- `registerMagicEnum(luaState,`: 1
+- `registerMagicEnumNamespace(luaState,`: 1
+- `registerEnum(L,`: 1
+- `registerEnumNamespace(L,`: 1
+- `reportErrorFunc(a)`: 1
+- `luaL_register(L,`: 1
+
+### Heranças detectadas (amostra)
+- `Condition` : `public SharedObject`
+- `ConditionGeneric` : `public Condition`
+- `Spell` : `public BaseSpell`
+- `Creature` : `virtual public Thing, public SharedObject`
+- `ForgeClassifications_t` : `uint8_t`
+- `GameFeature_t` : `uint8_t`
+- `VipStatus_t` : `uint8_t`
+- `SourceEffect_t` : `uint8_t`
+- `SpawnMonster` : `public SharedObject`
+- `WheelSlots_t` : `uint8_t`
+- `WheelStage_t` : `uint8_t`
+- `WheelOnThink_t` : `uint8_t`
+- `WheelStat_t` : `uint8_t`
+- `WheelMajor_t` : `uint8_t`
+- `WheelInstant_t` : `uint8_t`
+- `WheelAvatarSkill_t` : `uint8_t`
+- `WheelSpellGrade_t` : `uint8_t`
+- `WheelSpellBoost_t` : `uint8_t`
+- `FailedToInitializeCrystalServer` : `public std::exception`
+- `LoaderStatus` : `uint8_t`
+- `DatabaseException` : `public std::exception`
+- `CoinTransactionType` : `uint8_t`
+- `CoinType` : `uint8_t`
+- `AccountErrors_t` : `uint8_t`
+- `ContainerSpecial_t` : `uint8_t`
+- `ForgeAction_t` : `uint8_t`
+- `ItemAttribute_t` : `uint64_t`
+- `Blessings` : `uint8_t`
+- `CyclopediaBadge_t` : `uint8_t`
+- `CyclopediaMapData_t` : `uint8_t`
+- `CyclopediaHouseState` : `uint8_t`
+- `HouseAuctionType` : `uint8_t`
+- `BidSuccessMessage` : `uint8_t`
+- `BidErrorMessage` : `uint8_t`
+- `TransferErrorMessage` : `uint8_t`
+- `AcceptTransferErrorMessage` : `uint8_t`
+- `PlayerIcon` : `uint8_t`
+- `IconBakragore` : `uint8_t`
+- `WheelGemAction_t` : `uint8_t`
+- `WheelImproveGemGrade_t` : `uint8_t`
+- `WheelFragmentType_t` : `uint8_t`
+- `WheelGemAffinity_t` : `uint8_t`
+- `WheelGemQuality_t` : `uint8_t`
+- `WheelGemBasicModifier_t` : `uint8_t`
+- `WheelGemSupremeModifier_t` : `uint8_t`
+- `Bank` : `public SharedObject`
+- `Reload_t` : `uint8_t`
+- `HighscoreCategories_t` : `uint8_t`
+- `TaskGroup` : `int8_t`
+- `DispatcherType` : `uint8_t`
+- `IOLoginDataLoad` : `public IOLoginData`
+- `IOLoginDataSave` : `public IOLoginData`
+- `BosstiaryRarity_t` : `uint8_t`
+- `IOWheel` : `public IOWheelBonusData`
+- `IOMapException` : `public std::exception`
+- `Container` : `public Item, public Cylinder`
+- `Cylinder` : `virtual public Thing`
+- `Attributes` : `public ItemAttributeHelper`
+- `ItemAttribute` : `public ItemAttributeHelper`
+- `ItemParse` : `public Items`
+- `Item` : `virtual public Thing, public ItemProperties, public SharedObject`
+- `Augment_t` : `uint8_t`
+- `ContainerCategory_t` : `uint8_t`
+- `TileItemVector` : `private ItemVector`
+- `Tile` : `public Cylinder, public SharedObject`
+- `DynamicTile` : `public Tile`
+- `WeaponWand` : `public Weapon`
+- `KV` : `public std::enable_shared_from_this<KV>`
+- `KVStore` : `public KV`
+- `runtime_provider` : `public config`
+- `abstract_provider` : `TErrorPolicy`
+- `injector` : `public core::injector<runtime_provider<TErrorPolicy, TScopeTraits>>`
+- `shared_config` : `public di::config`
+- `ThreadPool` : `public BS::thread_pool<BS::tp::none>`
+- `EventCallback_t` : `uint16_t`
+- `SharedObject` : `public std::enable_shared_from_this<SharedObject>`
+- `LuaData_t` : `uint8_t`
+- `LuaScriptInterface` : `public Lua`
+- `Connection` : `public std::enable_shared_from_this<Connection>`
+- `OutputMessage` : `public NetworkMessage`
+- `Protocol` : `public std::enable_shared_from_this<Protocol>`
+- `ServicePort` : `public std::enable_shared_from_this<ServicePort>`
+- `PlayerFlags_t` : `uint8_t`
+- `InMemoryAccountRepository` : `public AccountRepository`
+- `InMemoryLogger` : `public Logger`
+- `InMemoryLogger` : `public Logger`
+
+## otclient
+- C/C++: 409
+- Includes: 1620
+- Ciclos de include (SCC>1): 3
+- Ciclo 1: src/framework/core/logger.h, src/framework/global.h
+- Ciclo 2: src/framework/luaengine/luavaluecasts.h, src/framework/luaengine/luainterface.h, src/framework/luaengine/luaobject.h
+- Ciclo 3: src/framework/core/consoleapplication.h, src/framework/core/application.h
+
+### Namespaces frequentes
+- `stdext`: 16
+- `datdump`: 4
+- `otclient::protobuf`: 3
+- `qrcodegen`: 3
+- `Proto`: 2
+- `Fw`: 2
+- `css`: 2
+- `luabinder`: 2
+- `used`: 2
+- `BS`: 2
+- `pr`: 2
+- `this_thread`: 2
+- `Otc`: 1
+- `unzipper`: 1
+- `std::literals`: 1
+- `detail`: 1
+- `css::detail`: 1
+- `contains`: 1
+- `containing`: 1
+
+### Macros frequentes
+- `BUILD_ARCH`: 5
+- `LUA_API`: 3
+- `LUAI_FUNC`: 3
+- `LUAI_DATA`: 3
+- `lua_stdin_is_tty()`: 3
+- `LUAI_THROW(L,c)`: 3
+- `LUAI_TRY(L,c,a)`: 3
+- `luai_jmpbuf`: 3
+- `lua_popen(L,c,m)`: 3
+- `lua_pclose(L,file)`: 3
+- `swap16(data)`: 3
+- `swap32(data)`: 3
+- `BUILD_COMPILER`: 3
+- `TOBIT(L,`: 2
+- `LUA_USE_POSIX`: 2
+- `LUA_LDIR`: 2
+- `LUA_CDIR`: 2
+- `LUA_PATH_DEFAULT`: 2
+- `LUA_CPATH_DEFAULT`: 2
+- `LUA_DIRSEP`: 2
+
+### Heranças detectadas (amostra)
+- `Unit` : `uint8_t`
+- `Type` : `uint8_t`
+
