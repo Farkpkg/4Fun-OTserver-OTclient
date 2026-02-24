@@ -35,8 +35,8 @@ Autoauditar a base documental `new_docs/` para verificar prontidão de engenhari
 ---
 
 ## 4) Sugestões técnicas de aprofundamento (sem criar arquitetura nova)
-1. Criar `new_docs/CONTRACT_REGISTRY.md` com tabela de opcodes e campos condicionais por versão.
-2. Criar `new_docs/PERSISTENCE_EVOLUTION_RULES.md` com padrão de migração forward/backward safety.
+1. Criar `new_docs/FEATURE_PROPOSAL_TEMPLATE.md` com tabela de opcodes e campos condicionais por versão.
+2. Criar `new_docs/database/DATABASE_SURFACE_MAP.md` com padrão de migração forward/backward safety.
 3. Criar script de CI para validar diffs de risco alto (protocolo/persistência/bootstrap).
 4. Adicionar seção de “runbooks de incidente” para inconsistência client/server.
 

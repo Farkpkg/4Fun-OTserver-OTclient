@@ -1,4 +1,6 @@
 # SYSTEM HEALTH DASHBOARD SPEC
+Status operacional: TARGET_STATE
+Nota: Spec futuro; não existe dashboard integrado ativo no repositório.
 
 ## 1) Objetivo
 
@@ -217,7 +219,7 @@ Cada painel deve permitir:
 
 - `AIS < 65` => alerta de risco elevado.
 - `AIS < 50` => bloqueio de promoção de release.
-- `exceptions_expired_count > 0` => bloqueio imediato.
+- `exceptions_expired_count > 0` => bloqueio imediato (quando implementado).
 - `drift_accum_k > drift_budget_k` => bloqueio e plano de remediação obrigatório.
 - `critical_dependency_density` em tendência crescente por 3 releases => alerta preventivo.
 
