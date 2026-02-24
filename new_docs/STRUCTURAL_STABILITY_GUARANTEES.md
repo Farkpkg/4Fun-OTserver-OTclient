@@ -1,4 +1,6 @@
 # STRUCTURAL STABILITY GUARANTEES
+Status operacional: TARGET_STATE
+Nota: Garantias são normativas e dependem de automação ainda não comprovada.
 
 ## 1) Objetivo
 
@@ -18,7 +20,7 @@ Formalizar garantias estruturais não negociáveis do projeto e os gatilhos auto
 - validação automatizada client/server;
 - teste de compatibilidade backward quando aplicável.
 
-**Bloqueio automático se:**
+**Bloqueio automático (quando implementado) se:**
 
 - mudança de protocolo sem atualização de contrato;
 - falha em testes de contrato C/S;
@@ -36,7 +38,7 @@ Formalizar garantias estruturais não negociáveis do projeto e os gatilhos auto
 - estratégia de rollback;
 - validação de integridade de dados.
 
-**Bloqueio automático se:**
+**Bloqueio automático (quando implementado) se:**
 
 - alteração persistente sem artefato de migração;
 - migração sem validação de consistência;
@@ -54,7 +56,7 @@ Formalizar garantias estruturais não negociáveis do projeto e os gatilhos auto
 - teste de serialização/desserialização;
 - teste de interoperabilidade client/server.
 
-**Bloqueio automático se:**
+**Bloqueio automático (quando implementado) se:**
 
 - opcode detectado sem contrato;
 - contrato sem testes mínimos;
@@ -71,7 +73,7 @@ Formalizar garantias estruturais não negociáveis do projeto e os gatilhos auto
 - alerta: `critical_dependency_density > 0.12`
 - crítico: `> 0.18`
 
-**Bloqueio automático se:**
+**Bloqueio automático (quando implementado) se:**
 
 - projeção pós-merge excede limite crítico;
 - aumento consecutivo por 3 releases em arestas críticas sem plano de redução.
@@ -87,7 +89,7 @@ Formalizar garantias estruturais não negociáveis do projeto e os gatilhos auto
 - alerta: `> 70% do budget`
 - crítico: `> 100% do budget`
 
-**Bloqueio automático se:**
+**Bloqueio automático (quando implementado) se:**
 
 - `drift_accum_k > drift_budget_k`;
 - existência de violações estruturais sem plano de remediação com prazo.
@@ -118,7 +120,7 @@ Exceções só podem existir quando:
 Regras duras:
 
 - exceção não suspende garantias G1–G3 em produção;
-- exceção vencida bloqueia pipeline automaticamente;
+- exceção vencida deve bloquear por processo humano; bloqueio automático depende de implementação;
 - reincidência exige revisão de arquitetura por ADR.
 
 ---
