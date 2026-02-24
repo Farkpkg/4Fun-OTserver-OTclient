@@ -62,6 +62,16 @@ weeklyKillCard < Panel
     color: #555555
     font: verdana-11px-rounded
 
+  Button
+    id: cardDeliver
+    !text: tr('Deliver')
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    height: 16
+    font: verdana-11px-rounded
+    visible: false
+
 // Card de shop item
 shopItemCard < Panel
   size: 220 110

@@ -43,7 +43,6 @@ local OPCODE = {
   RESULT       = 57,
 
   -- enviados ao servidor
-  OPEN_REQUEST = 59,
   SELECT       = 60,
   REROLL       = 61,
   CLAIM_DAILY  = 62,
@@ -158,7 +157,9 @@ local function toggleTaskBoardWindow()
     return
   end
 
-  sendOpcode(OPCODE.OPEN_REQUEST)
+  -- handshake de abertura do Task Board permanece via opcode legado 59 no servidor.
+  -- em caso de ausência do alias, o servidor também pode abrir via NPC/evento e enviar opcode 50.
+  sendOpcode(59)
 end
 
 local function checkTaskBoardButton()
@@ -514,7 +515,7 @@ end
 --  REFRESH DE UI
 -- ─────────────────────────────────────────────────────────────
 
-local TIER_LABEL = {'', ' [SILVER 2x]', ' [GOLD 4x]'}
+local TIER_LABEL = {'', '[SILVER 2x]', '[GOLD 4x]'}
 local TIER_COLOR = {'#f0c060', '#d0d0d0', '#f0c000'}
 
 function refreshBountyCards()
@@ -526,9 +527,14 @@ function refreshBountyCards()
 
     -- Nome + tier badge
     local nameLabel = card:recursiveGetChildById('taskCard'..i..'Name')
+    local badgeLabel = card:recursiveGetChildById('taskCard'..i..'Badge')
     local tier      = t.tier or 0
-    nameLabel:setText(t.name .. (TIER_LABEL[tier+1] or ''))
+    nameLabel:setText(t.name)
     nameLabel:setColor(TIER_COLOR[tier+1] or '#f0c060')
+    if badgeLabel then
+      badgeLabel:setText(TIER_LABEL[tier + 1] or '')
+      badgeLabel:setColor(TIER_COLOR[tier + 1] or '#f0c060')
+    end
 
     -- Criatura
     local creature = card:recursiveGetChildById('taskCard'..i..'Creature')
@@ -547,7 +553,7 @@ function refreshBountyCards()
       'Reward' .. (mult > 1 and ' ('..mult..'x)' or '') .. ':\n' ..
       '  ' .. formatNum(t.xp * mult) .. ' XP\n' ..
       '  ' .. (t.bp * mult) .. ' BP   ' ..
-      (t.rt * mult) .. ' RT'
+      (t.rt or 1) .. ' RT'
     )
 
     ::continue::
@@ -579,6 +585,10 @@ function refreshCurrencies()
   w:recursiveGetChildById('lblBottomBP'):setText(state.bountyPoints .. ' ●')
   w:recursiveGetChildById('lblBottomHTP'):setText(state.huntingPoints .. ' ▲')
   w:recursiveGetChildById('lblBottomSeal'):setText(state.soulseals .. ' ✦')
+  local setupRT = w:recursiveGetChildById('lblRerollTokens')
+  if setupRT then
+    setupRT:setText(state.rerollTokens .. ' ◆')
+  end
 
   -- Preferred list também atualiza
   if ui.prefWindow and ui.prefWindow:isVisible() then
@@ -633,15 +643,13 @@ function refreshWeekly()
     card:recursiveGetChildById('cardName'):setText(task.name)
     card:recursiveGetChildById('cardProgress'):setText(tostring(task.count))
     card:recursiveGetChildById('cardTotal'):setText('of ' .. task.maxCount)
-    -- Botão Deliver
-    local delivBtn = g_ui.createWidget('Button', card)
-    delivBtn:setText('Deliver')
-    delivBtn:setHeight(16)
-    delivBtn:setFont('verdana-11px-rounded')
-    delivBtn.onClick = function()
-      deliverItem(i)
+    local delivBtn = card:recursiveGetChildById('cardDeliver')
+    if delivBtn then
+      delivBtn:setVisible(true)
+      delivBtn.onClick = function()
+        deliverItem(i)
+      end
     end
-    card:addChild(delivBtn)
   end
 
   -- Unlock buttons
@@ -821,8 +829,7 @@ function openPreferredList()
     ui.prefWindow:show()
     ui.prefWindow:raise()
     ui.prefWindow:focus()
-    -- Solicita dados ao servidor
-    sendOpcode(OPCODE.PREF_SET)
+    -- Dados preferred são sincronizados via opcode 54 no OPEN e após alterações.
   end
 end
 

@@ -497,6 +497,7 @@ function TaskBoard.open(player)
 	sendShopData(player)
 	sendTalismanData(player)
 	sendCurrencies(player)
+	sendPreferredData(player)
 	return true
 end
 
