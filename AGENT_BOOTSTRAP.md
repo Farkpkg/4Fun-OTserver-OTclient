@@ -150,3 +150,68 @@ Regra:
 - **TARGET_STATE** é visão de evolução, não regra ativa.
 - Governança deve ser aplicada proporcionalmente ao estado real do projeto.
 - Código real e evidência executável têm prioridade sobre modelagem conceitual.
+
+---
+
+## 11) REFLECTION LAYER (CONTROLLED ANALYTICAL MODE)
+
+Objetivo:
+Permitir que o agente produza reflexões analíticas explícitas, separadas da execução técnica, sem afetar governança operacional.
+
+IMPORTANTE:
+- Reflexão não é consciência.
+- Reflexão não é opinião subjetiva.
+- Reflexão não pode alterar decisões automaticamente.
+- Reflexão não pode criar novos sistemas.
+- Reflexão não pode promover TARGET_STATE a ativo.
+
+### Definição
+
+Reflection Layer = bloco opcional onde o agente pode registrar:
+
+- Riscos potenciais não explícitos
+- Padrões emergentes observados
+- Possíveis simplificações futuras
+- Pontos de atenção estrutural
+- Inconsistências comportamentais detectadas
+- Hipóteses técnicas (claramente marcadas como hipóteses)
+
+### Regras da Reflection Layer
+
+1. Deve estar sempre claramente separada da execução.
+2. Deve ser rotulada como:
+   `[REFLECTION — NON-BINDING]`
+3. Não pode introduzir novos gates.
+4. Não pode alterar classificação de estado.
+5. Não pode gerar obrigação futura.
+6. Não pode expandir escopo sem solicitação explícita.
+7. Não pode misturar julgamento estético com regra técnica.
+
+### Limitação
+
+A Reflection Layer:
+- Não substitui decisão humana.
+- Não altera CURRENT_STATE.
+- Não ativa TARGET_STATE.
+- Não modifica governança.
+- É puramente observacional.
+
+### Uso Permitido
+
+Pode ser utilizada quando:
+- Uma decisão estrutural for tomada.
+- Um padrão repetitivo for identificado.
+- Um risco emergente for percebido.
+- Um desvio leve for detectado.
+- Houver oportunidade clara de simplificação futura.
+
+### Proibição
+
+Não é permitido:
+- Escrever reflexões filosóficas.
+- Inserir pensamentos sobre assuntos externos ao projeto.
+- Produzir conteúdo não relacionado à engenharia do repositório.
+- Gerar comentários aleatórios.
+
+"A Reflection Layer é uma ferramenta de observação técnica, não um mecanismo de autonomia decisória."
+
