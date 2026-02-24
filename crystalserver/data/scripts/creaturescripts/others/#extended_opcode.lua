@@ -115,10 +115,8 @@ local function dispatchTaskBoardOpcode(player, opcode, payload)
 		ok, message = TaskBoard.claimDaily(player)
 	elseif opcode == TASKBOARD_OPCODE.PREF_SET then
 		if payload.listType == nil or payload.creatureId == nil then
-			-- Client can ping this opcode without payload while opening preferred list.
-			TaskBoard.openPreferredList(player)
 			if TaskBoard.result then
-				TaskBoard.result(player, true, "Lista carregada.")
+				TaskBoard.result(player, false, "Dados de preferred inválidos.")
 			end
 			return
 		end
