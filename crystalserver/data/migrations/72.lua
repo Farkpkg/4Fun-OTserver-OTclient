@@ -1,24 +1,6 @@
 function onUpdateDatabase()
 	logger.info("Updating database to version 72 (task board schema sync)")
 
-	local function hasColumn(tableName, columnName)
-		local query = db.storeQuery("SHOW COLUMNS FROM `" .. tableName .. "` LIKE " .. db.escapeString(columnName))
-		if not query then
-			return false
-		end
-
-		result.free(query)
-		return true
-	end
-
-	local function addColumnIfMissing(tableName, columnName, definition)
-		if hasColumn(tableName, columnName) then
-			return
-		end
-
-		db.query("ALTER TABLE `" .. tableName .. "` ADD COLUMN `" .. columnName .. "` " .. definition)
-	end
-
 	db.query([[
 		CREATE TABLE IF NOT EXISTS `player_bounty_tasks` (
 			`player_id` INT NOT NULL,
@@ -54,14 +36,10 @@ function onUpdateDatabase()
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	]])
 
-	addColumnIfMissing("player_weekly_tasks", "task_type", "TINYINT NOT NULL DEFAULT 0 AFTER `player_id`")
-	addColumnIfMissing("player_weekly_tasks", "slot", "TINYINT NOT NULL DEFAULT 1 AFTER `task_type`")
-	addColumnIfMissing("player_weekly_tasks", "target_name", "VARCHAR(64) NOT NULL DEFAULT '' AFTER `slot`")
-	addColumnIfMissing("player_weekly_tasks", "target_id", "INT UNSIGNED NOT NULL DEFAULT 0 AFTER `target_name`")
-	addColumnIfMissing("player_weekly_tasks", "current_count", "INT UNSIGNED NOT NULL DEFAULT 0 AFTER `target_id`")
-	addColumnIfMissing("player_weekly_tasks", "max_count", "INT UNSIGNED NOT NULL DEFAULT 0 AFTER `current_count`")
-	addColumnIfMissing("player_weekly_tasks", "completed", "TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER `max_count`")
-	addColumnIfMissing("player_weekly_tasks", "week_number", "SMALLINT UNSIGNED NOT NULL DEFAULT 0 AFTER `completed`")
+	db.query([[
+		ALTER TABLE `player_weekly_tasks`
+		ADD COLUMN IF NOT EXISTS `task_type` TINYINT NOT NULL DEFAULT 0 AFTER `player_id`
+	]])
 
 	db.query([[
 		CREATE TABLE IF NOT EXISTS `player_talisman` (

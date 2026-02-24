@@ -131,7 +131,7 @@ local taskBoardButton = nil
 local sendOpcode
 
 
-function destroyTaskBoardButton()
+local function destroyTaskBoardButton()
   if taskBoardButton then
     taskBoardButton:destroy()
     taskBoardButton = nil
@@ -154,7 +154,7 @@ local function toggleTaskBoardWindow()
   sendOpcode(OPCODE.OPEN_REQUEST)
 end
 
-function checkTaskBoardButton()
+local function checkTaskBoardButton()
   if not g_game.isOnline() then
     return
   end
@@ -169,7 +169,7 @@ end
 --  INIT / TERMINATE
 -- ─────────────────────────────────────────────────────────────
 function init()
-  connect(g_game, { onGameStart = checkTaskBoardButton, onGameEnd = onGameEnd })
+  connect(g_game, { onGameStart = checkTaskBoardButton, onGameEnd = hide })
 
   -- Carrega UI
   ui.window        = g_ui.loadUI('taskboard', GameInterface)
@@ -212,7 +212,7 @@ function init()
 end
 
 function terminate()
-  disconnect(g_game, { onGameStart = checkTaskBoardButton, onGameEnd = onGameEnd })
+  disconnect(g_game, { onGameStart = checkTaskBoardButton, onGameEnd = hide })
   destroyTaskBoardButton()
 
   ProtocolGame.unregisterOpcode(OPCODE.OPEN)
@@ -253,11 +253,6 @@ function hide()
   if taskBoardButton then
     taskBoardButton:setOn(false)
   end
-end
-
-function onGameEnd()
-  destroyTaskBoardButton()
-  hide()
 end
 
 -- ─────────────────────────────────────────────────────────────
