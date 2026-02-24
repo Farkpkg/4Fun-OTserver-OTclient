@@ -152,6 +152,31 @@ local function ensureData(player)
 		weeklyToken = getCurrentWeekToken(),
 	}
 
+	-- Hotfix mínimo: preservar dificuldade semanal baseada no estado persistido,
+	-- evitando reset para beginner após relog quando já existe weekly ativa.
+	local function inferSelectedDifficultyFromWeeklyState()
+		local sampledDifficulty = nil
+
+		for slot = 1, 3 do
+			local bountyTask = data.bountyTasks[slot]
+			if bountyTask and bountyTask.difficulty ~= nil and TaskBoardConfig.difficultyById[bountyTask.difficulty] then
+				sampledDifficulty = bountyTask.difficulty
+				break
+			end
+		end
+
+		if sampledDifficulty == nil then
+			return
+		end
+
+		local weeklyReference = data.weeklyTasks.killTasks[1] or data.weeklyTasks.deliveryTasks[1]
+		if weeklyReference and weeklyReference.weekNumber == getCurrentWeekToken() then
+			data.selectedDifficulty = sampledDifficulty
+		end
+	end
+
+	inferSelectedDifficultyFromWeeklyState()
+
 	for slot = 1, 4 do
 		if not data.talisman[slot] then
 			local config = TaskBoardConfig.talisman[slot]
