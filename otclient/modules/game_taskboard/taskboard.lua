@@ -178,7 +178,7 @@ end
 function init()
   connect(g_game, { onGameStart = checkTaskBoardButton, onGameEnd = hide })
 
-  g_ui.importStyle('taskboard_widgets.otui')
+  g_ui.importStyle('taskboard_widgets')
 
   -- Carrega UI
   ui.window        = g_ui.loadUI('taskboard', GameInterface)

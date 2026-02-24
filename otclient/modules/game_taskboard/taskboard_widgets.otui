@@ -1,3 +1,8 @@
+-- =============================================================
+--  TASK BOARD WIDGET TEMPLATES
+-- =============================================================
+
+-- Item de criatura na lista (Preferred List)
 creatureListItem < Panel
   height: 30
   padding: 4
