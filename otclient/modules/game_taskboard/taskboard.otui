@@ -600,6 +600,11 @@ MainWindow
           anchors.right: parent.right
           height: 220
           margin-top: 4
+          layout:
+            type: grid
+            cell-size: 104 104
+            cell-spacing: 4
+            num-columns: 3
           -- Preenchido dinamicamente por Lua (6 slots 3x2)
 
         Button
@@ -638,6 +643,11 @@ MainWindow
           anchors.right: parent.right
           height: 220
           margin-top: 4
+          layout:
+            type: grid
+            cell-size: 104 104
+            cell-spacing: 4
+            num-columns: 3
           -- Preenchido dinamicamente por Lua (6 slots 3x2)
 
         Button
