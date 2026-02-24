@@ -46,3 +46,8 @@ Obrigatória, pois há novo domínio funcional e persistente (não é refactor l
 ## 9) Critério de aprovação
 - Sistema Task Board funcional sem dependência de Prey.
 - Todos os artefatos de governança preenchidos (proposal/checklist/ADR/checks).
+
+## 10) Conformidade com padrão existente (explícito)
+- Obrigatório aderir às normas já existentes de codificação/arquitetura/UI do projeto.
+- Referências mandatórias: `new_docs/UI_CANONICAL_RULES.md`, `new_docs/SYSTEM_INVARIANTS.md`, `new_docs/CHANGE_GATE_CHECKLIST.md`.
+- Qualquer exceção de padrão deve ser registrada e justificada formalmente (ADR/waiver).

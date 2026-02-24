@@ -32,3 +32,8 @@ A proposta anterior estava incorreta ao aproximar Task Board de Prey.
 
 ## 6) Conclusão técnica
 Melhor caminho: **construir Task Board como bounded context próprio**, com adapters mínimos para UI e protocolo, sem reusar domínio de Prey.
+
+## 7) Padrão de codificação e normas (explicitar no PR)
+- O desenvolvimento deve declarar explicitamente aderência ao padrão atual do repositório (server/client/ui/protocol).
+- Não criar convenções paralelas de nomenclatura, estrutura de módulo ou fluxo de UI sem justificativa formal.
+- Reuso obrigatório de widgets/estilos base quando existir equivalente em `otclient/data/styles/*`.

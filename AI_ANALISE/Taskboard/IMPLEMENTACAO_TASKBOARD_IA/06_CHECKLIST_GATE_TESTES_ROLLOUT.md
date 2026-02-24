@@ -6,6 +6,9 @@
 - [ ] Migration Task Board criada e validada.
 - [ ] Feature gate `GameTaskBoard` ativo.
 - [ ] ADR registrada para novo domínio persistente.
+- [ ] Implementação aderente a `new_docs/UI_CANONICAL_RULES.md`.
+- [ ] Implementação aderente a `new_docs/SYSTEM_INVARIANTS.md`.
+- [ ] Implementação aderente ao `new_docs/CHANGE_GATE_CHECKLIST.md`.
 
 ## 2) Testes mínimos
 ### Funcionais
@@ -20,6 +23,12 @@
 - [ ] Compra sem saldo.
 - [ ] Ação inválida por estado.
 - [ ] Pacote malformed rejeitado sem crash.
+
+### UI e widgets
+- [ ] Rodapé de ações segue padrão canônico (confirm/cancel).
+- [ ] Estados visuais (`hover/pressed/disabled`) aplicados aos botões.
+- [ ] Fluxo vertical por anchors relativos (`prev.bottom`) sem posicionamento absoluto indevido.
+- [ ] Tipografia e espaçamentos coerentes com estilos globais.
 
 ### Persistência
 - [ ] Reconnect mantém estado.
