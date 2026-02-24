@@ -5,7 +5,7 @@ Window
   visible: false
   @onEscape: modules.game_taskboard.closePreferredList()
 
-  -- Lado esquerdo: busca + lista de criaturas
+  // Lado esquerdo: busca + lista de criaturas
   Panel
     id: prefLeft
     anchors.top: parent.top
@@ -59,7 +59,7 @@ Window
       anchors.bottom: parent.bottom
       margin-top: 4
 
-  -- Divisor vertical
+  // Divisor vertical
   Panel
     id: prefDivider
     anchors.top: parent.top
@@ -68,7 +68,7 @@ Window
     width: 2
     background: #c8a050
 
-  -- Lado direito: Preferred / Unwanted + slots extras
+  // Lado direito: Preferred / Unwanted + slots extras
   Panel
     id: prefRight
     anchors.top: parent.top
@@ -77,7 +77,7 @@ Window
     anchors.bottom: prefBottomBar.top
     padding: 8
 
-    -- Cabeçalhos das colunas
+    // Cabeçalhos das colunas
     Label
       !text: tr('Preferred')
       anchors.top: parent.top
@@ -98,7 +98,7 @@ Window
       color: #f0c060
       font: verdana-11px-rounded
 
-    -- Slots ativos (Preferred col)
+    // Slots ativos (Preferred col)
     Panel
       id: prefSlot1
       anchors.top: prev.top
@@ -146,7 +146,7 @@ Window
         color: #f09030
         font: verdana-11px-rounded
 
-    -- Slot ativo (Unwanted col)
+    // Slot ativo (Unwanted col)
     Panel
       id: unwantedSlot1
       anchors.top: prefSlot1.top
@@ -192,7 +192,7 @@ Window
         color: #f09030
         font: verdana-11px-rounded
 
-    -- Additional Slots (locked)
+    // Additional Slots (locked)
     Panel
       id: extraSlots
       anchors.top: prefSlot1.bottom
@@ -204,7 +204,7 @@ Window
         type: verticalBox
         spacing: 4
 
-      -- Extra slot 1: 300 BP
+      // Extra slot 1: 300 BP
       Panel
         id: extraSlot1
         width: 100%
@@ -236,7 +236,7 @@ Window
           color: #f09030
           font: verdana-11px-rounded
 
-      -- Extra slot 2: 600 BP
+      // Extra slot 2: 600 BP
       Panel
         id: extraSlot2
         width: 100%
@@ -268,7 +268,7 @@ Window
           color: #f09030
           font: verdana-11px-rounded
 
-      -- Extra slot 3: 900 BP
+      // Extra slot 3: 900 BP
       Panel
         id: extraSlot3
         width: 100%
@@ -300,7 +300,7 @@ Window
           color: #f09030
           font: verdana-11px-rounded
 
-      -- Extra slot 4: 1200 BP
+      // Extra slot 4: 1200 BP
       Panel
         id: extraSlot4
         width: 100%
@@ -332,7 +332,7 @@ Window
           color: #f09030
           font: verdana-11px-rounded
 
-  -- Barra inferior da Preferred List
+  // Barra inferior da Preferred List
   Panel
     id: prefBottomBar
     anchors.left: parent.left
@@ -368,6 +368,6 @@ Window
       height: 20
       @onClick: modules.game_taskboard.closePreferredList()
 
--- =============================================================
---  POPUP: WEEKLY PROGRESS (seleção de dificuldade)
--- =============================================================
+// =============================================================
+//  POPUP: WEEKLY PROGRESS (seleção de dificuldade)
+// =============================================================
