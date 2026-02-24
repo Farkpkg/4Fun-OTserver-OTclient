@@ -23,9 +23,6 @@ local showEffectsCheck = nil
 local showFamiliarCheck = nil
 local colorBoxes = {}
 local currentColorBox = nil
-local outfitButton = nil
-local outfitRequestPending = false
-local outfitRequestEvent = nil
 
 local previewCreature = nil
 local previewFamiliar = nil
@@ -54,44 +51,6 @@ local lastSelectWings = "None"
 local lastSelectEffects = 0
 local lastSelectShader = "Outfit - Default"
 local lastSelectTitle = "None"
-
-local function destroyAppearanceGroups()
-    if appearanceGroup then
-        appearanceGroup:destroy()
-        appearanceGroup = nil
-    end
-
-    if colorModeGroup then
-        colorModeGroup:destroy()
-        colorModeGroup = nil
-    end
-
-    if colorBoxGroup then
-        colorBoxGroup:destroy()
-        colorBoxGroup = nil
-    end
-end
-
-local function clearWindowReferences()
-    floor = nil
-    movementCheck = nil
-    showFloorCheck = nil
-    showOutfitCheck = nil
-    showMountCheck = nil
-    showFamiliarCheck = nil
-    showWingsCheck = nil
-    showAuraCheck = nil
-    showShaderCheck = nil
-    showBarsCheck = nil
-    showEffectsCheck = nil
-    showTitleCheck = nil
-    colorBoxes = {}
-    currentColorBox = nil
-
-    previewCreature = nil
-    previewFamiliar = nil
-    window = nil
-end
 
 local function checkPresetsValidity(presets)
     for i, preset in ipairs(presets) do
@@ -193,107 +152,16 @@ local AppearanceData = { "preset", "outfit", "mount", "familiar", "wings", "aura
 
 function init()
     connect(g_game, {
-        onGameStart = check,
         onOpenOutfitWindow = create,
-        onGameEnd = onGameEnd
+        onGameEnd = destroy
     })
-
-    if g_game.isOnline() then
-        check()
-    end
 end
 
 function terminate()
     disconnect(g_game, {
-        onGameStart = check,
         onOpenOutfitWindow = create,
-        onGameEnd = onGameEnd
+        onGameEnd = destroy
     })
-    clearOutfitRequestState()
-    destroyOutfitButton()
-    destroy()
-end
-
-function check()
-    if not g_game.isOnline() then
-        return
-    end
-
-    if not outfitButton then
-        outfitButton = modules.game_mainpanel.addToggleButton('topMenuOutfitButton', tr('Outfit'),
-            '/images/options/button_outfit', toggleOutfitWindow)
-        outfitButton:setOn(false)
-    end
-end
-
-function clearOutfitRequestState()
-    outfitRequestPending = false
-    if outfitRequestEvent then
-        removeEvent(outfitRequestEvent)
-        outfitRequestEvent = nil
-    end
-end
-
-local function onOutfitWindowDestroy()
-    clearOutfitRequestState()
-    destroyAppearanceGroups()
-    clearWindowReferences()
-
-    if outfitButton then
-        outfitButton:setOn(false)
-    end
-end
-
-function toggleOutfitWindow()
-    if not g_game.isOnline() then
-        return
-    end
-
-    if window then
-        if window:isVisible() then
-            destroy()
-            return
-        end
-
-        window:show()
-        window:raise()
-        window:focus()
-        if outfitButton then
-            outfitButton:setOn(true)
-        end
-        return
-    end
-
-    if outfitRequestPending then
-        return
-    end
-
-    outfitRequestPending = true
-    if outfitRequestEvent then
-        removeEvent(outfitRequestEvent)
-        outfitRequestEvent = nil
-    end
-
-    outfitRequestEvent = scheduleEvent(function()
-        clearOutfitRequestState()
-        if not window and outfitButton then
-            outfitButton:setOn(false)
-        end
-    end, 1000)
-
-    g_game.requestOutfit(0)
-end
-
-function destroyOutfitButton()
-    if outfitButton then
-        outfitButton:destroy()
-        outfitButton = nil
-    end
-end
-
-function onGameEnd()
-    clearOutfitRequestState()
-    destroyOutfitButton()
     destroy()
 end
 
@@ -439,8 +307,6 @@ local PreviewOptions = {
 }
 
 function create(player, outfitList, creatureMount, mountList, familiarList, wingsList, auraList, effectsList, shaderList)
-    clearOutfitRequestState()
-
     if ignoreNextOutfitWindow and g_clock.millis() < ignoreNextOutfitWindow + 1000 then
         return
     end
@@ -470,7 +336,6 @@ function create(player, outfitList, creatureMount, mountList, familiarList, wing
     }
 
     window = g_ui.displayUI("outfitwindow")
-    window.onDestroy = onOutfitWindowDestroy
 
     floor = window.preview.panel.floor
     for i = 1, floorTiles * floorTiles do
@@ -653,25 +518,38 @@ function create(player, outfitList, creatureMount, mountList, familiarList, wing
     previewCreature:getCreature():setDirection(2)
     window.listSearch.search.onKeyPress = onFilterSearch
     window.listSearch.onlyMine.onCheckChange = onFilterOnlyMine
-
-    if outfitButton then
-        outfitButton:setOn(true)
-    end
 end
 
 function destroy()
-    clearOutfitRequestState()
-
     if window then
-        if previewCreature then
-            previewCreature:destroy()
-            previewCreature = nil
-        end
+        floor = nil
+        movementCheck = nil
+        showFloorCheck = nil
+        showOutfitCheck = nil
+        showMountCheck = nil
+        showFamiliarCheck = nil
+        showWingsCheck = nil
+        showAuraCheck = nil
+        showShaderCheck = nil
+        showBarsCheck = nil
+        showEffectsCheck = nil
+        showTitleCheck = nil
+        colorBoxes = {}
+        currentColorBox = nil
+        previewCreature:destroy()
+        previewCreature = nil
         if previewFamiliar then
             previewFamiliar:destroy()
             previewFamiliar = nil
         end
-        destroyAppearanceGroups()
+        if appearanceGroup then
+            appearanceGroup:destroy()
+            appearanceGroup = nil
+        end
+        colorModeGroup:destroy()
+        colorModeGroup = nil
+        colorBoxGroup:destroy()
+        colorBoxGroup = nil
 
         ServerData = {
             currentOutfit = {},
@@ -688,21 +566,12 @@ function destroy()
 
         saveSettings()
         settings = {}
-
-        local currentWindow = window
+        window:destroy()
         window = nil
-        currentWindow.onDestroy = nil
-        currentWindow:destroy()
-
-        onOutfitWindowDestroy()
         lastSelectAura = "None"
         lastSelectWings = "None"
         lastSelectEffects = 0
         lastSelectShader = "Outfit - Default"
-
-        if outfitButton then
-            outfitButton:setOn(false)
-        end
     end
 end
 

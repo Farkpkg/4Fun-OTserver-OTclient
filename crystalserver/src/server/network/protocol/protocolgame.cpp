@@ -9111,10 +9111,7 @@ void ProtocolGame::parseExtendedOpcode(NetworkMessage &msg) {
 	uint8_t opcode = msg.getByte();
 	const std::string &buffer = msg.getString();
 
-	// Technical decision: keep Task Board opcodes (60-72) on the existing Lua extended-opcode pipeline
-	// handled by CreatureEvent("ExtendedOpcode") to avoid duplicating decode/dispatch logic in C++.
-	// If a future module needs hardcoded C++ handling for a specific opcode, add it here first and keep
-	// parsePlayerExtendedOpcode(...) as fallback so other Lua-based modules continue working unchanged.
+	// process additional opcodes via lua script event
 	g_game().parsePlayerExtendedOpcode(player->getID(), opcode, buffer);
 }
 

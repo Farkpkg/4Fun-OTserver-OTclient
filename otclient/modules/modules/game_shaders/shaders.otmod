@@ -1,9 +1,0 @@
-Module
-  name: game_shaders
-  description: Manage map (on game screen) shaders
-  author:
-  website:
-  scripts: [ shaders.lua ]
-  sandboxed: true
-  @onLoad: ShaderController:init()
-  @onUnload: ShaderController:terminate()

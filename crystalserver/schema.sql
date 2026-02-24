@@ -153,8 +153,6 @@ CREATE TABLE IF NOT EXISTS `players` (
     `virtue` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `harmony` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `weapon_proficiencies` mediumblob DEFAULT NULL,
-    `last_bounty_week` int(11) unsigned NOT NULL DEFAULT '0',
-    `weekly_bounty_completions` tinyint(3) unsigned NOT NULL DEFAULT '0',
     INDEX `account_id` (`account_id`),
     INDEX `vocation` (`vocation`),
     CONSTRAINT `players_pk` PRIMARY KEY (`id`),
@@ -758,94 +756,6 @@ CREATE TABLE IF NOT EXISTS `player_taskhunt` (
     `monster_list` BLOB NULL,
     CONSTRAINT `player_taskhunt_pk` PRIMARY KEY (`player_id`, `slot`),
     CONSTRAINT `player_taskhunt_players_fk`
-        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Table structure `player_bounty_tasks`
-CREATE TABLE IF NOT EXISTS `player_bounty_tasks` (
-    `player_id` int(11) NOT NULL,
-    `slot` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
-    `creature_id` int(11) UNSIGNED NOT NULL DEFAULT 0,
-    `creature_name` varchar(64) NOT NULL DEFAULT '',
-    `kills` int(11) UNSIGNED NOT NULL DEFAULT 0,
-    `max_kills` int(11) UNSIGNED NOT NULL DEFAULT 0,
-    `xp_reward` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-    `bp_reward` smallint(6) UNSIGNED NOT NULL DEFAULT 0,
-    `rt_reward` tinyint(4) UNSIGNED NOT NULL DEFAULT 0,
-    `tier` tinyint(4) UNSIGNED NOT NULL DEFAULT 0,
-    `difficulty` tinyint(4) UNSIGNED NOT NULL DEFAULT 0,
-    `completed` tinyint(4) UNSIGNED NOT NULL DEFAULT 0,
-    CONSTRAINT `player_bounty_tasks_pk` PRIMARY KEY (`player_id`, `slot`),
-    CONSTRAINT `player_bounty_tasks_players_fk`
-        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Table structure `player_weekly_tasks`
-CREATE TABLE IF NOT EXISTS `player_weekly_tasks` (
-    `player_id` int(11) NOT NULL,
-    `task_type` tinyint(4) NOT NULL DEFAULT 0,
-    `slot` tinyint(4) NOT NULL DEFAULT 1,
-    `target_name` varchar(64) NOT NULL DEFAULT '',
-    `target_id` int(11) UNSIGNED NOT NULL DEFAULT 0,
-    `current_count` int(11) UNSIGNED NOT NULL DEFAULT 0,
-    `max_count` int(11) UNSIGNED NOT NULL DEFAULT 0,
-    `completed` tinyint(4) UNSIGNED NOT NULL DEFAULT 0,
-    `week_number` smallint(6) UNSIGNED NOT NULL DEFAULT 0,
-    CONSTRAINT `player_weekly_tasks_pk` PRIMARY KEY (`player_id`, `task_type`, `slot`),
-    CONSTRAINT `player_weekly_tasks_players_fk`
-        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Table structure `player_talisman`
-CREATE TABLE IF NOT EXISTS `player_talisman` (
-    `player_id` int(11) NOT NULL,
-    `slot` tinyint(4) NOT NULL DEFAULT 1,
-    `level` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
-    `current_pct` float NOT NULL DEFAULT 2.5,
-    CONSTRAINT `player_talisman_pk` PRIMARY KEY (`player_id`, `slot`),
-    CONSTRAINT `player_talisman_players_fk`
-        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Table structure `player_task_preferred`
-CREATE TABLE IF NOT EXISTS `player_task_preferred` (
-    `player_id` int(11) NOT NULL,
-    `list_type` tinyint(4) NOT NULL DEFAULT 0,
-    `slot` tinyint(4) NOT NULL DEFAULT 1,
-    `creature_id` int(11) UNSIGNED NOT NULL DEFAULT 0,
-    `creature_name` varchar(64) NOT NULL DEFAULT '',
-    CONSTRAINT `player_task_preferred_pk` PRIMARY KEY (`player_id`, `list_type`, `slot`),
-    CONSTRAINT `player_task_preferred_players_fk`
-        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Table structure `player_task_extra_slots`
-CREATE TABLE IF NOT EXISTS `player_task_extra_slots` (
-    `player_id` int(11) NOT NULL,
-    `extra_slots` tinyint(4) UNSIGNED NOT NULL DEFAULT 0,
-    CONSTRAINT `player_task_extra_slots_pk` PRIMARY KEY (`player_id`),
-    CONSTRAINT `player_task_extra_slots_players_fk`
-        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Table structure `player_task_currencies`
-CREATE TABLE IF NOT EXISTS `player_task_currencies` (
-    `player_id` int(11) NOT NULL,
-    `reroll_tokens` smallint(6) UNSIGNED NOT NULL DEFAULT 0,
-    `bounty_points` int(11) UNSIGNED NOT NULL DEFAULT 0,
-    `hunting_points` int(11) UNSIGNED NOT NULL DEFAULT 0,
-    `soulseals` int(11) UNSIGNED NOT NULL DEFAULT 0,
-    `last_daily` date DEFAULT NULL,
-    `weekly_seed` int(11) UNSIGNED NOT NULL DEFAULT 0,
-    `bounty_seed` int(11) UNSIGNED NOT NULL DEFAULT 0,
-    CONSTRAINT `player_task_currencies_pk` PRIMARY KEY (`player_id`),
-    CONSTRAINT `player_task_currencies_players_fk`
         FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
