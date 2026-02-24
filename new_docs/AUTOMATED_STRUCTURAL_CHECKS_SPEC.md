@@ -1,4 +1,6 @@
 # AUTOMATED_STRUCTURAL_CHECKS_SPEC
+Status operacional: TARGET_STATE
+Nota: Catálogo de checks alvo; sem conjunto completo comprovado como job bloqueante ativo.
 
 ## Objetivo
 Especificar checks estruturais executáveis para impedir regressão de arquitetura, drift e quebra de contrato antes do merge.
@@ -14,7 +16,7 @@ Todos os PRs devem publicar bloco:
 - status PASS/FAIL
 - evidência (comando, log, arquivo alterado)
 
-Sem esse bloco, PR não é elegível para merge.
+Sem esse bloco, o PR deve ser tratado como não elegível na revisão humana (até automação existir).
 
 ---
 
@@ -101,9 +103,9 @@ fi
 ---
 
 ## 4) Política de severidade
-- **CRÍTICO:** bloqueia merge sempre.
-- **ALTO:** bloqueia merge salvo exceção formal com ADR e prazo.
-- **MÉDIO:** não bloqueia automaticamente, mas exige issue de follow-up.
+- **CRÍTICO:** deve bloquear merge na revisão humana; bloqueio automático é TARGET_STATE.
+- **ALTO:** deve bloquear merge salvo exceção formal com ADR e prazo.
+- **MÉDIO:** não bloqueia automaticamente no estado atual, mas exige issue de follow-up.
 
 ---
 

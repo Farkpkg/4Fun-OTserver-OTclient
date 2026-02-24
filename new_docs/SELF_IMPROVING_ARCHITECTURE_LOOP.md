@@ -1,4 +1,6 @@
 # SELF-IMPROVING ARCHITECTURE LOOP
+Status operacional: TARGET_STATE | deprecated_documental
+Nota: Documento redundante no estado atual, mantido só como referência teórica.
 
 ## 1) Objetivo
 

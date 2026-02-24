@@ -1,11 +1,13 @@
 # ARCHITECTURAL INTEGRITY SCORE (AIS)
+Status operacional: TARGET_STATE
+Nota: Especificação de métrica avançada; não é controle ativo bloqueante no estado atual.
 
 ## 1) Objetivo
 
 O **Architectural Integrity Score (AIS)** transforma estabilidade estrutural em um indicador quantitativo único, auditável e comparável entre releases. O AIS é composto por métricas normalizadas (0–100), permitindo:
 
 - avaliação contínua de integridade arquitetural;
-- gatilhos automáticos de alerta/bloqueio no pipeline;
+- gatilhos automáticos de alerta/bloqueio no pipeline (quando implementado);
 - previsibilidade de degradação estrutural;
 - governança orientada por evidência.
 
@@ -194,7 +196,7 @@ Drift acumulado em janela móvel `k` releases:
 - **Laranja (Risco Elevado)**: `50 <= AIS < 65`
 - **Vermelho (Crítico)**: `AIS < 50`
 
-## 4.1 Regras de bloqueio
+## 4.1 Regras de bloqueio (TARGET_STATE, quando implementado)
 
 Mesmo com AIS global alto, há bloqueio se qualquer condição ocorrer:
 

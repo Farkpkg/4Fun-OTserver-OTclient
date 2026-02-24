@@ -24,7 +24,7 @@ Além disso, usa como artefatos operacionais obrigatórios:
 
 ## Fluxo fechado de governança (obrigatório)
 
-Nenhuma mudança pode pular etapas. O fluxo é linear e bloqueante.
+Nenhuma mudança deve pular etapas. O fluxo é linear e bloqueante no processo de revisão humana.
 
 ### Etapa 0 — Classificação de mudança
 Classificar a alteração em uma das classes:
@@ -42,7 +42,7 @@ Classificar a alteração em uma das classes:
 ### Etapa 2 — Gate de alteração (pré-merge)
 - Executar `CHANGE_GATE_CHECKLIST.md` integralmente.
 - Marcar evidências (arquivo, diff, teste, commit).
-- Qualquer item “NÃO” em controle crítico bloqueia merge.
+- Qualquer item “NÃO” em controle crítico deve bloquear merge na revisão humana.
 
 ### Etapa 3 — Checks estruturais
 - Rodar checks definidos em `AUTOMATED_STRUCTURAL_CHECKS_SPEC.md`.
@@ -67,7 +67,7 @@ PR deve conter blocos obrigatórios:
 ---
 
 ## Critérios de bloqueio (hard gates)
-O merge é **automaticamente proibido** se ocorrer qualquer condição abaixo:
+No estado atual (sem automação integral comprovada), o merge **deve ser barrado por revisão humana** se ocorrer qualquer condição abaixo:
 1. Invariante crítico violado sem plano de migração/versionamento (`SYSTEM_INVARIANTS.md`).
 2. Alteração de protocolo sem simetria client/server validada.
 3. Alteração persistente sem trilha de migração + compatibilidade IO.
@@ -113,4 +113,4 @@ Com este layer:
 - Toda mudança passa por análise de impacto, invariantes, risco e acoplamento.
 - Mudanças client/server só entram com validação bilateral.
 - Decisões arquiteturais viram registros auditáveis.
-- Drift deixa de ser subjetivo e passa a ser medido e bloqueável.
+- Drift deve ser tratado por medição manual/parcial até existir automação comprovada.

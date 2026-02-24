@@ -1,6 +1,6 @@
 # CHANGE_GATE_CHECKLIST
 
-> Gate obrigatório pré-merge. Sem checklist completa e evidenciada, o PR é bloqueado.
+> Gate obrigatório pré-merge. Sem checklist completa e evidenciada, o PR deve ser bloqueado no processo de revisão humana.
 
 ## Instrução de uso
 - Preencher todos os itens com **SIM / NÃO / N/A**.
