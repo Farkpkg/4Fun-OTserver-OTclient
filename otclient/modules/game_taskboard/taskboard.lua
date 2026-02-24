@@ -181,10 +181,15 @@ function init()
 
   g_ui.importStyle('taskboard_widgets')
 
+  local parentWidget = rootWidget
+  if modules and modules.game_interface and modules.game_interface.getRootPanel then
+    parentWidget = modules.game_interface.getRootPanel() or rootWidget
+  end
+
   -- Carrega UI
-  ui.window        = g_ui.loadUI('taskboard', GameInterface)
-  ui.prefWindow    = g_ui.loadUI('preferredListWindow', GameInterface)
-  ui.popupWindow   = g_ui.loadUI('weeklyProgressPopup', GameInterface)
+  ui.window        = g_ui.loadUI('taskboard', parentWidget)
+  ui.prefWindow    = g_ui.loadUI('preferredListWindow', parentWidget)
+  ui.popupWindow   = g_ui.loadUI('weeklyProgressPopup', parentWidget)
 
   if not ui.window then
     g_logger.error('[game_taskboard] failed to load main UI: taskboard.otui')
@@ -237,7 +242,18 @@ function init()
     g_logger.error('[game_taskboard] taskBoardTabBar widget was not found in taskboard UI')
     return
   end
+
+  local tabBounty = tabBar:addTab(tr('Bounty Tasks'))
+  tabBounty:setId('tabBounty')
+
+  local tabWeekly = tabBar:addTab(tr('Weekly Tasks'))
+  tabWeekly:setId('tabWeekly')
+
+  local tabShop = tabBar:addTab(tr('Hunting Task Shop'))
+  tabShop:setId('tabShop')
+
   tabBar.onTabChange = onTabChange
+  tabBar:selectTab(tabBounty)
 
   if g_game.isOnline() then
     checkTaskBoardButton()
@@ -293,9 +309,14 @@ end
 -- ─────────────────────────────────────────────────────────────
 function onTabChange(tabBar, tab)
   local w = ui.window
-  w:recursiveGetChildById('panelBounty'):setVisible(tab:getId() == 'tabBounty')
-  w:recursiveGetChildById('panelWeekly'):setVisible(tab:getId() == 'tabWeekly')
-  w:recursiveGetChildById('panelShop'):setVisible(tab:getId() == 'tabShop')
+  if not w or not tab then
+    return
+  end
+
+  local tabId = tab:getId()
+  w:recursiveGetChildById('panelBounty'):setVisible(tabId == 'tabBounty')
+  w:recursiveGetChildById('panelWeekly'):setVisible(tabId == 'tabWeekly')
+  w:recursiveGetChildById('panelShop'):setVisible(tabId == 'tabShop')
 end
 
 -- ─────────────────────────────────────────────────────────────
