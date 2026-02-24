@@ -309,9 +309,14 @@ end
 -- ─────────────────────────────────────────────────────────────
 function onTabChange(tabBar, tab)
   local w = ui.window
-  w:recursiveGetChildById('panelBounty'):setVisible(tab:getId() == 'tabBounty')
-  w:recursiveGetChildById('panelWeekly'):setVisible(tab:getId() == 'tabWeekly')
-  w:recursiveGetChildById('panelShop'):setVisible(tab:getId() == 'tabShop')
+  if not w or not tab then
+    return
+  end
+
+  local tabId = tab:getId()
+  w:recursiveGetChildById('panelBounty'):setVisible(tabId == 'tabBounty')
+  w:recursiveGetChildById('panelWeekly'):setVisible(tabId == 'tabWeekly')
+  w:recursiveGetChildById('panelShop'):setVisible(tabId == 'tabShop')
 end
 
 -- ─────────────────────────────────────────────────────────────
