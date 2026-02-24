@@ -1,11 +1,11 @@
--- =============================================================
---  TASK BOARD — taskboard.otui
---  OTCRedemption (mehah/EDU) | Protocolo 15x | CrystalServer
--- =============================================================
+// =============================================================
+//  TASK BOARD — taskboard.otui
+//  OTCRedemption (mehah/EDU) | Protocolo 15x | CrystalServer
+// =============================================================
 
--- ─────────────────────────────────────────────────────────────
---  JANELA PRINCIPAL
--- ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+//  JANELA PRINCIPAL
+// ─────────────────────────────────────────────────────────────
 MainWindow
   id: taskBoardWindow
   !text: tr('Task Board')
@@ -13,7 +13,7 @@ MainWindow
   visible: false
   @onEscape: modules.game_taskboard.hide()
 
-  -- ── ABAS ──
+  // ── ABAS ──
   TabBar
     id: taskBoardTabBar
     anchors.top: parent.top
@@ -37,7 +37,7 @@ MainWindow
       !text: tr('Hunting Task Shop')
       width: 180
 
-  -- ── PAINEL: BOUNTY TASKS ──
+  // ── PAINEL: BOUNTY TASKS ──
   Panel
     id: panelBounty
     anchors.top: taskBoardTabBar.bottom
@@ -46,7 +46,7 @@ MainWindow
     anchors.bottom: bottomBar.top
     padding: 8
 
-    -- Cabeçalho Set Up & Reroll
+    // Cabeçalho Set Up & Reroll
     Label
       id: lblSetup
       !text: tr('Set Up & Reroll Tasks')
@@ -58,7 +58,7 @@ MainWindow
       color: #f0c060
       font: verdana-11px-rounded
 
-    -- Linha de controles
+    // Linha de controles
     Panel
       id: setupRow
       anchors.top: lblSetup.bottom
@@ -118,7 +118,7 @@ MainWindow
         width: 90
         @onClick: modules.game_taskboard.claimDaily()
 
-    -- Grid de 3 task cards
+    // Grid de 3 task cards
     Panel
       id: taskCardGrid
       anchors.top: setupRow.bottom
@@ -127,7 +127,7 @@ MainWindow
       height: 220
       margin-top: 8
 
-      -- CARD 1
+      // CARD 1
       Panel
         id: taskCard1
         anchors.top: parent.top
@@ -193,7 +193,7 @@ MainWindow
           height: 20
           @onClick: modules.game_taskboard.selectTask(1)
 
-      -- CARD 2
+      // CARD 2
       Panel
         id: taskCard2
         anchors.top: parent.top
@@ -259,7 +259,7 @@ MainWindow
           height: 20
           @onClick: modules.game_taskboard.selectTask(2)
 
-      -- CARD 3
+      // CARD 3
       Panel
         id: taskCard3
         anchors.top: parent.top
@@ -325,7 +325,7 @@ MainWindow
           height: 20
           @onClick: modules.game_taskboard.selectTask(3)
 
-    -- Seção Bounty Talisman
+    // Seção Bounty Talisman
     Label
       id: lblTalisman
       !text: tr('Bounty Talisman')
@@ -346,7 +346,7 @@ MainWindow
       anchors.bottom: parent.bottom
       margin-top: 4
 
-      -- Talisman 1: Damage Against Creatures
+      // Talisman 1: Damage Against Creatures
       Panel
         id: talism1
         anchors.top: parent.top
@@ -395,7 +395,7 @@ MainWindow
           color: #f09030
           font: verdana-11px-rounded
 
-      -- Talisman 2: Life Leech
+      // Talisman 2: Life Leech
       Panel
         id: talism2
         anchors.top: parent.top
@@ -445,7 +445,7 @@ MainWindow
           color: #f09030
           font: verdana-11px-rounded
 
-      -- Talisman 3: More Loot
+      // Talisman 3: More Loot
       Panel
         id: talism3
         anchors.top: parent.top
@@ -495,7 +495,7 @@ MainWindow
           color: #f09030
           font: verdana-11px-rounded
 
-      -- Talisman 4: Double Bestiary
+      // Talisman 4: Double Bestiary
       Panel
         id: talism4
         anchors.top: parent.top
@@ -545,7 +545,7 @@ MainWindow
           color: #f09030
           font: verdana-11px-rounded
 
-  -- ── PAINEL: WEEKLY TASKS ──
+  // ── PAINEL: WEEKLY TASKS ──
   Panel
     id: panelWeekly
     anchors.top: taskBoardTabBar.bottom
@@ -566,7 +566,7 @@ MainWindow
       color: #cccccc
       font: verdana-11px-rounded
 
-    -- Colunas Kill / Delivery
+    // Colunas Kill / Delivery
     Panel
       id: weeklyColumns
       anchors.top: lblWeeklyXP.bottom
@@ -575,7 +575,7 @@ MainWindow
       height: 280
       margin-top: 6
 
-      -- KILL TASKS
+      // KILL TASKS
       Panel
         id: killPanel
         anchors.top: parent.top
@@ -605,7 +605,7 @@ MainWindow
             cell-size: 104 104
             cell-spacing: 4
             num-columns: 3
-          -- Preenchido dinamicamente por Lua (6 slots 3x2)
+          // Preenchido dinamicamente por Lua (6 slots 3x2)
 
         Button
           id: btnUnlockKill
@@ -617,7 +617,7 @@ MainWindow
           color: #7090d0
           @onClick: modules.game_taskboard.unlockKillTasks()
 
-      -- DELIVERY TASKS
+      // DELIVERY TASKS
       Panel
         id: deliveryPanel
         anchors.top: parent.top
@@ -648,7 +648,7 @@ MainWindow
             cell-size: 104 104
             cell-spacing: 4
             num-columns: 3
-          -- Preenchido dinamicamente por Lua (6 slots 3x2)
+          // Preenchido dinamicamente por Lua (6 slots 3x2)
 
         Button
           id: btnUnlockDelivery
@@ -660,7 +660,7 @@ MainWindow
           color: #7090d0
           @onClick: modules.game_taskboard.unlockDeliveryTasks()
 
-    -- Barra de Progresso Semanal
+    // Barra de Progresso Semanal
     Panel
       id: weeklyProgressPanel
       anchors.top: weeklyColumns.bottom
@@ -688,7 +688,7 @@ MainWindow
           color: #aaaaaa
           font: verdana-11px-rounded
 
-        -- Multiplicadores
+        // Multiplicadores
         Label
           id: lblMultipliers
           text: 'x1          x2          x3          x5          x8'
@@ -700,7 +700,7 @@ MainWindow
           font: verdana-11px-rounded
           margin-top: 4
 
-        -- Barra de progresso
+        // Barra de progresso
         ProgressBar
           id: weeklyProgressBar
           anchors.top: lblMultipliers.bottom
@@ -712,7 +712,7 @@ MainWindow
           value: 0
           margin-top: 4
 
-        -- Números 0 4 8 12 16 18
+        // Números 0 4 8 12 16 18
         Label
           id: lblProgressNums
           text: '0            4            8           12          16    18'
@@ -764,7 +764,7 @@ MainWindow
           font: verdana-11px-rounded
           margin-top: 4
 
-  -- ── PAINEL: HUNTING TASK SHOP ──
+  // ── PAINEL: HUNTING TASK SHOP ──
   Panel
     id: panelShop
     anchors.top: taskBoardTabBar.bottom
@@ -791,7 +791,7 @@ MainWindow
       anchors.bottom: parent.bottom
       step: 30
 
-  -- ── BARRA INFERIOR (moedas + close) ──
+  // ── BARRA INFERIOR (moedas + close) ──
   Panel
     id: bottomBar
     anchors.left: parent.left

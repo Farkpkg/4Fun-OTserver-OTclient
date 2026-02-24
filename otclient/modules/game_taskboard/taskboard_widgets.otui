@@ -1,8 +1,8 @@
--- =============================================================
---  TASK BOARD WIDGET TEMPLATES
--- =============================================================
+// =============================================================
+//  TASK BOARD WIDGET TEMPLATES
+// =============================================================
 
--- Item de criatura na lista (Preferred List)
+// Item de criatura na lista (Preferred List)
 creatureListItem < Panel
   height: 30
   padding: 4
@@ -23,7 +23,7 @@ creatureListItem < Panel
     font: verdana-11px-rounded
     color: #cccccc
 
--- Card de task kill/delivery (Weekly)
+// Card de task kill/delivery (Weekly)
 weeklyKillCard < Panel
   size: 104 104
   padding: 4
@@ -62,7 +62,7 @@ weeklyKillCard < Panel
     color: #555555
     font: verdana-11px-rounded
 
--- Card de shop item
+// Card de shop item
 shopItemCard < Panel
   size: 220 110
   padding: 6
