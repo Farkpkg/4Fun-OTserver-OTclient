@@ -130,6 +130,45 @@ local taskBoardButton = nil
 local sendOpcode
 
 
+
+local function decodeExtendedBuffer(buffer)
+  local msg = InputMessage.create()
+  msg:setBuffer(buffer)
+  return msg
+end
+
+local function onExtendedOpen(protocol, opcode, buffer)
+  onServerOpen(protocol, decodeExtendedBuffer(buffer))
+end
+
+local function onExtendedBountyData(protocol, opcode, buffer)
+  onBountyData(protocol, decodeExtendedBuffer(buffer))
+end
+
+local function onExtendedWeeklyData(protocol, opcode, buffer)
+  onWeeklyData(protocol, decodeExtendedBuffer(buffer))
+end
+
+local function onExtendedShopData(protocol, opcode, buffer)
+  onShopData(protocol, decodeExtendedBuffer(buffer))
+end
+
+local function onExtendedPreferredData(protocol, opcode, buffer)
+  onPreferredData(protocol, decodeExtendedBuffer(buffer))
+end
+
+local function onExtendedTalismanData(protocol, opcode, buffer)
+  onTalismanData(protocol, decodeExtendedBuffer(buffer))
+end
+
+local function onExtendedCurrenciesData(protocol, opcode, buffer)
+  onCurrenciesData(protocol, decodeExtendedBuffer(buffer))
+end
+
+local function onExtendedResultData(protocol, opcode, buffer)
+  onResultData(protocol, decodeExtendedBuffer(buffer))
+end
+
 local function destroyTaskBoardButton()
   if taskBoardButton then
     taskBoardButton:destroy()
@@ -207,14 +246,14 @@ function init()
   end
 
   -- Registra opcodes do servidor
-  ProtocolGame.registerOpcode(OPCODE.OPEN,        onServerOpen)
-  ProtocolGame.registerOpcode(OPCODE.BOUNTY_DATA, onBountyData)
-  ProtocolGame.registerOpcode(OPCODE.WEEKLY_DATA, onWeeklyData)
-  ProtocolGame.registerOpcode(OPCODE.SHOP_DATA,   onShopData)
-  ProtocolGame.registerOpcode(OPCODE.PREFERRED,   onPreferredData)
-  ProtocolGame.registerOpcode(OPCODE.TALISMAN,    onTalismanData)
-  ProtocolGame.registerOpcode(OPCODE.CURRENCIES,  onCurrenciesData)
-  ProtocolGame.registerOpcode(OPCODE.RESULT,      onResultData)
+  ProtocolGame.registerExtendedOpcode(OPCODE.OPEN,        onExtendedOpen)
+  ProtocolGame.registerExtendedOpcode(OPCODE.BOUNTY_DATA, onExtendedBountyData)
+  ProtocolGame.registerExtendedOpcode(OPCODE.WEEKLY_DATA, onExtendedWeeklyData)
+  ProtocolGame.registerExtendedOpcode(OPCODE.SHOP_DATA,   onExtendedShopData)
+  ProtocolGame.registerExtendedOpcode(OPCODE.PREFERRED,   onExtendedPreferredData)
+  ProtocolGame.registerExtendedOpcode(OPCODE.TALISMAN,    onExtendedTalismanData)
+  ProtocolGame.registerExtendedOpcode(OPCODE.CURRENCIES,  onExtendedCurrenciesData)
+  ProtocolGame.registerExtendedOpcode(OPCODE.RESULT,      onExtendedResultData)
 
   -- Preenche combo de dificuldade
   local combo = ui.window:recursiveGetChildById('comboDifficulty')
@@ -264,14 +303,14 @@ function terminate()
   disconnect(g_game, { onGameStart = checkTaskBoardButton, onGameEnd = hide })
   destroyTaskBoardButton()
 
-  ProtocolGame.unregisterOpcode(OPCODE.OPEN)
-  ProtocolGame.unregisterOpcode(OPCODE.BOUNTY_DATA)
-  ProtocolGame.unregisterOpcode(OPCODE.WEEKLY_DATA)
-  ProtocolGame.unregisterOpcode(OPCODE.SHOP_DATA)
-  ProtocolGame.unregisterOpcode(OPCODE.PREFERRED)
-  ProtocolGame.unregisterOpcode(OPCODE.TALISMAN)
-  ProtocolGame.unregisterOpcode(OPCODE.CURRENCIES)
-  ProtocolGame.unregisterOpcode(OPCODE.RESULT)
+  ProtocolGame.unregisterExtendedOpcode(OPCODE.OPEN)
+  ProtocolGame.unregisterExtendedOpcode(OPCODE.BOUNTY_DATA)
+  ProtocolGame.unregisterExtendedOpcode(OPCODE.WEEKLY_DATA)
+  ProtocolGame.unregisterExtendedOpcode(OPCODE.SHOP_DATA)
+  ProtocolGame.unregisterExtendedOpcode(OPCODE.PREFERRED)
+  ProtocolGame.unregisterExtendedOpcode(OPCODE.TALISMAN)
+  ProtocolGame.unregisterExtendedOpcode(OPCODE.CURRENCIES)
+  ProtocolGame.unregisterExtendedOpcode(OPCODE.RESULT)
 
   if ui.window then
     ui.window:destroy()
