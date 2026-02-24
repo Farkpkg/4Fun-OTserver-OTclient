@@ -8,6 +8,14 @@ Estados permitidos:
 - `PARTIALLY_IMPLEMENTED`: implementação parcial, não bloqueante.
 - `TARGET_STATE`: conceitual/futuro, não operacional no estado atual.
 
+
+## 0) Bootstrap operacional obrigatório (memória persistente)
+
+- Leitura obrigatória antes de qualquer ação: `OPERATIONAL_STATE_DECLARATION.md`, `UI_CANONICAL_RULES.md` e `CHANGE_GATE_CHECKLIST.md` (quando existir).
+- Estado operacional deve ser confirmado explicitamente antes de mudanças.
+- Protocolo ANTI-BUG ativo: qualquer erro corrigido/diagnosticado/identificado deve ser registrado em `new_docs/ANTI_BUGS_MEMORY.md`.
+- Antes de nova correção, consultar `ANTI_BUGS_MEMORY.md` e aplicar regra preventiva já derivada, se existir entrada correspondente.
+
 ## 1) ACTIVE_IMPLEMENTED
 
 1. **Superfícies de código mapeadas existem no repositório**
