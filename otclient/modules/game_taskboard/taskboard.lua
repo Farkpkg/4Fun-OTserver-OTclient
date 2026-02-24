@@ -139,7 +139,14 @@ local function destroyTaskBoardButton()
 end
 
 local function toggleTaskBoardWindow()
+  print('[game_taskboard] TaskBoard toggle called')
+
   if not g_game.isOnline() then
+    return
+  end
+
+  if not ui.window then
+    g_logger.error('[game_taskboard] TaskBoard window is nil (UI failed to load)')
     return
   end
 
@@ -171,10 +178,27 @@ end
 function init()
   connect(g_game, { onGameStart = checkTaskBoardButton, onGameEnd = hide })
 
+  g_ui.importStyle('taskboard_widgets.otui')
+
   -- Carrega UI
   ui.window        = g_ui.loadUI('taskboard', GameInterface)
   ui.prefWindow    = g_ui.loadUI('preferredListWindow', GameInterface)
   ui.popupWindow   = g_ui.loadUI('weeklyProgressPopup', GameInterface)
+
+  if not ui.window then
+    g_logger.error('[game_taskboard] failed to load main UI: taskboard.otui')
+    return
+  end
+
+  if not ui.prefWindow then
+    g_logger.error('[game_taskboard] failed to load preferred UI: preferredListWindow.otui')
+    return
+  end
+
+  if not ui.popupWindow then
+    g_logger.error('[game_taskboard] failed to load popup UI: weeklyProgressPopup.otui')
+    return
+  end
 
   -- Registra opcodes do servidor
   ProtocolGame.registerOpcode(OPCODE.OPEN,        onServerOpen)
@@ -188,6 +212,10 @@ function init()
 
   -- Preenche combo de dificuldade
   local combo = ui.window:recursiveGetChildById('comboDifficulty')
+  if not combo then
+    g_logger.error('[game_taskboard] comboDifficulty widget was not found in taskboard UI')
+    return
+  end
   combo:addOption('Beginner', 'beginner')
   combo:addOption('Adept',    'adept')
   combo:addOption('Expert',   'expert')
@@ -204,6 +232,10 @@ function init()
 
   -- Conecta aba
   local tabBar = ui.window:recursiveGetChildById('taskBoardTabBar')
+  if not tabBar then
+    g_logger.error('[game_taskboard] taskBoardTabBar widget was not found in taskboard UI')
+    return
+  end
   tabBar.onTabChange = onTabChange
 
   if g_game.isOnline() then
