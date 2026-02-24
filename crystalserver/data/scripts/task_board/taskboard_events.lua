@@ -1,11 +1,16 @@
 local taskBoardKill = CreatureEvent("TaskBoardKill")
 
-function taskBoardKill.onKill(player, target)
-	if not player or not player:isPlayer() or not target or not target:isMonster() then
+function taskBoardKill.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
+	local player = Player(killer)
+	if not player then
 		return true
 	end
 
-	local monsterType = target:getType()
+	if not creature or not creature:isMonster() then
+		return true
+	end
+
+	local monsterType = creature:getType()
 	if not monsterType then
 		return true
 	end

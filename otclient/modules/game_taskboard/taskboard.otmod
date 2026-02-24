@@ -4,6 +4,7 @@ Module
   author: CrystalServer Dev
   website:
   sandboxed: false
+  dependencies: [ game_interface, game_mainpanel ]
   scripts: [ taskboard.lua ]
   @onLoad: init()
   @onUnload: terminate()

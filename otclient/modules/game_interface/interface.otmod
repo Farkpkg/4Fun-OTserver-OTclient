@@ -22,6 +22,7 @@ Module
     - game_console
     - game_actionbar
     - game_outfit
+    - game_taskboard
     - game_skills
     - game_containers
     - game_viplist
