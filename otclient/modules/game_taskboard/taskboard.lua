@@ -139,7 +139,14 @@ local function destroyTaskBoardButton()
 end
 
 local function toggleTaskBoardWindow()
+  print('[game_taskboard] TaskBoard toggle called')
+
   if not g_game.isOnline() then
+    return
+  end
+
+  if not ui.window then
+    g_logger.error('[game_taskboard] TaskBoard window is nil (UI failed to load)')
     return
   end
 
