@@ -60,7 +60,8 @@ local function greetCallback(npc, creature)
 		return false
 	end
 
-	npcHandler:say("Use the Task Board button to open the panel.", npc, player)
+	TaskBoard.open(player)
+	npcHandler:say("Task Board opened.", npc, player)
 	return true
 end
 
@@ -75,7 +76,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "task") or MsgContains(message, "board") or MsgContains(message, "hunt") then
-		npcHandler:say("Use the Task Board button to open the panel.", npc, player)
+		TaskBoard.open(player)
+		npcHandler:say("Task Board opened.", npc, player)
 		return true
 	end
 
