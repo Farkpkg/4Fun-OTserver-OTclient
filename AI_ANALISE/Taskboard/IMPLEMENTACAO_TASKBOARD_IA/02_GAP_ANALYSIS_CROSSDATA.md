@@ -1,53 +1,34 @@
-# GAP Analysis cruzada — Task Board vs estado atual do projeto
+# GAP Analysis cruzada — Task Board isolada
 
-## A) O que já existe e deve ser reaproveitado
+## 1) Correção da premissa
+A proposta anterior estava incorreta ao aproximar Task Board de Prey.
 
-### Server (crystalserver)
-- Núcleo de Task Hunting implementado em `IOPrey` e `TaskHuntingSlot`.
-- Regras de ação já cobertas: reroll lista, reroll recompensa, selecionar monstro, listar todos por cards, cancelar, claim.
-- Regras de economia já integradas (dinheiro/prey cards/task points).
-- Envio de estado por slot e dados básicos via `ProtocolGame::sendTaskHuntingData` e buffer de base (`getTaskHuntingBaseDate`).
-- Progressão de kills vinculada ao ciclo de combate/kill do player.
+**Correção:** Task Board = domínio novo, independente.
 
-### Client (otclient)
-- Opcodes server->client de task hunting já mapeados: 186 e 187.
-- Parse atual consome pacotes, mas não alimenta UI/estado útil.
-- Módulo maduro de referência para comportamento e widgets: `game_prey` (janela, slots, tracker, estados visuais, ações de usuário).
+## 2) O que pode ser reaproveitado
+- Pipeline de rede existente (infra de protocol parse/send).
+- Padrões de módulo OTClient (`otmod/lua/otui/styles/images`).
+- Padrões de layout/widgets recorrentes no cliente.
+- Estrutura de persistência e migrations já usada no projeto.
 
-## B) Gaps críticos (obrigatórios)
-1. **Ausência de módulo visual Task Board completo** no cliente.
-2. **Ausência de callback Lua dedicado** para Task Hunting em `parseTaskHuntingBasicData`/`parseTaskHuntingData`.
-3. **Ausência de envio de ações Task Hunting no cliente** (opcode 0xBA / ação + slot + flags), apesar do server já aceitar.
-4. **Ausência de integração de entrada UX** (botão/menu/hotkey) para abrir o painel.
+## 3) O que NÃO pode ser reaproveitado semanticamente
+- `IOPrey` e derivados.
+- States/actions/enums de prey/taskhunting antigos.
+- Recursos econômicos de prey (wildcards/cards/prey points).
 
-## C) Gaps importantes (fase 2)
-1. Aba Weekly Tasks não representada no server atual.
-2. Hunting Task Shop (outfits/mounts/promotion points) sem pipeline dedicado.
-3. Preferred List no modelo oficial do Task Board ainda não está explícita como módulo separado (há overlap parcial com lógica de seleção/lista do Task Hunting atual).
+## 4) Gaps reais para implementação
+1. Definir domínio Task Board server-side (entidades, regras e serviços).
+2. Definir contrato de rede exclusivo para Task Board.
+3. Implementar persistência própria (weekly reset, preferred list, moedas e progresso).
+4. Criar módulo UI dedicado com 3 abas e trackers.
+5. Integrar ações do usuário aos novos pacotes.
 
-## D) Dados cruzados (origem → consumo)
+## 5) Dados cruzados obrigatórios
+- **Bounty:** oferta de tarefas, seleção, progresso, claim, reroll e ring upgrades.
+- **Weekly:** geração semanal, progresso, multiplicador e fechamento de ciclo.
+- **Shop:** catálogo, preço, compra, unlocks e auditoria de transação.
+- **Preferred List:** likes/dislikes/slots/compras extras.
+- **Moedas:** Bounty Points, Hunting Task Points, Soulseals (se adotado), tokens próprios.
 
-### Fluxo 1: slot state
-- Origem: `crystalserver` gera estado do slot (`Locked/Inactive/Selection/ListSelection/Active/Completed`).
-- Transporte: pacote server->client `GameServerTaskHuntingData`.
-- Consumo alvo: store local em Lua (`TaskBoardModel.slots[slotId]`), render de card e ações habilitadas.
-
-### Fluxo 2: opções de recompensa por dificuldade/raridade
-- Origem: `IOPrey::initializeTaskHuntOptions()`.
-- Transporte: pacote base de task hunting (basic data).
-- Consumo alvo: tooltip, preview e decisão de upgrade visual do card.
-
-### Fluxo 3: ações de usuário
-- Origem: clique em botões (select/reroll/cancel/claim/upgrade).
-- Transporte: `ClientTaskHuntingAction` (novo send no otclient, opcode 0xBA).
-- Consumo server: `ProtocolGame::parseTaskHuntingAction` → `Game::playerTaskHuntingAction` → `IOPrey::parseTaskHuntingAction`.
-
-### Fluxo 4: saldo de moedas
-- Origem server: resources balance (money, bank, prey cards, task hunting points).
-- Consumo client: cabeçalho/rodapé da janela Task Board para custos e feedback em tempo real.
-
-## E) Conclusão técnica de “melhor maneira”
-**Melhor caminho é não reescrever backend**.
-- Aproveitar o Task Hunting existente como base da aba Bounty-like.
-- Criar módulo `game_taskboard` no cliente com arquitetura semelhante a `game_prey` + padrões de UI recorrentes do projeto.
-- Evoluir para Weekly/Shop em etapas, somente após fase 1 estabilizar contrato e usabilidade.
+## 6) Conclusão técnica
+Melhor caminho: **construir Task Board como bounded context próprio**, com adapters mínimos para UI e protocolo, sem reusar domínio de Prey.

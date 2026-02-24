@@ -1,48 +1,47 @@
-# Plano de implementação — Server (crystalserver)
+# Plano Server (crystalserver) — Task Board isolada
 
-## 1) Princípio
-Manter o `crystalserver` como fonte única de verdade e reutilizar o domínio de Task Hunting já existente, minimizando risco e retrabalho.
+## 1) Arquitetura alvo
+Criar um subdomínio próprio no server, por exemplo:
+- `src/io/iotaskboard.hpp/.cpp`
+- `src/game/taskboard/taskboard_service.hpp/.cpp`
+- `src/game/taskboard/taskboard_types.hpp`
 
-## 2) Arquivos-alvo (fase 1)
-- `crystalserver/src/io/ioprey.hpp`
-- `crystalserver/src/io/ioprey.cpp`
-- `crystalserver/src/server/network/protocol/protocolgame.cpp`
-- `crystalserver/src/server/network/protocol/protocolgame.hpp`
-- `crystalserver/src/creatures/players/player.cpp`
-- `crystalserver/src/creatures/players/player.hpp`
+## 2) Entidades mínimas
+- `TaskBoardProfile` (saldos, config ativa por player)
+- `BountySlot` (3 slots simultâneos)
+- `WeeklyTask`
+- `TaskBoardShopState`
+- `PreferredListState`
 
-## 3) Alterações recomendadas
+## 3) Regras de negócio essenciais
+- Geração de Bounty por dificuldade.
+- Seleção exclusiva de slot ativo por regra definida.
+- Progressão por kill event com validação server-side.
+- Claim com cálculo de recompensa e auditoria.
+- Reroll com custo e cooldown.
+- Reset semanal atômico/idempotente para weekly.
 
-### 3.1 Endurecimento de contrato de Task Hunting
-- Revisar mensagens de erro e validações de estado em `parseTaskHuntingAction` para retornos consistentes por ação.
-- Garantir que `reloadTaskSlot` seja chamado em todos os caminhos de sucesso e nos erros recoverable onde UI precisa refrescar.
+## 4) Persistência (obrigatória)
+Criar migration com tabelas próprias Task Board, sem misturar com Prey.
 
-### 3.2 Extensão opcional para Task Board oficial (fase 2)
-- Adicionar novos pacotes para Weekly/Shop somente quando houver cliente pronto.
-- Definir novos enums de estado/ação em namespace isolado (evitar sobrecarregar enums de prey).
+Exemplos de superfícies:
+- `player_taskboard_profile`
+- `player_taskboard_bounty_slots`
+- `player_taskboard_weekly_tasks`
+- `player_taskboard_preferred_list`
+- `player_taskboard_shop_unlocks`
 
-### 3.3 Feature-gate
-- Nova flag de config (ex.: `TASK_BOARD_ENABLED`) separada de `TASK_HUNTING_ENABLED`.
-- Compatibilidade:
-  - `TASK_BOARD_ENABLED=false` e `TASK_HUNTING_ENABLED=true`: fluxo atual mantém funcionalidade.
-  - ambos true: habilita envio complementar para cliente novo.
+## 5) Protocolo
+- Novos handlers `parseTaskBoard*` em `protocolgame`.
+- Novos `sendTaskBoard*` para snapshots e updates incrementais.
+- Versionamento/gate por feature flag explícita.
 
-## 4) Persistência
+## 6) Integração com Player/Game
+- Inicialização no login.
+- Tick/cron para reset semanal.
+- Hooks de kill e claim.
 
-### Fase 1
-- Sem migration obrigatória (usa estrutura existente de task hunting em memória/salvamento atual do player).
-
-### Fase 2 (Weekly/Shop)
-- Criar migration para progresso semanal, janela de reset e saldo/itens de loja.
-- Atualizar IO de load/save para novos campos com fallback seguro.
-
-## 5) Regras não negociáveis
-1. Nenhuma decisão de recompensa final no cliente.
-2. Nenhum bypass de validação por confiar em estado da UI.
-3. Toda ação deve respeitar premium/free constraints no server.
-4. Protocolo novo só entra com simetria client pronta.
-
-## 6) Critérios de pronto (server)
-- Ações inválidas nunca alteram estado.
-- Estado de slot é sempre serializável em pacote único consistente.
-- Log/metrics mínimos para auditar consumo de reroll/cancel/claim.
+## 7) Critérios de pronto (server)
+- Nenhuma dependência semântica de Prey.
+- Todas as ações validadas no server.
+- Persistência íntegra e recuperável após restart.

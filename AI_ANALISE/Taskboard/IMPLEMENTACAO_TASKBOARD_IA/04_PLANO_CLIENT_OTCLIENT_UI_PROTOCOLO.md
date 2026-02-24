@@ -1,82 +1,53 @@
-# Plano de implementação — Client (otclient): UI, módulo e protocolo
+# Plano Client (otclient) — Task Board isolada
 
-## 1) Arquitetura recomendada
-Criar módulo novo: `otclient/modules/game_taskboard/`.
-
-### Estrutura sugerida
+## 1) Módulo dedicado
+Criar `otclient/modules/game_taskboard/`:
 - `taskboard.otmod`
 - `taskboard.lua`
 - `taskboard.otui`
 - `styles/style.otui`
-- `images/*` (ícones de moedas, badges, fundo, tabs)
+- `images/*`
 
-## 2) Padrões recorrentes a reaproveitar
+## 2) Padrões de UI permitidos
+- Reusar padrões visuais e widgets recorrentes do projeto.
+- Reusar mecânicas genéricas de janela/tabs/cards.
+- **Não referenciar lógica de Prey no módulo.**
 
-### De `game_prey`
-- Ciclo de vida de janela (`init/terminate/show/toggle`).
-- Conexões com sinais `g_game` e callbacks Lua.
-- Estrutura por slots com transições de estado.
-- Tooltips dinâmicas e feedback por descrição contextual.
+## 3) Contrato de parse
+Adicionar callbacks dedicados:
+- `g_game.onTaskBoardOpen(snapshot)`
+- `g_game.onTaskBoardBountyUpdate(data)`
+- `g_game.onTaskBoardWeeklyUpdate(data)`
+- `g_game.onTaskBoardShopUpdate(data)`
+- `g_game.onTaskBoardCurrencies(data)`
 
-### De módulos com UI moderna do cliente
-- Header com moedas/ícones em layout horizontal.
-- Tabs com troca de conteúdo por painel.
-- Cards com botão de ação e estado habilitado/desabilitado.
+## 4) Contrato de send
+Adicionar APIs de intenção:
+- `sendTaskBoardOpen()`
+- `sendTaskBoardSelectBounty(slotId, taskId)`
+- `sendTaskBoardReroll(slotId, rerollType)`
+- `sendTaskBoardClaim(slotId)`
+- `sendTaskBoardWeeklyClaim(taskId)`
+- `sendTaskBoardBuy(shopItemId)`
+- `sendTaskBoardPreferredUpdate(payload)`
 
-## 3) Contrato de parse (obrigatório)
-
-### 3.1 `parseTaskHuntingBasicData`
-- Não descartar dados.
-- Converter payload para tabela Lua estruturada:
-  - `creatureDifficulties[]`
-  - `rewardOptions[]` (difficulty, stars, kills/rewards 1 e 2)
-- Disparar callback: `g_game.onTaskBoardBasicData(data)`.
-
-### 3.2 `parseTaskHuntingData`
-- Materializar payload por estado e slot.
-- Disparar callback: `g_game.onTaskBoardSlotData(slotId, stateData)`.
-
-### 3.3 Resource balance
-- Reusar callback de resource balance para atualizar moedas no header:
-  - money, bank, prey cards, hunting task points.
-
-## 4) Contrato de send (obrigatório)
-- Adicionar enum em `protocolcodes.h`: `ClientTaskHuntingAction = 186` (0xBA).
-- Implementar em `protocolgamesend.cpp`:
-  - `sendTaskHuntingAction(slot, action, upgrade, raceId)`.
-- Expor em `game.cpp/game.h` API de alto nível para Lua.
-
-## 5) Modelo de estado Lua (proposto)
+## 5) Modelo local Lua
 ```lua
 TaskBoardModel = {
-  basic = { creatureDifficulties = {}, rewardOptions = {} },
-  slots = {
-    [0] = { state='locked|inactive|selection|list|active|completed', data={} },
-    [1] = { ... },
-    [2] = { ... }
-  },
-  currencies = { money=0, bank=0, preyCards=0, huntingPoints=0 },
-  selectedTab = 'bounty'
+  tabs = { current = 'bounty' },
+  bounty = { slots = {}, active = nil },
+  weekly = { tasks = {}, multiplier = 1.0, resetAt = 0 },
+  shop = { offers = {}, owned = {} },
+  preferred = { likes = {}, dislikes = {}, limits = {} },
+  currencies = { bountyPoints = 0, huntingPoints = 0, soulseals = 0, rerollTokens = 0 }
 }
 ```
 
-## 6) Mapeamento de UX (aba Bounty fase 1)
-- Card por slot com:
-  - criatura/sprite
-  - progresso kills
-  - raridade/recompensa prevista
-  - botões contextuais (`Select`, `Reroll`, `Claim`, `Cancel`, `Upgrade`)
-- Estado visual derivado **somente** de payload recebido.
+## 6) Entrada UX
+- Context menu: nova entrada “Task Board”.
+- Hotkey opcional dedicada.
 
-## 7) Integração de entrada
-- Adicionar opção de abrir Task Board no menu onde já existem entradas para Prey.
-- Se necessário, hotkey dedicada configurável.
-
-## 8) Internacionalização
-- Adicionar chaves mínimas em locales (pt/es/en/de/pl) para labels essenciais do módulo.
-
-## 9) Critérios de pronto (cliente)
-1. Nenhum pacote 186/187 é descartado sem uso.
-2. Toda ação de botão gera pacote válido 0xBA.
-3. Janela recupera estado completo ao reconectar/reabrir.
-4. Não há erro Lua ao alternar tabs/slots rapidamente.
+## 7) Critérios de pronto (client)
+- Fluxo completo nas 3 abas.
+- Atualizações reativas por pacote server.
+- Zero acoplamento funcional com Prey.

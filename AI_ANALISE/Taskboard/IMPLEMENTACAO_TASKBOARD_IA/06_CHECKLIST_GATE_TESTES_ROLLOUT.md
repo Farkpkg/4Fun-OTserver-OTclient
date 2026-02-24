@@ -1,68 +1,37 @@
-# Gate de mudança, testes e rollout — Task Board
+# Checklist, Testes e Rollout — Task Board isolada
 
-## 1) CHANGE GATE (resumo executável)
+## 1) Gate obrigatório
+- [ ] Task Board sem dependência semântica de Prey.
+- [ ] Novos opcodes com simetria parse/send client-server.
+- [ ] Migration Task Board criada e validada.
+- [ ] Feature gate `GameTaskBoard` ativo.
+- [ ] ADR registrada para novo domínio persistente.
 
-### A) Impacto estrutural
-- [ ] Impacto mapeado (server/client/network/config)
-- [ ] Dependências indiretas revisadas (bestiary, resources balance, premium lock)
+## 2) Testes mínimos
+### Funcionais
+- [ ] Abrir Task Board e receber snapshot.
+- [ ] Bounty: select/progress/complete/claim/reroll.
+- [ ] Weekly: progresso e claim.
+- [ ] Shop: compra e desbloqueio persistente.
+- [ ] Preferred list: update e limites.
 
-### B) Invariantes
-- [ ] INV-01 preservado (server autoritativo)
-- [ ] INV-02 preservado (simetria de protocolo)
-- [ ] INV-06 preservado (fronteira C++↔Lua oficial)
-- [ ] INV-08 preservado (feature gate explícito)
+### Negativos
+- [ ] Claim sem completar.
+- [ ] Compra sem saldo.
+- [ ] Ação inválida por estado.
+- [ ] Pacote malformed rejeitado sem crash.
 
-### C) Risco
-- [ ] Plano de rollback definido (desativar módulo cliente/gate)
-- [ ] Top-3 riscos com mitigação e teste correspondente
+### Persistência
+- [ ] Reconnect mantém estado.
+- [ ] Restart server mantém estado.
+- [ ] Reset semanal executa apenas uma vez por ciclo.
 
-### D) Client/Server
-- [ ] Opcodes 186/187 validados no parse client
-- [ ] Opcode 0xBA validado no send client + parse server
-- [ ] Estado de slot consistente em reconexão
+## 3) Rollout
+1. Dark launch (gate off por padrão)
+2. Canary interno
+3. Parcial por mundo
+4. Global
 
-### E) Persistência
-- [ ] Fase 1 sem migração (confirmado)
-- [ ] Fase 2 com migration + IO plan (se Weekly/Shop entrar)
-
-## 2) Matriz mínima de testes
-
-### Testes funcionais
-1. Abrir janela e receber dados básicos.
-2. Selecionar criatura em slot de seleção.
-3. Reroll de lista com e sem reroll free.
-4. Reroll de reward rarity com cards.
-5. Completar task e fazer claim.
-6. Cancelar task ativa.
-7. Validar slot premium/bloqueado.
-
-### Testes negativos
-1. Enviar ação inválida para estado inválido.
-2. Tentar selecionar criatura duplicada em outro slot.
-3. Tentar claim sem completar.
-4. Simular ausência de saldo e verificar erro do server.
-
-### Testes de regressão
-- Prey module continua funcionando.
-- Resource balance continua atualizado para outros sistemas (forge/store etc).
-
-## 3) Estratégia de rollout
-1. **Dark launch**: módulo cliente incluído mas oculto por gate.
-2. **Canary**: habilitar para ambiente de teste/staff.
-3. **Gradual**: liberar para subset de mundos/players.
-4. **GA**: liberar global após estabilidade.
-
-## 4) Critérios de go/no-go
-- Go:
-  - 0 desserializações inválidas em pacotes 186/187;
-  - 0 erros Lua críticos no módulo;
-  - ações principais concluídas sem inconsistência.
-- No-go:
-  - qualquer violação de INV-02;
-  - qualquer perda de estado de slot em reconexão.
-
-## 5) Entregáveis obrigatórios no PR de implementação
-1. Diff de código server/client.
-2. Evidência de testes (log/comandos).
-3. Checklist gate preenchida.
-4. (Se fase 2) ADR + migration + validação de persistência.
+## 4) Go/No-Go
+- **Go:** sem erro crítico de protocolo/persistência e sem acoplamento com Prey.
+- **No-Go:** qualquer dependência de domínio Prey ou inconsistência de dados entre reconexões.
