@@ -3,7 +3,16 @@ local randomOutfit = TalkAction("!randomoutfit")
 local config = {
 	changeInterval = 1000,
 	showEffect = false,
-	maxLookType = 1468,
+	outfitLookTypes = {
+		128, -- citizen male
+		129, -- hunter male
+		130, -- mage male
+		131, -- knight male
+		136, -- citizen female
+		137, -- hunter female
+		138, -- mage female
+		139, -- knight female
+	},
 }
 
 local validValues = {
@@ -14,68 +23,28 @@ local validValues = {
 local activePlayers = {}
 local ownedOutfitsByPlayer = {}
 
-local function getRandomOwnedOutfit(playerId)
-	local outfits = ownedOutfitsByPlayer[playerId]
-	if not outfits or #outfits == 0 then
-		return nil
-	end
-
-	local selectedOutfit = outfits[math.random(1, #outfits)]
-	local selectedAddon = selectedOutfit.addons[math.random(1, #selectedOutfit.addons)]
-	return selectedOutfit.lookType, selectedAddon
+local function getRandomLookType()
+	return config.outfitLookTypes[math.random(1, #config.outfitLookTypes)]
 end
 
-local function collectOwnedOutfits(player)
-	local outfits = {}
-	for lookType = 1, config.maxLookType do
-		if player:hasOutfit(lookType) then
-			local addons = { 0 }
-			for addon = 1, 3 do
-				if player:hasOutfit(lookType, addon) then
-					table.insert(addons, addon)
-				end
-			end
-
-			table.insert(outfits, {
-				lookType = lookType,
-				addons = addons,
-			})
-		end
-	end
-	return outfits
-end
-
-local function generateRandomOutfit(currentOutfit, randomLookType, randomAddon)
-	currentOutfit.lookType = randomLookType
-	currentOutfit.lookHead = math.random(0, 132)
-	currentOutfit.lookBody = math.random(0, 132)
-	currentOutfit.lookLegs = math.random(0, 132)
-	currentOutfit.lookFeet = math.random(0, 132)
-	currentOutfit.lookAddons = randomAddon
-	return currentOutfit
+local function generateRandomOutfit(outfit)
+	outfit.lookType = getRandomLookType()
+	outfit.lookHead = math.random(0, 132)
+	outfit.lookBody = math.random(0, 132)
+	outfit.lookLegs = math.random(0, 132)
+	outfit.lookFeet = math.random(0, 132)
+	outfit.lookAddons = math.random(0, 3)
+	return outfit
 end
 
 local function updateOutfit(playerId)
 	local player = Player(playerId)
-	if not player then
-		activePlayers[playerId] = nil
-		ownedOutfitsByPlayer[playerId] = nil
-		return
-	end
-
-	if activePlayers[playerId] then
-		local randomLookType, randomAddon = getRandomOwnedOutfit(playerId)
-		if randomLookType then
-			local currentOutfit = player:getOutfit()
-			local currentMount = currentOutfit.lookMount
-			local newOutfit = generateRandomOutfit(currentOutfit, randomLookType, randomAddon)
-			newOutfit.lookMount = currentMount
-			player:setOutfit(newOutfit)
-			if config.showEffect then
-				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
-			end
+	if player and activePlayers[playerId] then
+		local newOutfit = generateRandomOutfit(player:getOutfit())
+		player:setOutfit(newOutfit)
+		if config.showEffect then
+			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 		end
-
 		addEvent(updateOutfit, config.changeInterval, playerId)
 	end
 end
