@@ -21,6 +21,7 @@ local validValues = {
 }
 
 local activePlayers = {}
+local ownedOutfitsByPlayer = {}
 
 local function getRandomLookType()
 	return config.outfitLookTypes[math.random(1, #config.outfitLookTypes)]
@@ -63,11 +64,19 @@ function randomOutfit.onSay(player, words, param)
 			return true
 		end
 
+		local ownedOutfits = collectOwnedOutfits(player)
+		if #ownedOutfits == 0 then
+			player:sendTextMessage(MESSAGE_FAILURE, "You do not have any outfit unlocked for randomization.")
+			return true
+		end
+
+		ownedOutfitsByPlayer[playerId] = ownedOutfits
 		activePlayers[playerId] = true
 		updateOutfit(playerId)
 		player:sendTextMessage(MESSAGE_LOOK, "Random outfit is now enabled.")
 	else
 		activePlayers[playerId] = nil
+		ownedOutfitsByPlayer[playerId] = nil
 		player:sendTextMessage(MESSAGE_LOOK, "Random outfit is now disabled.")
 	end
 
