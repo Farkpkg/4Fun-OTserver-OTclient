@@ -1,3 +1,8 @@
+# 03_CODIGO_FINAL
+
+## crystalserver/data/scripts/talkactions/player/randomoutfit.lua
+
+```lua
 local randomOutfit = TalkAction("!randomoutfit")
 
 local config = {
@@ -77,3 +82,4 @@ end
 randomOutfit:separator(" ")
 randomOutfit:groupType("normal")
 randomOutfit:register()
+```
